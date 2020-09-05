@@ -52,7 +52,7 @@ public class CommandHandler implements CommandProcessor {
             throw new ConsoleError(String.format("[Command Error] %s: %s", c.getClass().getName(), e.getMessage()));
         }
 
-        System.out.printf("[Command used] %s used command %s in %s", user.getId(), c.name(),
+        System.out.printf("[Command used] %s used command %s in %s\n", user.getId(), c.name(),
             event.isFromGuild() ? event.getGuild().getId() : event.getChannel().getId());
     }
 }
