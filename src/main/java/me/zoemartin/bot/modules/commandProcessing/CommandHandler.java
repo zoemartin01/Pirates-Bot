@@ -48,6 +48,11 @@ public class CommandHandler implements CommandProcessor {
             channel.sendMessage(c.usage()).queue();
         } catch (ReplyError e) {
             channel.sendMessage(e.getMessage()).queue();
+        } catch (ConsoleError e) {
+            throw new ConsoleError(String.format("[Command Error] %s: %s", c.getClass().getName(), e.getMessage()));
         }
+
+        System.out.printf("[Command used] %s used command %s in %s", user.getId(), c.name(),
+            event.isFromGuild() ? event.getGuild().getId() : event.getChannel().getId());
     }
 }

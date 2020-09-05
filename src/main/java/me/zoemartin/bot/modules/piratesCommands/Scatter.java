@@ -17,7 +17,7 @@ public class Scatter implements GuildCommand {
     }
 
     @Override
-    public String run(User user, MessageChannel channel, List<String> args, Message original) {
+    public void run(User user, MessageChannel channel, List<String> args, Message original) {
         Check.check(args.size() == 1, CommandArgumentException::new);
 
         Integer id = Parser.Int.parse(args.get(0));
@@ -32,8 +32,6 @@ public class Scatter implements GuildCommand {
 
         channel.sendMessageFormat("Moved everyone in assembly `%s` back to their original voice channels",
             id).queue();
-
-        return null;
     }
 
     @Override

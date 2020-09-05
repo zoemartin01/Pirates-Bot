@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface Command {
     String name();
-    String run(User user, MessageChannel channel, List<String> args, Message original);
+    void run(User user, MessageChannel channel, List<String> args, Message original);
     Permission required();
     String usage();
 }

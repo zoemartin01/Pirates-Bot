@@ -13,9 +13,8 @@ public class Help implements GuildCommand {
     }
 
     @Override
-    public String run(User user, MessageChannel channel, List<String> args, Message original) {
+    public void run(User user, MessageChannel channel, List<String> args, Message original) {
         channel.sendMessageFormat("I can't really help you with anything at the moment ¯\\_(ツ)_/¯").queue();
-        return null;
     }
 
     @Override

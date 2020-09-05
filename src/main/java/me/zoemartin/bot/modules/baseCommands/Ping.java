@@ -5,7 +5,6 @@ import me.zoemartin.bot.base.interfaces.Command;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class Ping implements Command {
@@ -15,13 +14,12 @@ public class Ping implements Command {
     }
 
     @Override
-    public String run(User user, MessageChannel channel, List<String> args, Message original) {
+    public void run(User user, MessageChannel channel, List<String> args, Message original) {
         long time = System.currentTimeMillis();
         Message m = channel.sendMessage("Pong!").complete();
 
         m.editMessage("Ping: " + (m.getTimeCreated().toInstant().toEpochMilli() - time)
                           + "ms | Websocket: " + Bot.getJDA().getGatewayPing() + "ms").queue();
-        return null;
     }
 
     @Override

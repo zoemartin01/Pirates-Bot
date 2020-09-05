@@ -9,17 +9,9 @@ mainClassName = "me.zoemartin.bot.Bot"
 group('me.zoemartin')
 version('0.0.1')
 
-allprojects {
-    apply plugin: 'java'
-
-    repositories {
-        mavenCentral()
-        jcenter()
-    }
-
-    dependencies {
-        compileOnly('net.dv8tion:JDA:4.2.0_203')
-    }
+repositories {
+    mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -27,4 +19,5 @@ dependencies {
     implementation('net.dv8tion:JDA:4.2.0_203')
     implementation('net.oneandone.reflections8:reflections8:0.11.7')
     implementation('club.minnced:discord-webhooks:0.4.1')
+    implementation(group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30')
 }

@@ -18,7 +18,7 @@ public class Assemble implements GuildCommand {
     }
 
     @Override
-    public String run(User user, MessageChannel channel, List<String> args, Message original) {
+    public void run(User user, MessageChannel channel, List<String> args, Message original) {
         Guild g = ((GuildChannel) channel).getGuild();
 
         Check.check(args.size() == 2, CommandArgumentException::new);
@@ -50,7 +50,6 @@ public class Assemble implements GuildCommand {
         channel.sendMessageFormat("Moved everyone with the role %s to the voice channel `%s`. Assembly id: `%s`",
             r.getAsMention(), vc.getName(), Assembly.addAssembly(a))
             .queue();
-        return null;
     }
 
     @Override
