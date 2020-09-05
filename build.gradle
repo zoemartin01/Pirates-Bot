@@ -5,9 +5,14 @@ plugins {
 }
 
 mainClassName = "me.zoemartin.bot.Bot"
+compileJava.options.encoding = 'UTF-8'
 
 group('me.zoemartin')
-version('0.0.1')
+version('0.0.2')
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
 
 repositories {
     mavenCentral()
