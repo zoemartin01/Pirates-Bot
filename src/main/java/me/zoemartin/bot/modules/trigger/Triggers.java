@@ -30,6 +30,8 @@ public class Triggers extends ListenerAdapter implements Module {
 
     @Override
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
+        if (event.getAuthor().isBot()) return;
+
         if (!hasTriggers(event.getGuild())) return;
 
         new Thread(() -> get(event.getGuild()).process(event.getMessage().getContentRaw(), event.getChannel())).start();

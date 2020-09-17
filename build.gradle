@@ -6,9 +6,11 @@ plugins {
 
 mainClassName = "me.zoemartin.bot.Bot"
 compileJava.options.encoding = 'UTF-8'
+sourceCompatibility=11
+targetCompatibility=11
 
 group('me.zoemartin')
-version('0.0.2')
+version('0.0.3')
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'

@@ -64,10 +64,10 @@ public class Parser {
             return (s.matches("[+-]?\\d+"));
         }
 
-        public static Integer parse(String s) {
+        public static int parse(String s) {
             if (isParsable(s))
                 return Integer.parseInt(s.replaceAll("\\D", ""));
-            return null;
+            return 0;
         }
     }
 }

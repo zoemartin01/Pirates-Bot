@@ -1,7 +1,6 @@
 package me.zoemartin.bot.modules.debug;
 
 import me.zoemartin.bot.base.LoadModule;
-import me.zoemartin.bot.base.interfaces.Command;
 import me.zoemartin.bot.base.interfaces.Module;
 import me.zoemartin.bot.base.managers.CommandManager;
 
@@ -11,5 +10,7 @@ public class Debug implements Module {
     public void init() {
         CommandManager.register(new Sleep());
         CommandManager.register(new Shutdown());
+        CommandManager.register(new Purge());
+        CommandManager.register(new Count());
     }
 }
