@@ -10,5 +10,6 @@ public class BaseCommands implements Module {
     public void init() {
         CommandManager.register(new Ping());
         CommandManager.register(new Help());
+        CommandManager.register(new Usage());
     }
 }

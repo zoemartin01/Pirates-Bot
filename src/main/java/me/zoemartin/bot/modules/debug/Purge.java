@@ -1,8 +1,7 @@
 package me.zoemartin.bot.modules.debug;
 
 import me.zoemartin.bot.base.exceptions.CommandArgumentException;
-import me.zoemartin.bot.base.interfaces.Command;
-import me.zoemartin.bot.base.interfaces.GuildCommand;
+import me.zoemartin.bot.base.interfaces.*;
 import me.zoemartin.bot.base.util.Check;
 import me.zoemartin.bot.base.util.Parser;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -14,12 +13,15 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Purge implements GuildCommand {
+    @Override
+    public Set<Command> subCommands() {
+        return Collections.emptySet();
+    }
+
     @Override
     public String name() {
         return "purge";

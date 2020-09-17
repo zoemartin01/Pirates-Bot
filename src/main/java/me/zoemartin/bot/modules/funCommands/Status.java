@@ -3,17 +3,22 @@ package me.zoemartin.bot.modules.funCommands;
 import me.zoemartin.bot.Bot;
 import me.zoemartin.bot.base.LoadModule;
 import me.zoemartin.bot.base.exceptions.CommandArgumentException;
-import me.zoemartin.bot.base.interfaces.Command;
+import me.zoemartin.bot.base.interfaces.*;
 import me.zoemartin.bot.base.interfaces.Module;
 import me.zoemartin.bot.base.managers.CommandManager;
 import me.zoemartin.bot.base.util.*;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 
-import java.util.List;
+import java.util.*;
 
 @LoadModule
 public class Status implements Module, Command {
+    @Override
+    public Set<Command> subCommands() {
+        return Collections.emptySet();
+    }
+
     @Override
     public String name() {
         return "status";
@@ -23,7 +28,7 @@ public class Status implements Module, Command {
     public void run(User user, MessageChannel channel, List<String> args, Message original) {
         Check.check(args.size() >= 2, CommandArgumentException::new);
 
-        Integer id = Parser.Int.parse(args.get(0));
+        int id = Parser.Int.parse(args.get(0));
         Check.notNull(id, CommandArgumentException::new);
 
         Activity.ActivityType type = Activity.ActivityType.fromKey(id);

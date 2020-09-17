@@ -7,9 +7,14 @@ import me.zoemartin.bot.base.util.Parser;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 
-import java.util.List;
+import java.util.*;
 
 public class Count implements Command {
+    @Override
+    public Set<Command> subCommands() {
+        return Collections.emptySet();
+    }
+
     @Override
     public String name() {
         return "count";

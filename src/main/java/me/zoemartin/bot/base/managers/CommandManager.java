@@ -30,12 +30,16 @@ public class CommandManager {
     public static void process(MessageReceivedEvent event, String input) {
         new Thread(() -> {
             try {
-                processor.process(registered, event, input);
+                processor.process(event, input);
             } catch (ConsoleError e) {
                 if (event.getAuthor().getId().equals("212591138945630213"))
                     event.getChannel().sendMessageFormat("Error: `%s`", e.getMessage()).queue();
                 else System.err.println(e.getMessage());
             }
         }).start();
+    }
+
+    public static Collection<Command> getCommands() {
+        return Collections.unmodifiableCollection(registered);
     }
 }

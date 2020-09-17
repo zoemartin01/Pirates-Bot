@@ -2,15 +2,20 @@ package me.zoemartin.bot.modules.funCommands;
 
 import me.zoemartin.bot.base.exceptions.CommandArgumentException;
 import me.zoemartin.bot.base.exceptions.ReplyError;
-import me.zoemartin.bot.base.interfaces.GuildCommand;
+import me.zoemartin.bot.base.interfaces.*;
 import me.zoemartin.bot.base.util.Check;
 import me.zoemartin.bot.base.util.Parser;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 
-import java.util.List;
+import java.util.*;
 
 public class Echo implements GuildCommand {
+    @Override
+    public Set<Command> subCommands() {
+        return Collections.emptySet();
+    }
+
     @Override
     public String name() {
         return "echo";
@@ -47,6 +52,6 @@ public class Echo implements GuildCommand {
 
     @Override
     public String usage() {
-        return "Usage: `echo >> #channel message...`\n or `echo message...`";
+        return "`echo >> #channel message...`\n or `echo message...`";
     }
 }

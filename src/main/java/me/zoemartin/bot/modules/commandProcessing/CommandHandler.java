@@ -2,7 +2,9 @@ package me.zoemartin.bot.modules.commandProcessing;
 
 import me.zoemartin.bot.base.exceptions.*;
 import me.zoemartin.bot.base.interfaces.*;
+import me.zoemartin.bot.base.managers.CommandManager;
 import me.zoemartin.bot.base.util.Check;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -11,7 +13,7 @@ import java.util.*;
 
 public class CommandHandler implements CommandProcessor {
     @Override
-    public void process(Collection<Command> commands, MessageReceivedEvent event, String input) {
+    public void process(MessageReceivedEvent event, String input) {
         User user = event.getAuthor();
         MessageChannel channel = event.getChannel();
 
@@ -19,40 +21,71 @@ public class CommandHandler implements CommandProcessor {
 
         if (inputSplit.length == 0) return;
 
-        Command c = commands.stream()
-                        .filter(command -> command.name().equalsIgnoreCase(inputSplit[0]))
-                        .findFirst().orElseThrow(() -> new ConsoleError("Command '%s' not found", inputSplit[0]));
+        String commandString = inputSplit[0];
+        String subCommandString = inputSplit.length > 1 ? inputSplit[1] : null;
+
+        Command command = CommandManager.getCommands().stream()
+                        .filter(c -> c.name().equalsIgnoreCase(commandString))
+                        .findFirst().orElseThrow(() -> new ConsoleError("Command '%s' not found", commandString));
+
+        boolean isSubCommand = false;
+
+        if (!command.subCommands().isEmpty() && subCommandString != null) {
+            Command subCommand = command.subCommands().stream()
+                                .filter(sc -> sc.name().equalsIgnoreCase(subCommandString))
+                                .findFirst().orElse(null);
+
+            command = subCommand == null ? command : subCommand;
+            isSubCommand = subCommand == null;
+        }
+
+        final Command cmd = command;
 
         if (event.isFromGuild()) {
             Guild guild = event.getGuild();
             Member member = guild.getMember(user);
             Check.notNull(member, () -> new ConsoleError("member is null"));
-            Check.check(c.required() == Permission.UNKNOWN
-                            || member.hasPermission(c.required()) || member.hasPermission(Permission.ADMINISTRATOR),
+            Check.check(command.required() == Permission.UNKNOWN
+                            || member.hasPermission(command.required()) || member.hasPermission(Permission.ADMINISTRATOR),
                 () -> new ConsoleError("Member '%s' doesn't have the required permission for Command '%s'",
-                    member.getId(), c.name()));
+                    member.getId(), cmd.name()));
         } else {
-            Check.check(!Arrays.asList(c.getClass().getClasses()).contains(GuildCommand.class),
+            Check.check(!Arrays.asList(command.getClass().getClasses()).contains(GuildCommand.class),
                 () -> new ConsoleError("User '%s' attempted to run Command '%s' outside of allowed Scope",
-                    user.getId(), c.name()));
+                    user.getId(), cmd.name()));
         }
 
         List<String> arguments;
 
-        if (inputSplit.length == 1) arguments = Collections.emptyList();
-        else arguments = Arrays.asList(Arrays.copyOfRange(inputSplit, 1, inputSplit.length));
+        if (isSubCommand) {
+            if (inputSplit.length == 2) arguments = Collections.emptyList();
+            else arguments = Arrays.asList(Arrays.copyOfRange(inputSplit, 2, inputSplit.length));
+        } else {
+            if (inputSplit.length == 1) arguments = Collections.emptyList();
+            else arguments = Arrays.asList(Arrays.copyOfRange(inputSplit, 1, inputSplit.length));
+        }
 
         try {
-            c.run(user, channel, Collections.unmodifiableList(arguments), event.getMessage());
+            cmd.run(user, channel, Collections.unmodifiableList(arguments), event.getMessage());
         } catch (CommandArgumentException e) {
-            channel.sendMessage(c.usage()).queue();
+            sendUsage(channel, cmd);
         } catch (ReplyError e) {
             channel.sendMessage(e.getMessage()).queue();
         } catch (ConsoleError e) {
-            throw new ConsoleError(String.format("[Command Error] %s: %s", c.getClass().getName(), e.getMessage()));
+            throw new ConsoleError(String.format("[Command Error] %s: %s", cmd.getClass().getName(), e.getMessage()));
         }
 
-        System.out.printf("[Command used] %s used command %s in %s\n", user.getId(), c.name(),
+        System.out.printf("[Command used] %s used command %s in %s\n", user.getId(), cmd.name(),
             event.isFromGuild() ? event.getGuild().getId() : event.getChannel().getId());
+    }
+
+    private static void sendUsage(MessageChannel channel, Command command) {
+        EmbedBuilder eb = new EmbedBuilder();
+
+        eb.setTitle(command.name() + " usage");
+        eb.setDescription(command.usage());
+        eb.setColor(0xdf136c);
+
+        channel.sendMessage(eb.build()).queue();
     }
 }

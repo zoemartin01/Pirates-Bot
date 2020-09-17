@@ -1,10 +1,10 @@
 package me.zoemartin.bot.modules.baseCommands;
 
-import me.zoemartin.bot.base.interfaces.GuildCommand;
+import me.zoemartin.bot.base.interfaces.*;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 
-import java.util.List;
+import java.util.*;
 
 public class Help implements GuildCommand {
     @Override
@@ -24,6 +24,6 @@ public class Help implements GuildCommand {
 
     @Override
     public String usage() {
-        return "null";
+        return "help";
     }
 }
