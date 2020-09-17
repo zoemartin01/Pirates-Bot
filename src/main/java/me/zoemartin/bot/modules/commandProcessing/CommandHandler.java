@@ -21,22 +21,22 @@ public class CommandHandler implements CommandProcessor {
 
         if (inputSplit.length == 0) return;
 
-        String commandString = inputSplit[0];
-        String subCommandString = inputSplit.length > 1 ? inputSplit[1] : null;
+        String commandString = inputSplit[0].toLowerCase();
+        String subCommandString = inputSplit.length > 1 ? inputSplit[1].toLowerCase() : null;
 
         Command command = CommandManager.getCommands().stream()
-                        .filter(c -> c.name().equalsIgnoreCase(commandString))
+                        .filter(c -> commandString.matches(c.regex().toLowerCase()))
                         .findFirst().orElseThrow(() -> new ConsoleError("Command '%s' not found", commandString));
 
         boolean isSubCommand = false;
 
         if (!command.subCommands().isEmpty() && subCommandString != null) {
             Command subCommand = command.subCommands().stream()
-                                .filter(sc -> sc.name().equalsIgnoreCase(subCommandString))
+                                .filter(sc -> subCommandString.matches(sc.regex().toLowerCase()))
                                 .findFirst().orElse(null);
 
             command = subCommand == null ? command : subCommand;
-            isSubCommand = subCommand == null;
+            isSubCommand = subCommand != null;
         }
 
         final Command cmd = command;
@@ -58,15 +58,16 @@ public class CommandHandler implements CommandProcessor {
         List<String> arguments;
 
         if (isSubCommand) {
-            if (inputSplit.length == 2) arguments = Collections.emptyList();
+            if (inputSplit.length <= 2) arguments = Collections.emptyList();
             else arguments = Arrays.asList(Arrays.copyOfRange(inputSplit, 2, inputSplit.length));
         } else {
-            if (inputSplit.length == 1) arguments = Collections.emptyList();
+            if (inputSplit.length <= 1) arguments = Collections.emptyList();
             else arguments = Arrays.asList(Arrays.copyOfRange(inputSplit, 1, inputSplit.length));
         }
 
         try {
-            cmd.run(user, channel, Collections.unmodifiableList(arguments), event.getMessage());
+            cmd.run(user, channel, Collections.unmodifiableList(arguments), event.getMessage(),
+                isSubCommand ? subCommandString : commandString);
         } catch (CommandArgumentException e) {
             sendUsage(channel, cmd);
         } catch (ReplyError e) {
@@ -75,7 +76,7 @@ public class CommandHandler implements CommandProcessor {
             throw new ConsoleError(String.format("[Command Error] %s: %s", cmd.getClass().getName(), e.getMessage()));
         }
 
-        System.out.printf("[Command used] %s used command %s in %s\n", user.getId(), cmd.name(),
+        System.out.printf("[Command used] %s used command %s in %s\n", user.getId(), cmd.getClass().getCanonicalName(),
             event.isFromGuild() ? event.getGuild().getId() : event.getChannel().getId());
     }
 

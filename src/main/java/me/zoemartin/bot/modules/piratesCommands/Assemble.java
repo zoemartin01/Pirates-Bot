@@ -23,7 +23,7 @@ public class Assemble implements GuildCommand {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original) {
+    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
         Guild g = ((GuildChannel) channel).getGuild();
 
         Check.check(args.size() == 2, CommandArgumentException::new);
@@ -64,6 +64,11 @@ public class Assemble implements GuildCommand {
 
     @Override
     public String usage() {
-        return "assemble <here|#channel> <@role>";
+        return "`assemble <here|#channel> <@role>`";
+    }
+
+    @Override
+    public String description() {
+        return "Move all Members with a role currently in a voice chat into one voice chat";
     }
 }

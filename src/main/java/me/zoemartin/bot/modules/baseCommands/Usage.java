@@ -18,7 +18,7 @@ public class Usage implements GuildCommand {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original) {
+    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
         Check.check(!args.isEmpty(), CommandArgumentException::new);
 
         Command command = CommandManager.getCommands().stream()
@@ -42,7 +42,12 @@ public class Usage implements GuildCommand {
 
     @Override
     public String usage() {
-        return "usage <command>";
+        return "`usage <command>`";
+    }
+
+    @Override
+    public String description() {
+        return "Shows a commands usage page";
     }
 
     private static void sendUsage(MessageChannel channel, Command command) {

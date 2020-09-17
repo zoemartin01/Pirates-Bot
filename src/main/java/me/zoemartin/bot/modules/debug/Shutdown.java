@@ -22,8 +22,8 @@ public class Shutdown implements Command {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original) {
-        Check.check(user.getId().equals("212591138945630213"),
+    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        Check.check(!user.getId().equals("212591138945630213"),
             () -> new ConsoleError("Non-owner tried a shutdown"));
 
         Check.check(args.isEmpty() || args.size() == 1 && args.get(0).matches("force|now"),
@@ -45,6 +45,11 @@ public class Shutdown implements Command {
 
     @Override
     public String usage() {
-        return "shutdown [force|now]";
+        return "`shutdown [force|now]`";
+    }
+
+    @Override
+    public String description() {
+        return "Shuts down the bot";
     }
 }

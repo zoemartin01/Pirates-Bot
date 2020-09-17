@@ -14,7 +14,7 @@ public class Ping implements Command {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original) {
+    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
         long time = System.currentTimeMillis();
         Message m = channel.sendMessage("Pong!").complete();
 
@@ -30,5 +30,10 @@ public class Ping implements Command {
     @Override
     public String usage() {
         return "Nothing you dingus";
+    }
+
+    @Override
+    public String description() {
+        return "table tennis?";
     }
 }

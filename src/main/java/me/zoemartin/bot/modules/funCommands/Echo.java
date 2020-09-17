@@ -22,7 +22,7 @@ public class Echo implements GuildCommand {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original) {
+    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
         Check.check(!args.isEmpty(), CommandArgumentException::new);
 
         TextChannel c = original.getTextChannel();
@@ -53,5 +53,10 @@ public class Echo implements GuildCommand {
     @Override
     public String usage() {
         return "`echo >> #channel message...`\n or `echo message...`";
+    }
+
+    @Override
+    public String description() {
+        return "Makes the bot say stuff";
     }
 }

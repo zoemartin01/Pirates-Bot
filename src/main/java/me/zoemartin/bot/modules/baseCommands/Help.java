@@ -1,6 +1,10 @@
 package me.zoemartin.bot.modules.baseCommands;
 
+import me.zoemartin.bot.base.exceptions.*;
 import me.zoemartin.bot.base.interfaces.*;
+import me.zoemartin.bot.base.managers.CommandManager;
+import me.zoemartin.bot.base.util.Check;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 
@@ -13,8 +17,23 @@ public class Help implements GuildCommand {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original) {
-        channel.sendMessageFormat("I can't really help you with anything at the moment ¯\\_(ツ)_/¯").queue();
+    public Set<Command> subCommands() {
+        return Set.of(new Cmd());
+    }
+
+    @Override
+    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        StringBuilder sb = new StringBuilder("**Available Commands:**\n\n");
+
+        CommandManager.getCommands().forEach(command -> sb.append("`").append(command.name())
+                                                            .append("` | ").append(command.description()).append("\n\n"));
+
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setTitle("Help").setColor(0xdf136c);
+        eb.setDescription(sb.toString());
+        eb.addField("Additional Help:", "For additional help with a command use: " + usage(), false);
+
+        channel.sendMessage(eb.build()).queue();
     }
 
     @Override
@@ -24,6 +43,65 @@ public class Help implements GuildCommand {
 
     @Override
     public String usage() {
-        return "help";
+        return "`help [command]`";
+    }
+
+    @Override
+    public String description() {
+        return "Sending help :3";
+    }
+
+    private static class Cmd implements GuildCommand {
+
+        @Override
+        public String name() {
+            return "command";
+        }
+
+        @Override
+        public String regex() {
+            StringBuilder sb = new StringBuilder();
+            CommandManager.getCommands().forEach(command -> sb.append(command.regex()).append("|"));
+            sb.deleteCharAt(sb.lastIndexOf("|"));
+            return sb.toString();
+        }
+
+        @Override
+        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+            Command command = CommandManager.getCommands().stream()
+                                  .filter(c -> invoked.matches(c.regex().toLowerCase()))
+                                  .findFirst().orElseThrow(() -> new ConsoleError("Command '%s' not found", invoked));
+            Check.notNull(command, () -> new ReplyError("No such command!"));
+
+            Command sc;
+            if (args.size() < 1) sc = null;
+            else sc = command.subCommands().stream()
+                          .filter(subCommand -> args.get(0).matches(subCommand.regex().toLowerCase()))
+                          .findFirst().orElse(null);
+
+            boolean isSubcommand = sc != null;
+
+            EmbedBuilder eb = new EmbedBuilder();
+            eb.setTitle(isSubcommand ? command.name() + " " + sc.name() : command.name()).setColor(0xdf136c);
+            eb.addField("Description:", isSubcommand ? sc.description() : command.description(), false);
+            eb.addField("Usage:", isSubcommand ? sc.usage() : command.usage(), false);
+
+            channel.sendMessage(eb.build()).queue();
+        }
+
+        @Override
+        public Permission required() {
+            return Permission.UNKNOWN;
+        }
+
+        @Override
+        public String usage() {
+            return "`help <command>`";
+        }
+
+        @Override
+        public String description() {
+            return "Shows a command help page";
+        }
     }
 }

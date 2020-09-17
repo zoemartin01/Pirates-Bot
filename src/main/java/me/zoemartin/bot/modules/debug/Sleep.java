@@ -19,7 +19,7 @@ public class Sleep implements Command {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original) {
+    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
         channel.sendMessageFormat("Started sleeping").queue();
         try {
             Thread.sleep(10000);
@@ -36,6 +36,11 @@ public class Sleep implements Command {
 
     @Override
     public String usage() {
-        return "sleep";
+        return "`sleep`";
+    }
+
+    @Override
+    public String description() {
+        return "Sends the current thread to sleep";
     }
 }

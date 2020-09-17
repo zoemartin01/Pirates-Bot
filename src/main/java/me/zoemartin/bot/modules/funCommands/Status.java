@@ -25,7 +25,7 @@ public class Status implements Module, Command {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original) {
+    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
         Check.check(args.size() >= 2, CommandArgumentException::new);
 
         int id = Parser.Int.parse(args.get(0));
@@ -50,7 +50,12 @@ public class Status implements Module, Command {
 
     @Override
     public String usage() {
-        return "status <type id> <status...>";
+        return "`status <type id> <status...>`";
+    }
+
+    @Override
+    public String description() {
+        return "Sets the bot's status";
     }
 
     @Override

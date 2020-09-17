@@ -28,7 +28,7 @@ public class Purge implements GuildCommand {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original) {
+    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
         Check.check(args.size() == 1 && Parser.Int.isParsable(args.get(0)), CommandArgumentException::new);
         int amount = Parser.Int.parse(args.get(0));
 
@@ -90,6 +90,11 @@ public class Purge implements GuildCommand {
 
     @Override
     public String usage() {
-        return "purge <count>";
+        return "`purge <count>`";
+    }
+
+    @Override
+    public String description() {
+        return "Purges the last sent messages in this channel";
     }
 }
