@@ -11,5 +11,6 @@ public class BaseCommands implements Module {
         CommandManager.register(new Ping());
         CommandManager.register(new Help());
         CommandManager.register(new Usage());
+        CommandManager.register(new About());
     }
 }
