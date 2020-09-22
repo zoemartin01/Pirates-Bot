@@ -10,7 +10,7 @@ import me.zoemartin.bot.modules.trigger.Triggers;
 
 import java.util.concurrent.*;
 
-@LoadModule(loadAfter = {CommandListener.class, Triggers.class})
+@LoadModule(loadAfter = {CommandListener.class})
 public class Defaults implements Module {
 
     @Override
