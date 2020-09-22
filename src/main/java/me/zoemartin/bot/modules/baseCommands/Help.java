@@ -25,7 +25,13 @@ public class Help implements GuildCommand {
     public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
         StringBuilder sb = new StringBuilder("**Available Commands:**\n\n");
 
-        CommandManager.getCommands().forEach(command -> sb.append("`").append(command.name())
+        Guild guild = original.getGuild();
+        Member member = original.getMember();
+
+        CommandManager.getCommands().stream()
+            .filter(command -> CommandManager.getMemberPerm(guild.getId(), member.getId()).raw() >= command.commandPerm().raw()
+            || member.getRoles().stream().anyMatch(role -> CommandManager.getRolePerm(guild.getId(), role.getId()).raw() >= command.commandPerm().raw()))
+            .forEach(command -> sb.append("`").append(command.name())
                                                             .append("` | ").append(command.description()).append("\n\n"));
 
         EmbedBuilder eb = new EmbedBuilder();

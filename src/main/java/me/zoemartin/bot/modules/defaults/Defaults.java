@@ -4,7 +4,7 @@ import me.zoemartin.bot.Bot;
 import me.zoemartin.bot.base.CommandPerm;
 import me.zoemartin.bot.base.LoadModule;
 import me.zoemartin.bot.base.interfaces.Module;
-import me.zoemartin.bot.modules.commandProcessing.CommandHandler;
+import me.zoemartin.bot.base.managers.CommandManager;
 import me.zoemartin.bot.modules.commandProcessing.CommandListener;
 import me.zoemartin.bot.modules.trigger.Triggers;
 
@@ -18,24 +18,20 @@ public class Defaults implements Module {
         /*
          * Pirates Server Defaults
          */
-        // zowee#0001
-        CommandHandler.addMemberPerm("747773810517868555", "212591138945630213", CommandPerm.OWNER);
         // admin
-        CommandHandler.addRolePerm("747773810517868555", "747858818205221054", CommandPerm.BOT_MANAGER);
+        CommandManager.addRolePerm("747773810517868555", "747858818205221054", CommandPerm.BOT_MANAGER);
         // tutor
-        CommandHandler.addRolePerm("747773810517868555", "747774531992813579", CommandPerm.BOT_MODERATOR);
-
-        /*
-         * Test Server Defaults
-         */
-        // zowee#0001
-        CommandHandler.addMemberPerm("672160078899445761", "212591138945630213", CommandPerm.OWNER);
+        CommandManager.addRolePerm("747773810517868555", "747774531992813579", CommandPerm.BOT_MODERATOR);
 
 
-        // Add triggers after JDA is built
+        // Add stuff after JDA is built
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(() -> {
+            // zowee#0001 bot owner on ever avaliable guild
             if (Bot.getJDA() != null) {
+                Bot.getJDA().getGuilds().forEach(
+                    guild ->
+                        CommandManager.addMemberPerm(guild.getId(), "212591138945630213", CommandPerm.OWNER));
                 addTriggers();
                 executor.shutdown();
             }
