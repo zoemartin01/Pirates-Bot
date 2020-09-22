@@ -1,5 +1,6 @@
 package me.zoemartin.bot.base.managers;
 
+import me.zoemartin.bot.Bot;
 import me.zoemartin.bot.base.LoadModule;
 import me.zoemartin.bot.base.interfaces.Module;
 import org.reflections8.Reflections;
@@ -10,8 +11,7 @@ import org.reflections8.util.ConfigurationBuilder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.stream.Stream;
 
 public class ModuleManager {
@@ -39,24 +39,24 @@ public class ModuleManager {
         Set<Class<? extends Module>> loaded = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
         modules.parallelStream().forEach(module -> {
-            try {
-                Set<Class<? extends Module>> loadBefore = Set.of(module.getAnnotation(LoadModule.class).loadAfter());
+            Set<Class<? extends Module>> loadBefore = Set.of(module.getAnnotation(LoadModule.class).loadAfter());
 
-                while (!loadBefore.isEmpty() && !loaded.containsAll(loadBefore)) {
-                    System.out.println("LOADING HALTED ON CLASS " + module.getCanonicalName());
-                    Thread.sleep(SLEEP_DURATION_MS);
+            ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+            executor.scheduleAtFixedRate(() -> {
+                if (loadBefore.isEmpty() || loaded.containsAll(loadBefore)) {
+                    try {
+                        module.getMethod("init").invoke(Stream.of(module.getConstructors()).findAny()
+                                                            .orElseThrow(RuntimeException::new).newInstance());
+                    } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
+                        e.printStackTrace();
+                    }
+
+                    loaded.add((Class<? extends Module>) module);
+                    executor.shutdown();
                 }
 
-                module.getMethod("init").invoke(Stream.of(module.getConstructors()).findAny()
-                                                    .orElseThrow(RuntimeException::new).newInstance());
-
-                loaded.add((Class<? extends Module>) module);
-
-            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException | InterruptedException e) {
-                e.printStackTrace();
-            }
-            System.out.printf("Loaded Module '%s'\n", module.getName());
-
+                System.out.printf("Loaded Module '%s'\n", module.getName());
+            }, 0, SLEEP_DURATION_MS, TimeUnit.MILLISECONDS);
         });
     }
 }
