@@ -1,13 +1,13 @@
 package me.zoemartin.bot.modules.debug;
 
 import me.zoemartin.bot.base.LoadModule;
+import me.zoemartin.bot.base.CommandPerm;
 import me.zoemartin.bot.base.exceptions.CommandArgumentException;
 import me.zoemartin.bot.base.exceptions.ConsoleError;
 import me.zoemartin.bot.base.interfaces.*;
 import me.zoemartin.bot.base.interfaces.Module;
 import me.zoemartin.bot.base.managers.CommandManager;
 import me.zoemartin.bot.base.util.Check;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 
 import java.util.*;
@@ -79,8 +79,8 @@ public class Debug implements Module, GuildCommand {
     }
 
     @Override
-    public Permission required() {
-        return Permission.MANAGE_SERVER;
+    public CommandPerm commandPerm() {
+        return CommandPerm.BOT_MANAGER;
     }
 
     @Override
@@ -127,8 +127,8 @@ public class Debug implements Module, GuildCommand {
         }
 
         @Override
-        public Permission required() {
-            return Permission.ADMINISTRATOR;
+        public CommandPerm commandPerm() {
+            return CommandPerm.BOT_ADMIN;
         }
 
         @Override

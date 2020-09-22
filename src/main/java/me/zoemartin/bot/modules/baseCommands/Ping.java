@@ -1,11 +1,11 @@
 package me.zoemartin.bot.modules.baseCommands;
 
 import me.zoemartin.bot.Bot;
+import me.zoemartin.bot.base.CommandPerm;
 import me.zoemartin.bot.base.interfaces.Command;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 
-import java.util.List;
+import java.util.*;
 
 public class Ping implements Command {
     @Override
@@ -23,8 +23,8 @@ public class Ping implements Command {
     }
 
     @Override
-    public Permission required() {
-        return Permission.UNKNOWN;
+    public CommandPerm commandPerm() {
+        return CommandPerm.EVERYONE;
     }
 
     @Override

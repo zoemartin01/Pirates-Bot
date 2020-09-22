@@ -1,11 +1,11 @@
 package me.zoemartin.bot.modules.baseCommands;
 
+import me.zoemartin.bot.base.CommandPerm;
 import me.zoemartin.bot.base.exceptions.*;
 import me.zoemartin.bot.base.interfaces.*;
 import me.zoemartin.bot.base.managers.CommandManager;
 import me.zoemartin.bot.base.util.Check;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 
 import java.util.*;
@@ -37,8 +37,8 @@ public class Help implements GuildCommand {
     }
 
     @Override
-    public Permission required() {
-        return Permission.UNKNOWN;
+    public CommandPerm commandPerm() {
+        return CommandPerm.EVERYONE;
     }
 
     @Override
@@ -86,12 +86,22 @@ public class Help implements GuildCommand {
             eb.addField("Description:", isSubcommand ? sc.description() : command.description(), false);
             eb.addField("Usage:", isSubcommand ? sc.usage() : command.usage(), false);
 
+            StringBuilder aliases = new StringBuilder();
+            for (String s : command.regex().split("\\|")) {
+                if (s.equals(command.name())) continue;
+                aliases.append(s).append(", ");
+            }
+
+            if (aliases.length() > 0) aliases.deleteCharAt(aliases.lastIndexOf(","))
+                                          .deleteCharAt(aliases.lastIndexOf(" "));
+            eb.addField("Aliases:", String.format("`%s`", aliases.length() > 0 ? aliases : "n/a"), false);
+
             channel.sendMessage(eb.build()).queue();
         }
 
         @Override
-        public Permission required() {
-            return Permission.UNKNOWN;
+        public CommandPerm commandPerm() {
+            return CommandPerm.EVERYONE;
         }
 
         @Override

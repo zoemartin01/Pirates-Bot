@@ -1,5 +1,6 @@
 package me.zoemartin.bot.base.interfaces;
 
+import me.zoemartin.bot.base.CommandPerm;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 
@@ -18,7 +19,11 @@ public interface Command {
 
     void run(User user, MessageChannel channel, List<String> args, Message original, String invoked);
 
-    Permission required();
+    CommandPerm commandPerm();
+
+    default Collection<Permission> required() {
+        return Set.of(Permission.UNKNOWN);
+    }
 
     String usage();
 

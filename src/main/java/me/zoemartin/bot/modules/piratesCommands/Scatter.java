@@ -1,5 +1,6 @@
 package me.zoemartin.bot.modules.piratesCommands;
 
+import me.zoemartin.bot.base.CommandPerm;
 import me.zoemartin.bot.base.exceptions.CommandArgumentException;
 import me.zoemartin.bot.base.exceptions.ReplyError;
 import me.zoemartin.bot.base.interfaces.*;
@@ -40,8 +41,13 @@ public class Scatter implements GuildCommand {
     }
 
     @Override
-    public Permission required() {
-        return Permission.MANAGE_SERVER;
+    public CommandPerm commandPerm() {
+        return CommandPerm.BOT_MODERATOR;
+    }
+
+    @Override
+    public Collection<Permission> required() {
+        return Set.of(Permission.VOICE_MOVE_OTHERS);
     }
 
     @Override

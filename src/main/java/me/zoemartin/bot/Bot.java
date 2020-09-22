@@ -12,9 +12,9 @@ import javax.security.auth.login.LoginException;
 
 public class Bot {
     private static JDABuilder builder;
-    private static JDA jda;
+    private static JDA jda = null;
 
-    public static final String VERSION = "0.0.5";
+    public static final String VERSION = "0.0.6";
     public static final String JDA_VERSION = "4.2.0_203";
 
     public static void main(String[] args) throws LoginException {

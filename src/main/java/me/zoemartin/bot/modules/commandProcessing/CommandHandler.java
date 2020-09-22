@@ -1,5 +1,6 @@
 package me.zoemartin.bot.modules.commandProcessing;
 
+import me.zoemartin.bot.base.CommandPerm;
 import me.zoemartin.bot.base.exceptions.*;
 import me.zoemartin.bot.base.interfaces.*;
 import me.zoemartin.bot.base.managers.CommandManager;
@@ -10,8 +11,12 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CommandHandler implements CommandProcessor {
+    private static final Map<String, Map<String, CommandPerm>> userPerms = new ConcurrentHashMap<>();
+    private static final Map<String, Map<String, CommandPerm>> rolePerms = new ConcurrentHashMap<>();
+
     @Override
     public void process(MessageReceivedEvent event, String input) {
         User user = event.getAuthor();
@@ -45,9 +50,16 @@ public class CommandHandler implements CommandProcessor {
             Guild guild = event.getGuild();
             Member member = guild.getMember(user);
             Check.notNull(member, () -> new ConsoleError("member is null"));
-            Check.check(command.required() == Permission.UNKNOWN
-                            || member.hasPermission(command.required()) || member.hasPermission(Permission.ADMINISTRATOR),
+            Check.check(command.required().contains(Permission.UNKNOWN)
+                            || member.hasPermission(Permission.ADMINISTRATOR)
+                            || command.required().stream().allMatch(member::hasPermission),
                 () -> new ConsoleError("Member '%s' doesn't have the required permission for Command '%s'",
+                    member.getId(), cmd.name()));
+
+            Check.check(userPerms.get(guild.getId()).get(member.getId()).raw() >= cmd.commandPerm().raw()
+                || member.getRoles().stream().filter(role -> rolePerms.containsKey(role.getId()))
+                       .anyMatch(role -> rolePerms.get(role.getId()).get(guild.getId()).raw() >= cmd.commandPerm().raw()),
+                () -> new ConsoleError("Member '%s' doesn't have the required permission rank for Command '%s'",
                     member.getId(), cmd.name()));
         } else {
             Check.check(!Arrays.asList(command.getClass().getClasses()).contains(GuildCommand.class),
@@ -78,6 +90,22 @@ public class CommandHandler implements CommandProcessor {
 
         System.out.printf("[Command used] %s used command %s in %s\n", user.getId(), cmd.getClass().getCanonicalName(),
             event.isFromGuild() ? event.getGuild().getId() : event.getChannel().getId());
+    }
+
+    public static void addMemberPerm(String guild, String member, CommandPerm perm) {
+        userPerms.computeIfAbsent(guild, k -> new ConcurrentHashMap<>()).put(member, perm);
+    }
+
+    public static CommandPerm removeMemberPerm(String guild, String member) {
+        return userPerms.getOrDefault(guild, new ConcurrentHashMap<>()).remove(member);
+    }
+
+    public static void addRolePerm(String guild, String role, CommandPerm perm) {
+        rolePerms.computeIfAbsent(guild, k -> new ConcurrentHashMap<>()).put(role, perm);
+    }
+
+    public static CommandPerm removeRolePerm(String guild, String role) {
+        return rolePerms.getOrDefault(guild, new ConcurrentHashMap<>()).remove(role);
     }
 
     private static void sendUsage(MessageChannel channel, Command command) {

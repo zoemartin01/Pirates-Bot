@@ -2,12 +2,12 @@ package me.zoemartin.bot.modules.funCommands;
 
 import me.zoemartin.bot.Bot;
 import me.zoemartin.bot.base.LoadModule;
+import me.zoemartin.bot.base.CommandPerm;
 import me.zoemartin.bot.base.exceptions.CommandArgumentException;
 import me.zoemartin.bot.base.interfaces.*;
 import me.zoemartin.bot.base.interfaces.Module;
 import me.zoemartin.bot.base.managers.CommandManager;
 import me.zoemartin.bot.base.util.*;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 
 import java.util.*;
@@ -44,8 +44,8 @@ public class Status implements Module, Command {
     }
 
     @Override
-    public Permission required() {
-        return Permission.ADMINISTRATOR;
+    public CommandPerm commandPerm() {
+        return CommandPerm.OWNER;
     }
 
     @Override

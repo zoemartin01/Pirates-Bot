@@ -1,11 +1,11 @@
 package me.zoemartin.bot.modules.trigger;
 
+import me.zoemartin.bot.base.CommandPerm;
 import me.zoemartin.bot.base.exceptions.CommandArgumentException;
 import me.zoemartin.bot.base.exceptions.ReplyError;
 import me.zoemartin.bot.base.interfaces.Command;
 import me.zoemartin.bot.base.interfaces.GuildCommand;
 import me.zoemartin.bot.base.util.Check;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 
 import java.util.*;
@@ -50,8 +50,8 @@ public class Trigger implements Command {
     }
 
     @Override
-    public Permission required() {
-        return Permission.ADMINISTRATOR;
+    public CommandPerm commandPerm() {
+        return CommandPerm.BOT_MANAGER;
     }
 
     @Override
@@ -91,8 +91,8 @@ public class Trigger implements Command {
         }
 
         @Override
-        public Permission required() {
-            return Permission.MANAGE_SERVER;
+        public CommandPerm commandPerm() {
+            return CommandPerm.BOT_MODERATOR;
         }
 
         @Override
@@ -128,8 +128,8 @@ public class Trigger implements Command {
         }
 
         @Override
-        public Permission required() {
-            return Permission.ADMINISTRATOR;
+        public CommandPerm commandPerm() {
+            return CommandPerm.BOT_MANAGER;
         }
 
         @Override

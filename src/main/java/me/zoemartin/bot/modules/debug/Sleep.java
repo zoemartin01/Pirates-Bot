@@ -1,8 +1,8 @@
 package me.zoemartin.bot.modules.debug;
 
+import me.zoemartin.bot.base.CommandPerm;
 import me.zoemartin.bot.base.exceptions.ConsoleError;
 import me.zoemartin.bot.base.interfaces.Command;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 
 import java.util.*;
@@ -30,8 +30,8 @@ public class Sleep implements Command {
     }
 
     @Override
-    public Permission required() {
-        return Permission.ADMINISTRATOR;
+    public CommandPerm commandPerm() {
+        return CommandPerm.BOT_ADMIN;
     }
 
     @Override

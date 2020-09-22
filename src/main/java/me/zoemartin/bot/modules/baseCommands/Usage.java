@@ -1,15 +1,15 @@
 package me.zoemartin.bot.modules.baseCommands;
 
+import me.zoemartin.bot.base.CommandPerm;
 import me.zoemartin.bot.base.exceptions.*;
 import me.zoemartin.bot.base.interfaces.Command;
 import me.zoemartin.bot.base.interfaces.GuildCommand;
 import me.zoemartin.bot.base.managers.CommandManager;
 import me.zoemartin.bot.base.util.Check;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 
-import java.util.List;
+import java.util.*;
 
 public class Usage implements GuildCommand {
     @Override
@@ -36,8 +36,8 @@ public class Usage implements GuildCommand {
     }
 
     @Override
-    public Permission required() {
-        return Permission.UNKNOWN;
+    public CommandPerm commandPerm() {
+        return CommandPerm.EVERYONE;
     }
 
     @Override

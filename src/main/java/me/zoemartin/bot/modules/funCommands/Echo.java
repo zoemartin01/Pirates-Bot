@@ -1,5 +1,6 @@
 package me.zoemartin.bot.modules.funCommands;
 
+import me.zoemartin.bot.base.CommandPerm;
 import me.zoemartin.bot.base.exceptions.CommandArgumentException;
 import me.zoemartin.bot.base.exceptions.ReplyError;
 import me.zoemartin.bot.base.interfaces.*;
@@ -46,8 +47,13 @@ public class Echo implements GuildCommand {
     }
 
     @Override
-    public Permission required() {
-        return Permission.MANAGE_SERVER;
+    public CommandPerm commandPerm() {
+        return CommandPerm.BOT_MANAGER;
+    }
+
+    @Override
+    public Collection<Permission> required() {
+        return Set.of(Permission.MESSAGE_MANAGE);
     }
 
     @Override
