@@ -86,6 +86,11 @@ public class Help implements GuildCommand {
             eb.addField("Description:", isSubcommand ? sc.description() : command.description(), false);
             eb.addField("Usage:", isSubcommand ? sc.usage() : command.usage(), false);
 
+
+            CommandPerm perm = isSubcommand ? sc.commandPerm() : command.commandPerm();
+            if (perm != CommandPerm.EVERYONE)
+                eb.addField("Permission Level:", String.format("`[%d] %s`", perm.raw(), perm.toString()), false);
+
             StringBuilder aliases = new StringBuilder();
             for (String s : command.regex().split("\\|")) {
                 if (s.equals(command.name())) continue;

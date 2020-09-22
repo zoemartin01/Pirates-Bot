@@ -4,17 +4,19 @@ import java.util.Collection;
 import java.util.Set;
 
 public enum CommandPerm {
-    EVERYONE(0),
-    BOT_USER(1),
-    BOT_MODERATOR(2),
-    BOT_MANAGER(3),
-    BOT_ADMIN(4),
-    OWNER(5);
+    EVERYONE(0, "ALL"),
+    BOT_USER(1, "USER"),
+    BOT_MODERATOR(2, "MODERATOR"),
+    BOT_MANAGER(3, "MANAGER"),
+    BOT_ADMIN(4, "ADMIN"),
+    OWNER(5, "BOT OWNER");
 
     private final int num;
+    private final String name;
 
-    CommandPerm(int num) {
+    CommandPerm(int num, String name) {
         this.num = num;
+        this.name = name;
     }
 
     public int raw() {
@@ -23,5 +25,10 @@ public enum CommandPerm {
 
     public static Collection<CommandPerm> valueCollection() {
         return Set.of(CommandPerm.values());
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

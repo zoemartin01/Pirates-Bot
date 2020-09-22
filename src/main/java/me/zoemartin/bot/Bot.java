@@ -14,7 +14,7 @@ public class Bot {
     private static JDABuilder builder;
     private static JDA jda = null;
 
-    public static final String VERSION = "0.0.6";
+    public static final String VERSION = "0.0.7";
     public static final String JDA_VERSION = "4.2.0_203";
 
     public static void main(String[] args) throws LoginException {
