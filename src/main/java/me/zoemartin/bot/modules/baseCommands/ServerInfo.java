@@ -63,8 +63,8 @@ public class ServerInfo implements GuildCommand {
 
         eb.addField("Members", String.format("Total: %d\nHumans: %d\nBots: %d",
             guild.getMemberCount(),
-            guild.getMembers().stream().filter(member -> member.getUser().isBot()).count(),
-            guild.getMembers().stream().filter(member -> !member.getUser().isBot()).count()), true);
+            guild.getMembers().stream().filter(member -> !member.getUser().isBot()).count(),
+            guild.getMembers().stream().filter(member -> member.getUser().isBot()).count()), true);
 
         eb.addField("Roles", guild.getRoles().size() + "", true);
         eb.addField("Region", guild.getRegionRaw(), true);
