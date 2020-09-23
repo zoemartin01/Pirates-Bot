@@ -24,6 +24,7 @@ public class Status implements Module, Command {
         return "status";
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
         Check.check(args.size() >= 2, CommandArgumentException::new);
@@ -50,7 +51,7 @@ public class Status implements Module, Command {
 
     @Override
     public String usage() {
-        return "`status <type id> <status...>`";
+        return "status <type id> <status...>";
     }
 
     @Override

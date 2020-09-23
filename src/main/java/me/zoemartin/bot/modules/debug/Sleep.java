@@ -36,7 +36,7 @@ public class Sleep implements Command {
 
     @Override
     public String usage() {
-        return "`sleep`";
+        return "sleep";
     }
 
     @Override

@@ -26,6 +26,7 @@ public class Debug implements Module, GuildCommand {
         CommandManager.register(new Purge());
         CommandManager.register(new Count());
         CommandManager.register(new Debug());
+        CommandManager.register(new Dump());
     }
 
     @Override
@@ -85,7 +86,7 @@ public class Debug implements Module, GuildCommand {
 
     @Override
     public String usage() {
-        return "`debug <command...>` or\n `debug -f <command...>`";
+        return "debug <command...>";
     }
 
     @Override
@@ -133,7 +134,7 @@ public class Debug implements Module, GuildCommand {
 
         @Override
         public String usage() {
-            return "`debug -f <command...>`";
+            return "debug -f <command...>";
         }
 
         @Override

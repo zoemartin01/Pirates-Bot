@@ -23,6 +23,15 @@ public class Defaults implements Module {
         // tutor
         CommandManager.addRolePerm("747773810517868555", "747774531992813579", CommandPerm.BOT_MODERATOR);
 
+        /*
+         * Test Server Defaults
+         */
+        // Bot Roles
+        CommandManager.addRolePerm("672160078899445761", "758058237122707548", CommandPerm.BOT_MODERATOR);
+        CommandManager.addRolePerm("672160078899445761", "758058198405087232", CommandPerm.BOT_ADMIN);
+        CommandManager.addRolePerm("672160078899445761", "758058159222030406", CommandPerm.BOT_MANAGER);
+
+
 
         // Add stuff after JDA is built
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();

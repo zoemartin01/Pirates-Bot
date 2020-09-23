@@ -29,7 +29,7 @@ public class Ping implements Command {
 
     @Override
     public String usage() {
-        return "Nothing you dingus";
+        return "ping";
     }
 
     @Override

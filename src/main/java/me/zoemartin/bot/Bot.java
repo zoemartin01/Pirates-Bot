@@ -14,13 +14,13 @@ public class Bot {
     private static JDABuilder builder;
     private static JDA jda = null;
 
-    public static final String VERSION = "0.0.7";
+    public static final String VERSION = "0.1.0";
     public static final String JDA_VERSION = "4.2.0_203";
 
     public static void main(String[] args) throws LoginException {
         builder = JDABuilder.createDefault(args[0]);
 
-        builder.enableIntents(GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.GUILD_MEMBERS);
+        builder.enableIntents(GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES);
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
         builder.setBulkDeleteSplittingEnabled(false);
         builder.setCompression(Compression.NONE);

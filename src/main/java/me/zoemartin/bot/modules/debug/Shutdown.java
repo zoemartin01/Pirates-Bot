@@ -42,7 +42,7 @@ public class Shutdown implements Command {
 
     @Override
     public String usage() {
-        return "`shutdown [force|now]`";
+        return "shutdown [force|now]";
     }
 
     @Override

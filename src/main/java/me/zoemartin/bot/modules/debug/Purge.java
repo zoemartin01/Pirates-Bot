@@ -90,7 +90,7 @@ public class Purge implements GuildCommand {
 
     @Override
     public String usage() {
-        return "`purge <count>`";
+        return "purge <count>";
     }
 
     @Override

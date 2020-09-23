@@ -56,7 +56,7 @@ public class Trigger implements Command {
 
     @Override
     public String usage() {
-        return "`trigger <regex> <output...>` or \n`trigger remove <regex>` or \n`trigger list`";
+        return "trigger <regex> <output...>";
     }
 
     @Override
@@ -97,7 +97,7 @@ public class Trigger implements Command {
 
         @Override
         public String usage() {
-            return "`trigger list`";
+            return "trigger list";
         }
 
         @Override
@@ -134,7 +134,7 @@ public class Trigger implements Command {
 
         @Override
         public String usage() {
-            return "`trigger remove <regex>`";
+            return "trigger remove <regex>";
         }
 
         @Override

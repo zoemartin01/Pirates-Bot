@@ -16,7 +16,7 @@ public class About implements Command {
 
     @Override
     public String regex() {
-        return "about|info";
+        return "about|botinfo";
     }
 
     @Override

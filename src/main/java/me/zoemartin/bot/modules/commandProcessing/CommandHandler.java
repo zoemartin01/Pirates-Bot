@@ -1,6 +1,5 @@
 package me.zoemartin.bot.modules.commandProcessing;
 
-import me.zoemartin.bot.base.CommandPerm;
 import me.zoemartin.bot.base.exceptions.*;
 import me.zoemartin.bot.base.interfaces.*;
 import me.zoemartin.bot.base.managers.CommandManager;
@@ -11,7 +10,8 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class CommandHandler implements CommandProcessor {
 
@@ -81,7 +81,7 @@ public class CommandHandler implements CommandProcessor {
         } catch (CommandArgumentException e) {
             sendUsage(channel, cmd);
         } catch (ReplyError e) {
-            channel.sendMessage(e.getMessage()).queue();
+            channel.sendMessage(e.getMessage()).queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
         } catch (ConsoleError e) {
             throw new ConsoleError(String.format("[Command Error] %s: %s", cmd.getClass().getName(), e.getMessage()));
         }
@@ -93,10 +93,17 @@ public class CommandHandler implements CommandProcessor {
     private static void sendUsage(MessageChannel channel, Command command) {
         EmbedBuilder eb = new EmbedBuilder();
 
-        eb.setTitle(command.name() + " usage");
-        eb.setDescription(command.usage());
+        eb.setTitle("`" + command.name().toUpperCase() + "` usage");
+
+        List<String> usage = command.subCommands().stream().map(Command::usage).collect(Collectors.toList());
+
+        StringBuilder sb = new StringBuilder("`").append(command.usage()).append("` or\n");
+        usage.forEach(s -> sb.append("`").append(s).append("` or\n"));
+        sb.delete(sb.length() - 3, sb.length());
+
+        eb.setDescription(sb.toString());
         eb.setColor(0xdf136c);
 
-        channel.sendMessage(eb.build()).queue();
+        channel.sendMessage(eb.build()).queue(message -> message.delete().queueAfter(10, TimeUnit.SECONDS));
     }
 }

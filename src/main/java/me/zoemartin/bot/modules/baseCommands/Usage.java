@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Usage implements GuildCommand {
     @Override
@@ -42,7 +43,7 @@ public class Usage implements GuildCommand {
 
     @Override
     public String usage() {
-        return "`usage <command>`";
+        return "usage <command>";
     }
 
     @Override
@@ -53,8 +54,15 @@ public class Usage implements GuildCommand {
     private static void sendUsage(MessageChannel channel, Command command) {
         EmbedBuilder eb = new EmbedBuilder();
 
-        eb.setTitle(command.name() + " usage");
-        eb.setDescription(command.usage());
+        eb.setTitle("`" + command.name().toUpperCase() + "` usage");
+
+        List<String> usage = command.subCommands().stream().map(Command::usage).collect(Collectors.toList());
+
+        StringBuilder sb = new StringBuilder("`").append(command.usage()).append("` or\n");
+        usage.forEach(s -> sb.append("`").append(s).append("` or\n"));
+        sb.delete(sb.length() - 3, sb.length());
+
+        eb.setDescription(sb.toString());
         eb.setColor(0xdf136c);
 
         channel.sendMessage(eb.build()).queue();

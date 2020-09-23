@@ -70,7 +70,7 @@ public class Assemble implements GuildCommand {
 
     @Override
     public String usage() {
-        return "`assemble <here|#channel> <@role>`";
+        return "assemble <here|#channel> <@role>";
     }
 
     @Override
