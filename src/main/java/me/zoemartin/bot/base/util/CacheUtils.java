@@ -37,7 +37,7 @@ public class CacheUtils {
             Member m = guild.getMember(u);
             return m == null ? guild.retrieveMember(u).complete() : m;
         } catch (ErrorResponseException e) {
-            throw new ReplyError("Error, user not a member not found!");
+            throw new ReplyError("Error, member not found!");
         }
     }
 

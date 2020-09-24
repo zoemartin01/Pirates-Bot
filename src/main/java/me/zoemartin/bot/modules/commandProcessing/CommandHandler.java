@@ -1,5 +1,6 @@
 package me.zoemartin.bot.modules.commandProcessing;
 
+import me.zoemartin.bot.base.CommandPerm;
 import me.zoemartin.bot.base.exceptions.*;
 import me.zoemartin.bot.base.interfaces.*;
 import me.zoemartin.bot.base.managers.CommandManager;
@@ -11,10 +12,10 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class CommandHandler implements CommandProcessor {
-
     @Override
     public void process(MessageReceivedEvent event, String input) {
         User user = event.getAuthor();
@@ -24,22 +25,29 @@ public class CommandHandler implements CommandProcessor {
 
         if (inputSplit.length == 0) return;
 
-        String commandString = inputSplit[0].toLowerCase();
-        String subCommandString = inputSplit.length > 1 ? inputSplit[1].toLowerCase() : null;
+        AtomicReference<String> commandString = new AtomicReference<>();
+        Command command = null;
 
-        Command command = CommandManager.getCommands().stream()
-                              .filter(c -> commandString.matches(c.regex().toLowerCase()))
-                              .findFirst().orElseThrow(() -> new ConsoleError("Command '%s' not found", commandString));
+        int commandLevel = 0;
 
-        boolean isSubCommand = false;
+        for (int i = 0; i < inputSplit.length; i++) {
+            String s = inputSplit[i].toLowerCase();
 
-        if (!command.subCommands().isEmpty() && subCommandString != null) {
-            Command subCommand = command.subCommands().stream()
-                                     .filter(sc -> subCommandString.matches(sc.regex().toLowerCase()))
-                                     .findFirst().orElse(null);
+            if (command == null) {
+                command = CommandManager.getCommands().stream()
+                              .filter(c -> s.matches(c.regex().toLowerCase()))
+                              .findFirst().orElseThrow(() -> new ConsoleError("Command '%s' not found", s));
+            } else {
+                Command subCommand = command.subCommands().stream()
+                                         .filter(sc -> s.matches(sc.regex().toLowerCase()))
+                                         .findFirst().orElse(null);
 
-            command = subCommand == null ? command : subCommand;
-            isSubCommand = subCommand != null;
+                if (subCommand == null) break;
+                command = subCommand;
+            }
+
+            commandLevel = i + 1;
+            commandString.set(inputSplit[i].toLowerCase());
         }
 
         final Command cmd = command;
@@ -54,11 +62,13 @@ public class CommandHandler implements CommandProcessor {
                 () -> new ConsoleError("Member '%s' doesn't have the required permission for Command '%s'",
                     member.getId(), cmd.name()));
 
-            Check.check(CommandManager.getMemberPerm(guild.getId(), member.getId()).raw() >= cmd.commandPerm().raw()
-                            || member.getRoles().stream().anyMatch(
-                role -> CommandManager.getRolePerm(guild.getId(), role.getId()).raw() >= cmd.commandPerm().raw()),
-                () -> new ConsoleError("Member '%s' doesn't have the required permission rank for Command '%s'",
-                    member.getId(), cmd.name()));
+            if (cmd.commandPerm().equals(CommandPerm.OWNER) || !member.hasPermission(Permission.ADMINISTRATOR))
+                Check.check(PermissionHandler.getMemberPerm(guild.getId(),
+                    member.getId()).getPerm().raw() >= cmd.commandPerm().raw()
+                                || member.getRoles().stream().anyMatch(
+                    role -> PermissionHandler.getRolePerm(guild.getId(), role.getId()).getPerm().raw() >= cmd.commandPerm().raw()),
+                    () -> new ConsoleError("Member '%s' doesn't have the required permission rank for Command '%s'",
+                        member.getId(), cmd.name()));
         } else {
             Check.check(!Arrays.asList(command.getClass().getClasses()).contains(GuildCommand.class),
                 () -> new ConsoleError("User '%s' attempted to run Command '%s' outside of allowed Scope",
@@ -67,17 +77,12 @@ public class CommandHandler implements CommandProcessor {
 
         List<String> arguments;
 
-        if (isSubCommand) {
-            if (inputSplit.length <= 2) arguments = Collections.emptyList();
-            else arguments = Arrays.asList(Arrays.copyOfRange(inputSplit, 2, inputSplit.length));
-        } else {
-            if (inputSplit.length <= 1) arguments = Collections.emptyList();
-            else arguments = Arrays.asList(Arrays.copyOfRange(inputSplit, 1, inputSplit.length));
-        }
+        if (inputSplit.length <= commandLevel) arguments = Collections.emptyList();
+        else arguments = Arrays.asList(Arrays.copyOfRange(inputSplit, commandLevel, inputSplit.length));
+
 
         try {
-            cmd.run(user, channel, Collections.unmodifiableList(arguments), event.getMessage(),
-                isSubCommand ? subCommandString : commandString);
+            cmd.run(user, channel, Collections.unmodifiableList(arguments), event.getMessage(), commandString.get());
         } catch (CommandArgumentException e) {
             sendUsage(channel, cmd);
         } catch (ReplyError e) {

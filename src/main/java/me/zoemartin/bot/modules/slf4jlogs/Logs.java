@@ -1,4 +1,4 @@
-package me.zoemartin.bot.modules.logger;
+package me.zoemartin.bot.modules.slf4jlogs;
 
 import me.zoemartin.bot.base.LoadModule;
 import me.zoemartin.bot.base.interfaces.Module;

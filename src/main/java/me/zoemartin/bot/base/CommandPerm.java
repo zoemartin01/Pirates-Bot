@@ -1,9 +1,12 @@
 package me.zoemartin.bot.base;
 
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 import java.util.Collection;
 import java.util.Set;
 
-public enum CommandPerm {
+@Converter
+public enum CommandPerm  {
     EVERYONE(0, "ALL"),
     BOT_USER(1, "USER"),
     BOT_MODERATOR(2, "MODERATOR"),
@@ -27,8 +30,27 @@ public enum CommandPerm {
         return Set.of(CommandPerm.values());
     }
 
+    public static CommandPerm fromNum(Integer num) {
+        if (num == null) return null;
+
+        return Set.of(CommandPerm.values()).stream().filter(perm -> num.equals(perm.raw())).findAny()
+                   .orElse(null);
+    }
+
     @Override
     public String toString() {
         return name;
+    }
+
+    public static class Converter implements AttributeConverter<CommandPerm, Integer> {
+        @Override
+        public Integer convertToDatabaseColumn(CommandPerm attribute) {
+            return attribute.raw();
+        }
+
+        @Override
+        public CommandPerm convertToEntityAttribute(Integer dbData) {
+            return CommandPerm.fromNum(dbData);
+        }
     }
 }

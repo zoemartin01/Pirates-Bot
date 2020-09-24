@@ -1,5 +1,6 @@
 package me.zoemartin.bot.modules.funCommands;
 
+import me.zoemartin.bot.Bot;
 import me.zoemartin.bot.base.CommandPerm;
 import me.zoemartin.bot.base.exceptions.*;
 import me.zoemartin.bot.base.interfaces.*;
@@ -12,7 +13,7 @@ import java.util.*;
 public class Echo implements GuildCommand {
     @Override
     public Set<Command> subCommands() {
-        return Set.of(new To());
+        return Set.of(new To(), new Edit());
     }
 
     @Override
@@ -97,6 +98,55 @@ public class Echo implements GuildCommand {
         @Override
         public String description() {
             return "Makes the bot say stuff in a different channel";
+        }
+    }
+
+    private static class Edit implements GuildCommand {
+        @Override
+        public String name() {
+            return "--edit";
+        }
+
+        @Override
+        public String regex() {
+            return "-e|--edit";
+        }
+
+        @Override
+        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+            Check.check(args.size() > 1 && Parser.Message.isParsable(args.get(0)), CommandArgumentException::new);
+
+            String message, channelId;
+            channelId = Parser.Message.parse(args.get(0)).getLeft();
+            message = Parser.Message.parse(args.get(0)).getRight();
+
+            TextChannel c = original.getGuild().getTextChannelById(channelId);
+            Check.notNull(c, UnexpectedError::new);
+            Message m = c.retrieveMessageById(message).complete();
+            Check.notNull(m, UnexpectedError::new);
+
+            Check.check(m.getAuthor().getId().equals(Bot.getJDA().getSelfUser().getId()), UnexpectedError::new);
+
+            StringBuilder sb = new StringBuilder();
+            args.subList(1, args.size()).forEach(s -> sb.append(s).append(" "));
+
+            m.editMessage(sb.toString()).queue();
+            original.addReaction("U+2705").queue();
+        }
+
+        @Override
+        public CommandPerm commandPerm() {
+            return CommandPerm.BOT_ADMIN;
+        }
+
+        @Override
+        public String usage() {
+            return "echo -e <message_link> <message...>";
+        }
+
+        @Override
+        public String description() {
+            return "Edits an echoed message";
         }
     }
 }

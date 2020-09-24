@@ -78,4 +78,14 @@ public class MessageUtils {
 
         return sb.toString();
     }
+
+    public static String mergeWhitespace(Collection<String> strings) {
+        StringBuilder sb = new StringBuilder();
+        strings.forEach(s -> sb.append(s).append(" "));
+        if (sb.length() != 0) {
+            sb.deleteCharAt(sb.lastIndexOf(" "));
+        }
+
+        return sb.toString();
+    }
 }

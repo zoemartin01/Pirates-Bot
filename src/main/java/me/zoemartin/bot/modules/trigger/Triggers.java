@@ -4,10 +4,11 @@ import me.zoemartin.bot.Bot;
 import me.zoemartin.bot.base.LoadModule;
 import me.zoemartin.bot.base.interfaces.Module;
 import me.zoemartin.bot.base.managers.CommandManager;
+import me.zoemartin.bot.base.util.DatabaseUtil;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.hibernate.Session;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -15,17 +16,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @LoadModule
 public class Triggers extends ListenerAdapter implements Module {
-    private static final Map<Guild, Triggers> triggers = new ConcurrentHashMap<>();
-    private final Map<String, String> guildTriggers;
+    private static final Map<String, Set<Trigger>> triggers = new ConcurrentHashMap<>();
 
     @Override
     public void init() {
-        CommandManager.register(new Trigger());
+        CommandManager.register(new TriggerCommand());
         Bot.addListener(new Triggers());
-    }
-
-    public Triggers() {
-        this.guildTriggers = new ConcurrentHashMap<>();
+        initTriggers();
     }
 
     @Override
@@ -34,38 +31,49 @@ public class Triggers extends ListenerAdapter implements Module {
 
         if (!hasTriggers(event.getGuild())) return;
 
-        new Thread(() -> get(event.getGuild()).process(event.getMessage().getContentRaw(), event.getChannel())).start();
-    }
-
-    private void process(String input, TextChannel channel) {
-        guildTriggers.forEach((s, s2) -> {
-            if (input.matches(s)) {
-                channel.sendMessageFormat(s2).queue();
+        new Thread(() -> getTriggers(event.getGuild()).forEach(s -> {
+            if (event.getMessage().getContentRaw().matches(s.getRegex())) {
+                event.getChannel().sendMessageFormat(s.getOutput()).queue();
             }
-        });
+        })).start();
     }
 
-    public void addTrigger(String regex, String output) {
-        guildTriggers.put(regex, output);
+    private static void initTriggers() {
+        try (Session session = DatabaseUtil.getSessionFactory().openSession()) {
+            List<Trigger> load = session.createQuery("from Trigger", Trigger.class).list();
+            load.forEach(t -> triggers.computeIfAbsent(t.getGuild_id(),
+                s -> Collections.newSetFromMap(new ConcurrentHashMap<>())).add(t));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public boolean isTrigger(String regex) {
-        return guildTriggers.containsKey(regex);
+    public static void addTrigger(Guild guild, String regex, String output) {
+        Trigger trigger = new Trigger(guild.getId(), regex, output);
+
+        triggers.computeIfAbsent(guild.getId(),
+            s -> Collections.newSetFromMap(new ConcurrentHashMap<>())).add(trigger);
+
+        DatabaseUtil.saveObject(trigger);
     }
 
-    public String removeTrigger(String regex) {
-        return guildTriggers.remove(regex);
+    public static boolean isTrigger(Guild guild, String regex) {
+        return getTriggers(guild).stream().anyMatch(trigger -> trigger.getRegex().equals(regex));
     }
 
-    public Map<String, String> getTriggers() {
-        return Collections.unmodifiableMap(guildTriggers);
+    public static boolean removeTrigger(Guild guild, String regex) {
+        Trigger trigger = triggers.get(guild.getId()).stream().filter(t -> t.getRegex().equals(regex))
+                              .findAny().orElseThrow(NoSuchElementException::new);
+
+        DatabaseUtil.deleteObject(trigger);
+        return triggers.get(guild.getId()).remove(trigger);
     }
 
-    public static Triggers get(Guild g) {
-        return triggers.computeIfAbsent(g, k -> new Triggers());
+    public static Set<Trigger> getTriggers(Guild guild) {
+        return Collections.unmodifiableSet(triggers.getOrDefault(guild.getId(), Collections.emptySet()));
     }
 
-    public static boolean hasTriggers(Guild g) {
-        return triggers.containsKey(g);
+    public static boolean hasTriggers(Guild guild) {
+        return triggers.containsKey(guild.getId());
     }
 }

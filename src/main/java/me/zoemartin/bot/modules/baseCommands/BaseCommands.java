@@ -16,5 +16,6 @@ public class BaseCommands implements Module {
         CommandManager.register(new UserInfo());
         CommandManager.register(new RoleInfo());
         CommandManager.register(new ServerInfo());
+        CommandManager.register(new Permission());
     }
 }

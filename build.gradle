@@ -6,11 +6,11 @@ plugins {
 
 mainClassName = "me.zoemartin.bot.Bot"
 compileJava.options.encoding = 'UTF-8'
-sourceCompatibility=11
-targetCompatibility=11
+sourceCompatibility = 11
+targetCompatibility = 11
 
 group('me.zoemartin')
-version('0.1.0')
+version('0.2.0')
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -28,5 +28,6 @@ dependencies {
     implementation('club.minnced:discord-webhooks:0.4.1')
     implementation(group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30')
     implementation(group: 'de.androidpit', name: 'color-thief', version: '1.1.2')
-
+    implementation(group: 'org.hibernate', name: 'hibernate-core', version: '5.4.10.Final')
+    implementation(group: 'org.postgresql', name: 'postgresql', version: '42.2.16')
 }
