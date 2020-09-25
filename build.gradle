@@ -10,7 +10,7 @@ sourceCompatibility = 11
 targetCompatibility = 11
 
 group('me.zoemartin')
-version('0.2.0')
+version('0.2.1')
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -30,4 +30,6 @@ dependencies {
     implementation(group: 'de.androidpit', name: 'color-thief', version: '1.1.2')
     implementation(group: 'org.hibernate', name: 'hibernate-core', version: '5.4.10.Final')
     implementation(group: 'org.postgresql', name: 'postgresql', version: '42.2.16')
+    implementation(group: 'com.vladmihalcea', name: 'hibernate-types-52', version: '2.9.13')
+
 }

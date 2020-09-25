@@ -4,7 +4,7 @@ import me.zoemartin.bot.Bot;
 import me.zoemartin.bot.base.exceptions.ConsoleError;
 import me.zoemartin.bot.base.interfaces.Command;
 import me.zoemartin.bot.base.interfaces.CommandProcessor;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.*;
 
@@ -25,7 +25,7 @@ public class CommandManager {
         processor = cp;
     }
 
-    public static void process(MessageReceivedEvent event, String input) {
+    public static void process(GuildMessageReceivedEvent event, String input) {
         new Thread(() -> {
             try {
                 processor.process(event, input);

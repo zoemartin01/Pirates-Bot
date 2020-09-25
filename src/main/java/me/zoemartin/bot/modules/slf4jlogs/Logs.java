@@ -9,5 +9,6 @@ public class Logs implements Module {
     public void init() {
         System.setProperty("org.slf4j.simpleLogger.logFile", "System.out");
         System.setProperty("org.slf4j.simpleLogger.showDateTime", "true");
+        System.setProperty("hibernate.types.print.banner", "false");
     }
 }

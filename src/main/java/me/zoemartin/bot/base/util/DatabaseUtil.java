@@ -1,26 +1,24 @@
 package me.zoemartin.bot.base.util;
 
-import me.zoemartin.bot.modules.commandProcessing.MemberPermission;
-import me.zoemartin.bot.modules.commandProcessing.RolePermission;
-import me.zoemartin.bot.modules.trigger.Trigger;
 import org.hibernate.*;
-import org.hibernate.boot.Metadata;
-import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class DatabaseUtil {
+    private static final Collection<Class<?>> mapped = Collections.newSetFromMap(new ConcurrentHashMap<>());
+
     private static StandardServiceRegistry registry;
     private static SessionFactory sessionFactory;
     private static Configuration config;
 
     public static void setConfig(Configuration configuration) {
         config = configuration;
-
-        configuration.addAnnotatedClass(MemberPermission.class);
-        configuration.addAnnotatedClass(RolePermission.class);
-        configuration.addAnnotatedClass(Trigger.class);
+        mapped.forEach(configuration::addAnnotatedClass);
     }
 
     public static SessionFactory getSessionFactory() {
@@ -93,5 +91,9 @@ public class DatabaseUtil {
         if (registry != null) {
             StandardServiceRegistryBuilder.destroy(registry);
         }
+    }
+
+    public static void setMapped(Class<?> aClass){
+        mapped.add(aClass);
     }
 }

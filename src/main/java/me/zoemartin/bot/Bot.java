@@ -2,6 +2,7 @@ package me.zoemartin.bot;
 
 import me.zoemartin.bot.base.managers.ModuleManager;
 import me.zoemartin.bot.base.util.DatabaseUtil;
+import me.zoemartin.bot.modules.commandProcessing.Prefixes;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -13,17 +14,20 @@ import org.hibernate.cfg.Environment;
 
 import javax.security.auth.login.LoginException;
 import java.util.Properties;
+import java.util.Set;
 
 public class Bot {
     private static JDABuilder builder;
     private static JDA jda = null;
     private static final String OWNER = "212591138945630213";
 
-    public static final String VERSION = "0.2.0";
+    public static final String VERSION = "0.2.1";
     public static final String JDA_VERSION = "4.2.0_203";
 
     public static void main(String[] args) throws LoginException {
         builder = JDABuilder.createDefault(args[0]);
+
+        ModuleManager.init();
 
         Configuration config = new Configuration();
         Properties settings = new Properties();
@@ -40,13 +44,13 @@ public class Bot {
 
         DatabaseUtil.setConfig(config);
 
+        ModuleManager.initLate();
+
         builder.enableIntents(GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES);
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
         builder.setBulkDeleteSplittingEnabled(false);
         builder.setCompression(Compression.NONE);
         builder.setActivity(Activity.watching("y'all"));
-
-        ModuleManager.init();
 
         jda = builder.build();
     }

@@ -22,6 +22,11 @@ public class Triggers extends ListenerAdapter implements Module {
     public void init() {
         CommandManager.register(new TriggerCommand());
         Bot.addListener(new Triggers());
+        DatabaseUtil.setMapped(Trigger.class);
+    }
+
+    @Override
+    public void initLate() {
         initTriggers();
     }
 

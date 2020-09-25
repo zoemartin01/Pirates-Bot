@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 
 public class ModuleManager {
     private static final int SLEEP_DURATION_MS = 500;
+    private static final Collection<Module> modules = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     @SuppressWarnings("unchecked")
     public static void init() {
@@ -38,19 +39,21 @@ public class ModuleManager {
 
         Set<Class<? extends Module>> loaded = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
-        modules.parallelStream().forEach(module -> {
+        modules.forEach(module -> {
             Set<Class<? extends Module>> loadBefore = Set.of(module.getAnnotation(LoadModule.class).loadAfter());
 
             ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
             executor.scheduleAtFixedRate(() -> {
                 if (loadBefore.isEmpty() || loaded.containsAll(loadBefore)) {
+                    Module m;
                     try {
-                        module.getMethod("init").invoke(Stream.of(module.getConstructors()).findAny()
-                                                            .orElseThrow(RuntimeException::new).newInstance());
-                    } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
+                        m = (Module) Stream.of(module.getConstructors()).findAny()
+                                                               .orElseThrow(RuntimeException::new).newInstance();
+                        m.init();
+                        ModuleManager.modules.add(m);
+                    } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
                         e.printStackTrace();
                     }
-
                     loaded.add((Class<? extends Module>) module);
                     executor.shutdown();
                 }
@@ -58,5 +61,9 @@ public class ModuleManager {
                 System.out.printf("Loaded Module '%s'\n", module.getName());
             }, 0, SLEEP_DURATION_MS, TimeUnit.MILLISECONDS);
         });
+    }
+
+    public static void initLate() {
+        modules.forEach(Module::initLate);
     }
 }

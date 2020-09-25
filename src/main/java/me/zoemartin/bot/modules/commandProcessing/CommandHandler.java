@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class CommandHandler implements CommandProcessor {
     @Override
-    public void process(MessageReceivedEvent event, String input) {
+    public void process(GuildMessageReceivedEvent event, String input) {
         User user = event.getAuthor();
         MessageChannel channel = event.getChannel();
 
@@ -52,28 +53,28 @@ public class CommandHandler implements CommandProcessor {
 
         final Command cmd = command;
 
-        if (event.isFromGuild()) {
-            Guild guild = event.getGuild();
-            Member member = guild.getMember(user);
-            Check.notNull(member, () -> new ConsoleError("member is null"));
-            Check.check(command.required().contains(Permission.UNKNOWN)
-                            || member.hasPermission(Permission.ADMINISTRATOR)
-                            || command.required().stream().allMatch(member::hasPermission),
-                () -> new ConsoleError("Member '%s' doesn't have the required permission for Command '%s'",
+        Guild guild = event.getGuild();
+        Member member = guild.getMember(user);
+        Check.notNull(member, () -> new ConsoleError("member is null"));
+        Check.check(command.required().contains(Permission.UNKNOWN)
+                        || member.hasPermission(Permission.ADMINISTRATOR)
+                        || command.required().stream().allMatch(member::hasPermission),
+            () -> new ConsoleError("Member '%s' doesn't have the required permission for Command '%s'",
+                member.getId(), cmd.name()));
+
+        if (cmd.commandPerm().equals(CommandPerm.OWNER) || !member.hasPermission(Permission.ADMINISTRATOR))
+            Check.check(PermissionHandler.getMemberPerm(guild.getId(),
+                member.getId()).getPerm().raw() >= cmd.commandPerm().raw()
+                            || member.getRoles().stream().anyMatch(
+                role -> PermissionHandler.getRolePerm(guild.getId(), role.getId()).getPerm().raw() >= cmd.commandPerm().raw()),
+                () -> new ConsoleError("Member '%s' doesn't have the required permission rank for Command '%s'",
                     member.getId(), cmd.name()));
 
-            if (cmd.commandPerm().equals(CommandPerm.OWNER) || !member.hasPermission(Permission.ADMINISTRATOR))
-                Check.check(PermissionHandler.getMemberPerm(guild.getId(),
-                    member.getId()).getPerm().raw() >= cmd.commandPerm().raw()
-                                || member.getRoles().stream().anyMatch(
-                    role -> PermissionHandler.getRolePerm(guild.getId(), role.getId()).getPerm().raw() >= cmd.commandPerm().raw()),
-                    () -> new ConsoleError("Member '%s' doesn't have the required permission rank for Command '%s'",
-                        member.getId(), cmd.name()));
-        } else {
+        /*} else {
             Check.check(!Arrays.asList(command.getClass().getClasses()).contains(GuildCommand.class),
                 () -> new ConsoleError("User '%s' attempted to run Command '%s' outside of allowed Scope",
                     user.getId(), cmd.name()));
-        }
+        }*/
 
         List<String> arguments;
 
@@ -92,7 +93,7 @@ public class CommandHandler implements CommandProcessor {
         }
 
         System.out.printf("[Command used] %s used command %s in %s\n", user.getId(), cmd.getClass().getCanonicalName(),
-            event.isFromGuild() ? event.getGuild().getId() : event.getChannel().getId());
+            event.getGuild().getId());
     }
 
     private static void sendUsage(MessageChannel channel, Command command) {

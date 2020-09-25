@@ -107,7 +107,8 @@ public class Permission implements GuildCommand {
                     PermissionHandler.removeMemberPerm(original.getGuild().getId(), m.getId());
                 else
                     PermissionHandler.addMemberPerm(original.getGuild().getId(), m.getId(), cp);
-                channel.sendMessageFormat("Set `[%d] %s` to %s", cp.raw(), cp.toString(), m.getAsMention()).queue();
+                embedReply(original, channel, null, "Set `[%d] %s` to %s", cp.raw(), cp.toString(),
+                    m.getAsMention()).queue();
             }
 
             @Override
@@ -142,7 +143,7 @@ public class Permission implements GuildCommand {
                 Check.check(PermissionHandler.removeMemberPerm(original.getGuild().getId(), m.getId()),
                     () -> new ReplyError("Error, Member does not have an assigned Member Permission"));
 
-                channel.sendMessageFormat("Removed Member Permission from %s", m.getAsMention()).queue();
+                embedReply(original, channel, null, "Removed Member Permission from %s", m.getAsMention()).queue();
             }
 
             @Override
@@ -266,7 +267,8 @@ public class Permission implements GuildCommand {
                     PermissionHandler.removeRolePerm(original.getGuild().getId(), r.getId());
                 else
                     PermissionHandler.addRolePerm(original.getGuild().getId(), r.getId(), cp);
-                channel.sendMessageFormat("Set `[%d] %s` to %s", cp.raw(), cp.toString(), r.getAsMention()).queue();
+                embedReply(original, channel, null, "Set `[%d] %s` to %s", cp.raw(), cp.toString(),
+                    r.getAsMention()).queue();
             }
 
             @Override
@@ -302,7 +304,7 @@ public class Permission implements GuildCommand {
                 Check.check(PermissionHandler.removeRolePerm(original.getGuild().getId(), r.getId()),
                     () -> new ReplyError("Error, Role does not have an assigned Role Permission"));
 
-                channel.sendMessageFormat("Removed Role Permission from %s", r.getAsMention()).queue();
+                embedReply(original, channel, null, "Removed Role Permission from %s", r.getAsMention()).queue();
             }
 
             @Override
@@ -333,7 +335,7 @@ public class Permission implements GuildCommand {
 
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.setColor(original.getGuild().getSelfMember().getColor());
-                eb.setTitle("Member Permission List");
+                eb.setTitle("Role Permission List");
 
                 String list = MessageUtils.mergeNewLine(
                     PermissionHandler.getRolePerms(
