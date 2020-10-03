@@ -1,16 +1,20 @@
 package me.zoemartin.piratesBot.modules.trigger;
 
 import me.zoemartin.piratesBot.core.CommandPerm;
-import me.zoemartin.piratesBot.core.exceptions.CommandArgumentException;
-import me.zoemartin.piratesBot.core.exceptions.ReplyError;
+import me.zoemartin.piratesBot.core.exceptions.*;
 import me.zoemartin.piratesBot.core.interfaces.Command;
 import me.zoemartin.piratesBot.core.interfaces.GuildCommand;
 import me.zoemartin.piratesBot.core.util.Check;
+import me.zoemartin.piratesBot.core.util.EmbedUtil;
+import me.zoemartin.piratesBot.modules.pagedEmbeds.PageListener;
+import me.zoemartin.piratesBot.modules.pagedEmbeds.PagedEmbed;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 
 public class TriggerCommand implements Command {
     @Override
@@ -70,21 +74,17 @@ public class TriggerCommand implements Command {
 
         @Override
         public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
-            if (Triggers.getTriggers(original.getGuild()).isEmpty()) {
-                channel.sendMessageFormat("No triggers available!").queue();
-                return;
-            }
+            Check.check(args.isEmpty(), CommandArgumentException::new);
+            Check.check(Triggers.hasTriggers(original.getGuild()),
+                () -> new EntityNotFoundException("No triggers found!"));
 
-            StringBuilder sb = new StringBuilder("All available triggers: \n`");
+            PagedEmbed p = new PagedEmbed(EmbedUtil.pagedDescription(
+                new EmbedBuilder().setTitle("Available Triggers").build(), Triggers.getTriggers(
+                    original.getGuild()).stream().map(t -> String.format("`%s` - `%s`\n",
+                    t.getRegex(), t.getOutput())).collect(Collectors.toList())),
+                (TextChannel) channel, user);
 
-            // TODO: symbol count check
-            Triggers.getTriggers(original.getGuild()).forEach(s -> sb.append(s.getRegex()).append(" - ")
-                                                                       .append(s.getOutput()).append("\n"));
-
-            sb.deleteCharAt(sb.lastIndexOf("\n"));
-            sb.append("`");
-
-            channel.sendMessageFormat(sb.toString()).queue();
+            PageListener.add(p);
         }
 
         @Override

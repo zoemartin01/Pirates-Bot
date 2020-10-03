@@ -2,6 +2,7 @@ package me.zoemartin.piratesBot.core.util;
 
 import me.zoemartin.piratesBot.Bot;
 import me.zoemartin.piratesBot.core.exceptions.ReplyError;
+import me.zoemartin.piratesBot.core.exceptions.UserNotFoundException;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +14,7 @@ public class CacheUtils {
     }
 
     @NotNull
-    public static User getUser(String id) {
+    public static User getUserExplicit(String id) {
         Check.notNull(id, () -> new IllegalArgumentException("id may not be null"));
         Check.check(Parser.User.isParsable(id), () -> new IllegalArgumentException("id not in correct format"));
 
@@ -31,13 +32,25 @@ public class CacheUtils {
         Check.notNull(id, () -> new IllegalArgumentException("id may not be null"));
         Check.check(Parser.User.isParsable(id), () -> new IllegalArgumentException("id not in correct format"));
 
-        User u = getUser(id);
+        User u = getUserExplicit(id);
 
         try {
             Member m = guild.getMember(u);
             return m == null ? guild.retrieveMember(u).complete() : m;
         } catch (ErrorResponseException e) {
-            throw new ReplyError("Error, member not found!");
+            throw new UserNotFoundException();
+        }
+    }
+
+    @Nullable
+    public static User getUser(String id) {
+        if (id == null || !Parser.User.isParsable(id)) return null;
+
+        try {
+            User u = Bot.getJDA().getUserById(id);
+            return u == null ? Bot.getJDA().retrieveUserById(id).complete() : u;
+        } catch (ErrorResponseException e) {
+            return null;
         }
     }
 
@@ -47,7 +60,7 @@ public class CacheUtils {
 
         User u;
         try {
-            u = getUser(id);
+            u = getUserExplicit(id);
         } catch (ReplyError e) {
             return null;
         }

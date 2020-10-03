@@ -26,10 +26,10 @@ public class Echo implements GuildCommand {
     public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
         Check.check(!args.isEmpty(), CommandArgumentException::new);
 
-        StringBuilder sb = new StringBuilder();
-        args.forEach(s -> sb.append(s).append(" "));
+        String orig = original.getContentRaw();
+        String echo = orig.substring(orig.indexOf(args.get(0)));
 
-        channel.sendMessageFormat(MessageUtils.cleanMessage(original.getMember(), sb.toString())).queue();
+        channel.sendMessageFormat(MessageUtils.cleanMessage(original.getMember(), echo)).queue();
         original.addReaction("U+2705").queue();
     }
 
@@ -66,6 +66,7 @@ public class Echo implements GuildCommand {
                 CommandArgumentException::new);
 
             TextChannel c = original.getGuild().getTextChannelById(Parser.Channel.parse(args.get(0)));
+            Check.entityNotNull(c, TextChannel.class);
             Check.check(original.getMember().hasPermission(c, Permission.MESSAGE_WRITE),
                 () -> new ConsoleError("Member '%s' doesn't have write permissions in channel '%s'",
                     original.getMember().getId(), c.getId()));
@@ -121,9 +122,9 @@ public class Echo implements GuildCommand {
             message = Parser.Message.parse(args.get(0)).getRight();
 
             TextChannel c = original.getGuild().getTextChannelById(channelId);
-            Check.notNull(c, UnexpectedError::new);
+            Check.entityNotNull(c, TextChannel.class);
             Message m = c.retrieveMessageById(message).complete();
-            Check.notNull(m, UnexpectedError::new);
+            Check.entityNotNull(m, Message.class);
 
             Check.check(m.getAuthor().getId().equals(Bot.getJDA().getSelfUser().getId()), UnexpectedError::new);
 

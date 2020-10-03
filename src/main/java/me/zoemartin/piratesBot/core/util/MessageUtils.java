@@ -56,35 +56,4 @@ public class MessageUtils {
         if (days > 0) return String.format("%s days and %s hours", days, hours);
         else return String.format("%s hours", hours);
     }
-
-    public static String mergeComma(Collection<String> strings) {
-        StringBuilder sb = new StringBuilder();
-        strings.forEach(s -> sb.append(s).append(", "));
-        if (sb.length() != 0) {
-            sb.deleteCharAt(sb.lastIndexOf(","));
-            sb.deleteCharAt(sb.lastIndexOf(" "));
-        }
-
-        return sb.toString();
-    }
-
-    public static String mergeNewLine(Collection<String> strings) {
-        StringBuilder sb = new StringBuilder();
-        strings.forEach(s -> sb.append(s).append("\n"));
-        if (sb.length() != 0) {
-            sb.deleteCharAt(sb.lastIndexOf("\n"));
-        }
-
-        return sb.toString();
-    }
-
-    public static String mergeWhitespace(Collection<String> strings) {
-        StringBuilder sb = new StringBuilder();
-        strings.forEach(s -> sb.append(s).append(" "));
-        if (sb.length() != 0) {
-            sb.deleteCharAt(sb.lastIndexOf(" "));
-        }
-
-        return sb.toString();
-    }
 }

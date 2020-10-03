@@ -2,8 +2,7 @@ package me.zoemartin.piratesBot.core.managers;
 
 import me.zoemartin.piratesBot.Bot;
 import me.zoemartin.piratesBot.core.exceptions.ConsoleError;
-import me.zoemartin.piratesBot.core.interfaces.Command;
-import me.zoemartin.piratesBot.core.interfaces.CommandProcessor;
+import me.zoemartin.piratesBot.core.interfaces.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.*;
@@ -16,6 +15,7 @@ public class CommandManager {
     private static final Collection<Command> registered = new HashSet<>();
 
     private static CommandProcessor processor;
+    private static CommandLogger logger = null;
 
     public static void register(Command c) {
         registered.add(c);
@@ -23,6 +23,10 @@ public class CommandManager {
 
     public static void setCommandProcessor(CommandProcessor cp) {
         processor = cp;
+    }
+
+    public static void setCommandLogger(CommandLogger cl) {
+        logger = cl;
     }
 
     public static void process(GuildMessageReceivedEvent event, String input) {
@@ -39,5 +43,9 @@ public class CommandManager {
 
     public static Collection<Command> getCommands() {
         return Collections.unmodifiableCollection(registered);
+    }
+
+    public static CommandLogger getCommandLogger() {
+        return logger;
     }
 }

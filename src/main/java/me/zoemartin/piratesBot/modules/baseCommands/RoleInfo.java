@@ -20,24 +20,36 @@ public class RoleInfo implements GuildCommand {
 
     @Override
     public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
-        Check.check(args.size() == 1 && Parser.Role.isParsable(args.get(0)),
-            CommandArgumentException::new);
+        Check.check(!args.isEmpty(), CommandArgumentException::new);
 
-        Role role = original.getGuild().getRoleById(Parser.Role.parse(args.get(0)));
-        Check.notNull(role, () -> new ReplyError("Error, role not found!"));
+        Role role = null;
+        String orig = original.getContentRaw();
 
-        EmbedBuilder eb = new EmbedBuilder();
-        eb.addField("Name", role.getName(), true);
-        eb.addField("ID", role.getId(), true);
-        eb.addField("Color", role.getColor() != null ? "#"+Integer.toHexString(role.getColor().getRGB()).substring(2): "n/a", true);
-        eb.addField("Mention", role.getAsMention(), true);
-        eb.addField("Member Count", role.getGuild().getMembersWithRoles(role).size() + "", true);
-        eb.addField("Position", role.getPositionRaw() + "", true);
-        eb.addField("Created ago", MessageUtils.dateAgo(role.getTimeCreated(), OffsetDateTime.now()), true);
+        if (Parser.Role.isParsable(args.get(0))) role = original.getGuild().getRoleById(Parser.Role.parse(args.get(0)));
+        else {
+            List<Role> roles = original.getGuild()
+                                   .getRolesByName(orig.substring(orig.indexOf(args.get(0))), true);
 
-        eb.setFooter("ID: " + role.getId());
-        eb.setTimestamp(Instant.now());
-        eb.setColor(role.getColor());
+            if (!roles.isEmpty()) role = roles.get(0);
+        }
+        Check.entityNotNull(role, Role.class);
+
+        EmbedBuilder eb =
+            new EmbedBuilder()
+                .addField("Name", role.getName(), true)
+                .addField("ID", role.getId(), true)
+                .addField("Color", role.getColor() != null ? "#" + Integer.toHexString(
+                    role.getColor().getRGB()).substring(2) : "n/a", true)
+                .addField("Mention", role.getAsMention(), true)
+                .addField("Member Count", String.valueOf(role.getGuild().getMembersWithRoles(role).size()), true)
+                .addField("Position", String.valueOf(role.getPositionRaw()), true)
+                .addField("Hoisted", String.valueOf(role.isHoisted()), true)
+                .addField("Mentionable", String.valueOf(role.isMentionable()), true)
+                .addField("Created ago", MessageUtils.dateAgo(role.getTimeCreated(), OffsetDateTime.now()), false)
+
+                .setFooter("ID: " + role.getId())
+                .setTimestamp(Instant.now())
+                .setColor(role.getColor());
 
         channel.sendMessage(eb.build()).queue();
     }

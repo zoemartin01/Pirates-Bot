@@ -1,6 +1,7 @@
 package me.zoemartin.piratesBot.modules.misc;
 
 import de.androidpit.colorthief.ColorThief;
+import me.zoemartin.piratesBot.Bot;
 import me.zoemartin.piratesBot.core.CommandPerm;
 import me.zoemartin.piratesBot.core.exceptions.CommandArgumentException;
 import me.zoemartin.piratesBot.core.interfaces.GuildCommand;
@@ -22,10 +23,13 @@ public class Avatar implements GuildCommand {
 
     @Override
     public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
-        Check.check(args.isEmpty() || args.size() == 1 && Parser.User.isParsable(args.get(0)),
-            CommandArgumentException::new);
+        Check.check(args.isEmpty() || args.size() == 1, CommandArgumentException::new);
 
-        User u = CacheUtils.getUser(args.isEmpty() ? user.getId() : Parser.User.parse(args.get(0)));
+        User u;
+        if (args.isEmpty()) u = user;
+        else u = Parser.User.isParsable(args.get(0)) ? CacheUtils.getUser(args.get(0))
+                     : Bot.getJDA().getUserByTag(args.get(0));
+        if (u == null) u = user;
 
         String avatarId = u.getAvatarId();
         String id = u.getId();

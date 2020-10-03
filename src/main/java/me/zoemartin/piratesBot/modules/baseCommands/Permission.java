@@ -176,15 +176,14 @@ public class Permission implements GuildCommand {
                 eb.setColor(original.getGuild().getSelfMember().getColor());
                 eb.setTitle("Member Permission List");
 
-                String list = MessageUtils.mergeNewLine(
-                    PermissionHandler.getMemberPerms(
-                        original.getGuild().getId())
-                        .stream().sorted(Comparator.comparingInt((MemberPermission o) -> o.getPerm().raw()).reversed())
-                        .map(
-                            mp -> "`[" + mp.getPerm().raw() + "] " + mp.getPerm().toString() + "` " +
-                                      CacheUtils.getMemberExplicit(original.getGuild(), mp.getMember_id())
-                                          .getAsMention()
-                        ).collect(Collectors.toList()));
+                String list = PermissionHandler.getMemberPerms(
+                    original.getGuild().getId())
+                                  .stream().sorted(Comparator.comparingInt((MemberPermission o) -> o.getPerm().raw()).reversed())
+                                  .map(
+                                      mp -> "`[" + mp.getPerm().raw() + "] " + mp.getPerm().toString() + "` " +
+                                                CacheUtils.getMemberExplicit(original.getGuild(), mp.getMember_id())
+                                                    .getAsMention()
+                                  ).collect(Collectors.joining("\n"));
 
                 eb.setDescription(list);
                 Check.check(!list.isEmpty(), () -> new ReplyError("No bot member permission overrides"));
@@ -259,7 +258,7 @@ public class Permission implements GuildCommand {
                 Role r = original.getGuild().getRoleById(Parser.Role.parse(args.get(0)));
                 CommandPerm cp = CommandPerm.fromNum(Parser.Int.parse(args.get(1)));
                 Check.notNull(cp, CommandArgumentException::new);
-                Check.notNull(r, CommandArgumentException::new);
+                Check.entityNotNull(r, Role.class);
                 Check.check(!cp.equals(CommandPerm.OWNER) || user.getId().equals(Bot.getOWNER()),
                     CommandArgumentException::new);
 
@@ -299,7 +298,7 @@ public class Permission implements GuildCommand {
                     CommandArgumentException::new);
 
                 Role r = original.getGuild().getRoleById(Parser.Role.parse(args.get(0)));
-                Check.notNull(r, CommandArgumentException::new);
+                Check.entityNotNull(r, Role.class);
 
                 Check.check(PermissionHandler.removeRolePerm(original.getGuild().getId(), r.getId()),
                     () -> new ReplyError("Error, Role does not have an assigned Role Permission"));
@@ -337,17 +336,16 @@ public class Permission implements GuildCommand {
                 eb.setColor(original.getGuild().getSelfMember().getColor());
                 eb.setTitle("Role Permission List");
 
-                String list = MessageUtils.mergeNewLine(
-                    PermissionHandler.getRolePerms(
-                        original.getGuild().getId())
-                        .stream().sorted(Comparator.comparingInt((RolePermission r) -> r.getPerm().raw()).reversed())
-                        .map(
-                            rp -> {
-                                Role r = original.getGuild().getRoleById(rp.getRole_id());
-                                return "`[" + rp.getPerm().raw() + "] " + rp.getPerm().toString() + "` " +
-                                           (r == null ? "" : r.getAsMention());
-                            }
-                        ).collect(Collectors.toList()));
+                String list = PermissionHandler.getRolePerms(
+                    original.getGuild().getId())
+                                  .stream().sorted(Comparator.comparingInt((RolePermission r) -> r.getPerm().raw()).reversed())
+                                  .map(
+                                      rp -> {
+                                          Role r = original.getGuild().getRoleById(rp.getRole_id());
+                                          return "`[" + rp.getPerm().raw() + "] " + rp.getPerm().toString() + "` " +
+                                                     (r == null ? "" : r.getAsMention());
+                                      }
+                                  ).collect(Collectors.joining("\n"));
 
                 eb.setDescription(list);
                 Check.check(!list.isEmpty(), () -> new ReplyError("No bot role permission overrides"));

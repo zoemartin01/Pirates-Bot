@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ServerInfo implements GuildCommand {
     @Override
@@ -30,10 +31,10 @@ public class ServerInfo implements GuildCommand {
 
         Guild guild = original.getGuild();
 
-        EmbedBuilder eb = new EmbedBuilder();
-        eb.setAuthor(guild.getName(), null, guild.getIconUrl());
-        eb.setThumbnail(guild.getIconUrl());
-        eb.setTitle("Server Info");
+        EmbedBuilder eb = new EmbedBuilder()
+                              .setAuthor(guild.getName(), null, guild.getIconUrl())
+                              .setThumbnail(guild.getIconUrl())
+                              .setTitle("Server Info");
         try {
             int[] color = ColorThief.getColor(ImageIO.read(new URL(guild.getIconUrl())));
             eb.setColor(new Color(color[0], color[1], color[2]));
@@ -59,21 +60,21 @@ public class ServerInfo implements GuildCommand {
         eb.addField("Channels",
             String.format("<:voice_channel:758143690845454346> %d %s\n<:text_channel:758143729902288926> %d %s",
                 guild.getVoiceChannelCache().size(), vcLocked > 0 ? "(" + vcLocked + " locked)" : "",
-                guild.getTextChannelCache().size(), textLocked > 0 ? "(" + textLocked + " locked)" : ""), true);
+                guild.getTextChannelCache().size(), textLocked > 0 ? "(" + textLocked + " locked)" : ""), true)
 
-        eb.addField("Members", String.format("Total: %d\nHumans: %d\nBots: %d",
-            guild.getMemberCount(),
-            guild.getMembers().stream().filter(member -> !member.getUser().isBot()).count(),
-            guild.getMembers().stream().filter(member -> member.getUser().isBot()).count()), true);
+            .addField("Members", String.format("Total: %d\nHumans: %d\nBots: %d",
+                guild.getMemberCount(),
+                guild.getMembers().stream().filter(member -> !member.getUser().isBot()).count(),
+                guild.getMembers().stream().filter(member -> member.getUser().isBot()).count()), true)
 
-        eb.addField("Roles", guild.getRoles().size() + "", true);
-        eb.addField("Region", guild.getRegionRaw(), true);
-        eb.addField("Categories", guild.getCategories().size() + "", true);
+            .addField("Roles", guild.getRoles().size() + "", true)
+            .addField("Region", guild.getRegionRaw(), true)
+            .addField("Categories", guild.getCategories().size() + "", true)
 
-        eb.addField("Features", MessageUtils.mergeNewLine(guild.getFeatures()), true);
+            .addField("Features", String.join("\n", guild.getFeatures()), true)
 
-        eb.setFooter("ID: " + guild.getId() + " | Created");
-        eb.setTimestamp(guild.getTimeCreated());
+            .setFooter("ID: " + guild.getId() + " | Created")
+            .setTimestamp(guild.getTimeCreated());
 
         channel.sendMessage(eb.build()).queue();
     }

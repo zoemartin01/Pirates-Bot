@@ -1,10 +1,14 @@
 package me.zoemartin.piratesBot.modules.commandProcessing;
 
+import me.zoemartin.piratesBot.core.exceptions.UnexpectedError;
+import me.zoemartin.piratesBot.core.interfaces.CommandLogger;
 import me.zoemartin.piratesBot.core.managers.CommandManager;
+import me.zoemartin.piratesBot.core.util.DatabaseUtil;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
+import java.time.Instant;
 import java.util.Collection;
 
 public class CommandListener extends ListenerAdapter {
@@ -22,7 +26,12 @@ public class CommandListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
-        if (event.getAuthor().isBot()) {
+        CommandLogger cl = CommandManager.getCommandLogger();
+
+        if (cl != null && !event.isWebhookMessage()) cl.log(event.getMessage());
+
+
+        if (event.getAuthor().isBot() || event.isWebhookMessage()) {
             return;
         }
 
@@ -30,7 +39,9 @@ public class CommandListener extends ListenerAdapter {
         Collection<String> prefixes = Prefixes.getPrefixes(event.getGuild().getId());
 
         prefixes.forEach(s -> {
-            if (message.startsWith(s)) CommandManager.process(event, message.substring(s.length()));
+            if (message.startsWith(s)) {
+                CommandManager.process(event, message.substring(s.length()));
+            }
         });
     }
 }

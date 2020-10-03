@@ -2,9 +2,11 @@ package me.zoemartin.piratesBot.modules.commandProcessing;
 
 import me.zoemartin.piratesBot.core.CommandPerm;
 import me.zoemartin.piratesBot.core.exceptions.*;
-import me.zoemartin.piratesBot.core.interfaces.*;
+import me.zoemartin.piratesBot.core.interfaces.Command;
+import me.zoemartin.piratesBot.core.interfaces.CommandProcessor;
 import me.zoemartin.piratesBot.core.managers.CommandManager;
 import me.zoemartin.piratesBot.core.util.Check;
+import me.zoemartin.piratesBot.core.util.DatabaseUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -12,8 +14,8 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CommandHandler implements CommandProcessor {
     @Override
@@ -22,35 +24,21 @@ public class CommandHandler implements CommandProcessor {
         MessageChannel channel = event.getChannel();
 
         String[] inputSplit = input.split("\\s+");
+        LinkedList<Command> commands = new LinkedList<>();
+        Stream.of(inputSplit).forEach(s -> {
+            if (commands.isEmpty()) commands.add(CommandManager.getCommands().stream()
+                                                     .filter(c -> s.matches(c.regex().toLowerCase()))
+                                                     .findFirst().orElse(null));
+            else if (commands.getLast() != null) commands.getLast().subCommands().stream()
+                     .filter(sc -> s.matches(sc.regex().toLowerCase()))
+                     .findFirst().ifPresent(commands::add);
 
-        if (inputSplit.length == 0) return;
+        });
 
-        AtomicReference<String> commandString = new AtomicReference<>();
-        Command command = null;
+        if (commands.isEmpty() || commands.getLast() == null) return;
 
-        int commandLevel = 0;
-
-        for (int i = 0; i < inputSplit.length; i++) {
-            String s = inputSplit[i].toLowerCase();
-
-            if (command == null) {
-                command = CommandManager.getCommands().stream()
-                              .filter(c -> s.matches(c.regex().toLowerCase()))
-                              .findFirst().orElseThrow(() -> new ConsoleError("Command '%s' not found", s));
-            } else {
-                Command subCommand = command.subCommands().stream()
-                                         .filter(sc -> s.matches(sc.regex().toLowerCase()))
-                                         .findFirst().orElse(null);
-
-                if (subCommand == null) break;
-                command = subCommand;
-            }
-
-            commandLevel = i + 1;
-            commandString.set(inputSplit[i].toLowerCase());
-        }
-
-        final Command cmd = command;
+        int commandLevel = commands.size();
+        Command command = commands.getLast();
 
         Guild guild = event.getGuild();
         Member member = guild.getMember(user);
@@ -59,21 +47,15 @@ public class CommandHandler implements CommandProcessor {
                         || member.hasPermission(Permission.ADMINISTRATOR)
                         || command.required().stream().allMatch(member::hasPermission),
             () -> new ConsoleError("Member '%s' doesn't have the required permission for Command '%s'",
-                member.getId(), cmd.name()));
+                member.getId(), command.name()));
 
-        if (cmd.commandPerm().equals(CommandPerm.OWNER) || !member.hasPermission(Permission.ADMINISTRATOR))
+        if (command.commandPerm().equals(CommandPerm.OWNER) || !member.hasPermission(Permission.ADMINISTRATOR))
             Check.check(PermissionHandler.getMemberPerm(guild.getId(),
-                member.getId()).getPerm().raw() >= cmd.commandPerm().raw()
+                member.getId()).getPerm().raw() >= command.commandPerm().raw()
                             || member.getRoles().stream().anyMatch(
-                role -> PermissionHandler.getRolePerm(guild.getId(), role.getId()).getPerm().raw() >= cmd.commandPerm().raw()),
+                role -> PermissionHandler.getRolePerm(guild.getId(), role.getId()).getPerm().raw() >= command.commandPerm().raw()),
                 () -> new ConsoleError("Member '%s' doesn't have the required permission rank for Command '%s'",
-                    member.getId(), cmd.name()));
-
-        /*} else {
-            Check.check(!Arrays.asList(command.getClass().getClasses()).contains(GuildCommand.class),
-                () -> new ConsoleError("User '%s' attempted to run Command '%s' outside of allowed Scope",
-                    user.getId(), cmd.name()));
-        }*/
+                    member.getId(), command.name()));
 
         List<String> arguments;
 
@@ -82,32 +64,38 @@ public class CommandHandler implements CommandProcessor {
 
 
         try {
-            cmd.run(user, channel, Collections.unmodifiableList(arguments), event.getMessage(), commandString.get());
+            command.run(user, channel, Collections.unmodifiableList(arguments), event.getMessage(), inputSplit[commands.size() - 1]);
         } catch (CommandArgumentException e) {
-            sendUsage(channel, cmd);
+            sendUsage(channel, commands);
         } catch (ReplyError e) {
             channel.sendMessage(e.getMessage()).queue(message -> message.delete().queueAfter(5, TimeUnit.SECONDS));
         } catch (ConsoleError e) {
-            throw new ConsoleError(String.format("[Command Error] %s: %s", cmd.getClass().getName(), e.getMessage()));
+            throw new ConsoleError(String.format("[Command Error] %s: %s", command.getClass().getName(), e.getMessage()));
+        } catch (Exception e) {
+            LoggedError error = new LoggedError(event.getGuild().getId(), event.getChannel().getId(), event.getAuthor().getId(),
+                event.getMessageId(), event.getMessage().getContentRaw(), e.getMessage(), e.getStackTrace(), System.currentTimeMillis());
+
+            DatabaseUtil.saveObject(error);
+
+            channel.sendMessageFormat(
+                "> :warning: Ooops an unexpected error has occurred. If this happens again send this to the Developer\n> `%s`", error.getUuid()).queue();
+
+            throw e;
         }
 
-        System.out.printf("[Command used] %s used command %s in %s\n", user.getId(), cmd.getClass().getCanonicalName(),
+        System.out.printf("[Command used] %s used command %s in %s\n", user.getId(), command.getClass().getCanonicalName(),
             event.getGuild().getId());
     }
 
-    private static void sendUsage(MessageChannel channel, Command command) {
-        EmbedBuilder eb = new EmbedBuilder();
-
-        eb.setTitle("`" + command.name().toUpperCase() + "` usage");
-
-        List<String> usage = command.subCommands().stream().map(Command::usage).collect(Collectors.toList());
-
-        StringBuilder sb = new StringBuilder("`").append(command.usage()).append("` or\n");
-        usage.forEach(s -> sb.append("`").append(s).append("` or\n"));
-        sb.delete(sb.length() - 3, sb.length());
-
-        eb.setDescription(sb.toString());
-        eb.setColor(0xdf136c);
+    private static void sendUsage(MessageChannel channel, LinkedList<Command> commands) {
+        EmbedBuilder eb = new EmbedBuilder()
+                              .setTitle("`" + commands.stream().map(Command::name)
+                                                  .collect(Collectors.joining(" ")).toUpperCase() + "` usage")
+                              .setDescription(Stream.concat(
+                                  Stream.of(commands.getLast()), commands.getLast().subCommands().stream())
+                                                  .map(c -> String.format("`%s`", c.usage()))
+                                                  .collect(Collectors.joining(" or\n")))
+                              .setColor(0xdf136c);
 
         channel.sendMessage(eb.build()).queue(message -> message.delete().queueAfter(10, TimeUnit.SECONDS));
     }

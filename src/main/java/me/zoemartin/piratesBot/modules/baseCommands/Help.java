@@ -4,9 +4,10 @@ import me.zoemartin.piratesBot.core.CommandPerm;
 import me.zoemartin.piratesBot.core.exceptions.*;
 import me.zoemartin.piratesBot.core.interfaces.*;
 import me.zoemartin.piratesBot.core.managers.CommandManager;
-import me.zoemartin.piratesBot.core.util.Check;
-import me.zoemartin.piratesBot.core.util.MessageUtils;
+import me.zoemartin.piratesBot.core.util.*;
 import me.zoemartin.piratesBot.modules.commandProcessing.PermissionHandler;
+import me.zoemartin.piratesBot.modules.pagedEmbeds.PageListener;
+import me.zoemartin.piratesBot.modules.pagedEmbeds.PagedEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 
@@ -28,29 +29,25 @@ public class Help implements GuildCommand {
     @SuppressWarnings("ConstantConditions")
     @Override
     public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
-        StringBuilder sb = new StringBuilder("**Available Commands:**\n\n");
-
         Guild guild = original.getGuild();
         Member member = original.getMember();
 
-        CommandManager.getCommands().stream()
-            .filter(
-                command -> PermissionHandler.getMemberPerm(guild.getId(), member.getId()).getPerm().raw()
-                               >= command.commandPerm().raw()
-                               || member.getRoles().stream().anyMatch(
-                    role -> PermissionHandler.getRolePerm(guild.getId(), role.getId()).getPerm().raw()
-                                >= command.commandPerm().raw()))
+        PagedEmbed p = new PagedEmbed(EmbedUtil.pagedDescription(new EmbedBuilder()
+                                                                     .setTitle("Help").setColor(0xdf136c).build(),
+            CommandManager.getCommands().stream()
+                .filter(
+                    command -> PermissionHandler.getMemberPerm(guild.getId(), member.getId()).getPerm().raw()
+                                   >= command.commandPerm().raw()
+                                   || member.getRoles().stream().anyMatch(
+                        role -> PermissionHandler.getRolePerm(guild.getId(), role.getId()).getPerm().raw()
+                                    >= command.commandPerm().raw()))
 
-            .sorted(Comparator.comparing(Command::name))
-            .forEach(command -> sb.append("`").append(command.name())
-                                    .append("` | ").append(command.description()).append("\n\n"));
+                .sorted(Comparator.comparing(Command::name))
+                .map(command -> String.format("`%s` | %s\n\n", command.name(), command.description()))
+                .collect(Collectors.toList())),
+            (TextChannel) channel, user);
 
-        EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle("Help").setColor(0xdf136c);
-        eb.setDescription(sb.toString());
-        eb.addField("Additional Help:", "For additional help with a command use: " + usage(), false);
-
-        channel.sendMessage(eb.build()).queue();
+        PageListener.add(p);
     }
 
     @Override
@@ -107,8 +104,8 @@ public class Help implements GuildCommand {
 
 
             EmbedBuilder eb = new EmbedBuilder();
-            eb.setTitle("`" + MessageUtils.mergeWhitespace(hierarchy.stream().map(Command::name)
-                                                               .collect(Collectors.toList())).toUpperCase() + "`")
+            eb.setTitle("`" + hierarchy.stream().map(Command::name)
+                                  .collect(Collectors.joining(" ")).toUpperCase() + "`")
                 .setColor(0xdf136c);
             eb.addField("Description:", command.get().description(), false);
             eb.addField("Usage: ", "`" + command.get().usage() + "`", false);

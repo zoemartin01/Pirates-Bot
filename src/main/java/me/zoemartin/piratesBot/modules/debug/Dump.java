@@ -20,11 +20,10 @@ public class Dump implements GuildCommand {
     public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
         List<Member> members = original.getGuild().loadMembers().get();
 
-        String dump = MessageUtils.mergeNewLine(
-            members.stream().map(member -> String.format("%d. %s / %s / %s / Joined at: %s UTC",
-                members.indexOf(member) + 1, member.getUser().getAsTag(), member.getEffectiveName(), member.getId(),
-                Timestamp.valueOf(member.getTimeCreated().atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime()))
-            ).collect(Collectors.toList()));
+        String dump = members.stream().map(member -> String.format("%d. %s / %s / %s / Joined at: %s UTC",
+            members.indexOf(member) + 1, member.getUser().getAsTag(), member.getEffectiveName(), member.getId(),
+            Timestamp.valueOf(member.getTimeCreated().atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime()))
+        ).collect(Collectors.joining("\n"));
 
         if (dump.length() <= 1990) channel.sendMessage("```" + dump + "```").queue();
         else {
