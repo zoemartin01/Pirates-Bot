@@ -1,13 +1,15 @@
 package me.zoemartin.piratesBot.core.util;
 
+import me.zoemartin.piratesBot.modules.moderation.WarnEntity;
 import org.hibernate.*;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
-import java.util.Collection;
-import java.util.Collections;
+import javax.persistence.criteria.*;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 public class DatabaseUtil {
     private static final Collection<Class<?>> mapped = Collections.newSetFromMap(new ConcurrentHashMap<>());
@@ -85,6 +87,15 @@ public class DatabaseUtil {
             }
             e.printStackTrace();
         }
+    }
+
+    public static <T> List<T> find(Class<T> clazz, Predicate... predicates) {
+        Session s = getSessionFactory().openSession();
+        CriteriaBuilder cb = s.getCriteriaBuilder();
+
+        CriteriaQuery<T> q = cb.createQuery(clazz);
+        Root<T> r = q.from(clazz);
+        return s.createQuery(q.select(r).where(predicates)).getResultList();
     }
 
     public static void shutdown() {

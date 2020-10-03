@@ -1,5 +1,8 @@
 package me.zoemartin.piratesBot.core.util;
 
+import me.zoemartin.piratesBot.core.exceptions.EntityNotFoundException;
+import net.dv8tion.jda.api.entities.ISnowflake;
+
 import java.util.Collection;
 import java.util.function.Supplier;
 
@@ -28,5 +31,9 @@ public class Check {
 
     public static void check(boolean expected, Supplier<? extends RuntimeException> supplier) {
         if (!expected) throw supplier.get();
+    }
+
+    public static <T extends ISnowflake> void entityNotNull(T t, Class<T> tClass) {
+        if (t == null) throw new EntityNotFoundException(tClass);
     }
 }

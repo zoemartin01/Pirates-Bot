@@ -15,6 +15,7 @@ public class ProcessingModule implements Module {
         DatabaseUtil.setMapped(MemberPermission.class);
         DatabaseUtil.setMapped(RolePermission.class);
         DatabaseUtil.setMapped(Prefixes.class);
+        DatabaseUtil.setMapped(LoggedError.class);
     }
 
     @Override

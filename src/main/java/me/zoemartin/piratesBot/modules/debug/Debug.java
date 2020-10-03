@@ -27,6 +27,7 @@ public class Debug implements Module, GuildCommand {
         CommandManager.register(new Count());
         CommandManager.register(new Debug());
         CommandManager.register(new Dump());
+        CommandManager.register(new ReadError());
     }
 
     @Override

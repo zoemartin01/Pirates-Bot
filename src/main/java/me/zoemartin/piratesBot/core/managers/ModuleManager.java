@@ -20,7 +20,7 @@ public class ModuleManager {
     @SuppressWarnings("unchecked")
     public static void init() {
         Reflections reflections = new Reflections(new ConfigurationBuilder()
-                                                      .setUrls(ClasspathHelper.forPackage("me.zoemartin.bot.modules"))
+                                                      .setUrls(ClasspathHelper.forPackage("me.zoemartin.piratesBot.modules"))
                                                       .setScanners(new SubTypesScanner(), new TypeAnnotationsScanner())
                                                       .setExecutorService(Executors.newFixedThreadPool(4)));
 

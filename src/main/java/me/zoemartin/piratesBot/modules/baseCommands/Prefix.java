@@ -122,9 +122,9 @@ public class Prefix implements GuildCommand {
             eb.setColor(original.getGuild().getSelfMember().getColor());
             eb.setTitle("Bot Prefixes");
 
-            String prefixes = MessageUtils.mergeComma(
-                Prefixes.getPrefixes(original.getGuild().getId()).stream()
-                    .map(s -> s.matches("<@!?\\d{17,19}>\\s*") ? s : "`" + s + "`").collect(Collectors.toList()));
+            String prefixes = Prefixes.getPrefixes(original.getGuild().getId()).stream()
+                                  .map(s -> s.matches("<@!?\\d{17,19}>\\s*") ? s : "`" + s + "`")
+                                  .collect(Collectors.joining(", "));
 
             eb.setDescription(prefixes);
             channel.sendMessage(eb.build()).queue();
