@@ -1,9 +1,11 @@
 package me.zoemartin.piratesBot.core.util;
 
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.internal.utils.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,6 +34,28 @@ public class Parser {
                 return s.replaceAll("\\D", "");
             else throw new IllegalArgumentException("Channel not parsable!");
         }
+
+        @Nullable
+        public static VoiceChannel getVoiceChannel(Guild g, String s) {
+            VoiceChannel vc;
+            if (isParsable(s)) vc = g.getVoiceChannelById(parse(s));
+            else {
+                List<VoiceChannel> vcs = g.getVoiceChannelsByName(s, true);
+                vc = vcs.isEmpty() ? null : vcs.get(0);
+            }
+            return vc;
+        }
+
+        @Nullable
+        public static TextChannel getTextChannel(Guild g, String s) {
+            TextChannel c;
+            if (isParsable(s)) c = g.getTextChannelById(parse(s));
+            else {
+                List<TextChannel> cs = g.getTextChannelsByName(s, true);
+                c = cs.isEmpty() ? null : cs.get(0);
+            }
+            return c;
+        }
     }
 
     public static class Role {
@@ -44,6 +68,17 @@ public class Parser {
             if (isParsable(s))
                 return s.replaceAll("\\D", "");
             else throw new IllegalArgumentException("Role not parsable!");
+        }
+
+        @Nullable
+        public static net.dv8tion.jda.api.entities.Role getRole(Guild g, String s) {
+            net.dv8tion.jda.api.entities.Role r;
+            if (isParsable(s)) r = g.getRoleById(parse(s));
+            else {
+                List<net.dv8tion.jda.api.entities.Role> roles = g.getRolesByName(s, true);
+                r = roles.isEmpty() ? null : roles.get(0);
+            }
+            return r;
         }
     }
 

@@ -40,8 +40,7 @@ public class Warn implements GuildCommand {
         User u = Bot.getJDA().getUserById(Parser.User.parse(userId));
         Check.notNull(u, UserNotFoundException::new);
 
-        String orig = original.getContentRaw();
-        String reason = orig.substring(orig.indexOf(userId) + userId.length() + 1);
+        String reason = lastArg(1, args, original);
 
         WarnEntity warnEntity = new WarnEntity(
             original.getGuild().getId(), u.getId(), user.getId(), reason, original.getTimeCreated().toEpochSecond());

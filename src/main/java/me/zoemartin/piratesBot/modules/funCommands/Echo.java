@@ -26,8 +26,7 @@ public class Echo implements GuildCommand {
     public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
         Check.check(!args.isEmpty(), CommandArgumentException::new);
 
-        String orig = original.getContentRaw();
-        String echo = orig.substring(orig.indexOf(args.get(0)));
+        String echo = lastArg(0, args, original);
 
         channel.sendMessageFormat(MessageUtils.cleanMessage(original.getMember(), echo)).queue();
         original.addReaction("U+2705").queue();

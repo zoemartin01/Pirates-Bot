@@ -53,9 +53,9 @@ public class Prefix implements GuildCommand {
 
         @Override
         public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
-            Check.check(args.size() == 1, CommandArgumentException::new);
+            Check.check(!args.isEmpty(), CommandArgumentException::new);
 
-            String prefix = args.get(0);
+            String prefix = lastArg(0, args, original);
             Prefixes.addPrefix(original.getGuild().getId(), prefix);
             embedReply(original, channel, null, "Added `%s` as a prefix", prefix).queue();
         }

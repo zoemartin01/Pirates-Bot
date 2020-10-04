@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.entities.*;
 import java.util.*;
 
 @LoadModule
-public class Status implements Module, Command {
+public class Status implements Module, GuildCommand {
     @Override
     public Set<Command> subCommands() {
         return Collections.emptySet();
@@ -34,12 +34,7 @@ public class Status implements Module, Command {
 
         Activity.ActivityType type = Activity.ActivityType.fromKey(id);
 
-        StringBuilder sb = new StringBuilder();
-
-        args.subList(1, args.size()).forEach(s -> sb.append(s).append(" "));
-        sb.deleteCharAt(sb.lastIndexOf(" "));
-
-        Bot.getJDA().getPresence().setActivity(Activity.of(type, sb.toString()));
+        Bot.getJDA().getPresence().setActivity(Activity.of(type, lastArg(1, args, original)));
         channel.sendMessageFormat("Set bot status to `%s %s`", Bot.getJDA().getPresence().getActivity().getType(),
             Bot.getJDA().getPresence().getActivity()).queue();
     }
