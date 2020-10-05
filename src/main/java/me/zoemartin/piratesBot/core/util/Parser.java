@@ -15,6 +15,10 @@ public class Parser {
             return (s.matches("<@!?\\d{17,19}>") || s.matches("\\d{17,19}"));
         }
 
+        public static boolean tagIsParsable(String s) {
+            return (s.matches("(.{2,32})#(\\d{4})"));
+        }
+
         @NotNull
         public static String parse(String s) {
             if (isParsable(s))

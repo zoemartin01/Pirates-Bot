@@ -1,5 +1,7 @@
 package me.zoemartin.piratesBot.core.interfaces;
 
+import me.zoemartin.piratesBot.Bot;
+import me.zoemartin.piratesBot.core.util.Help;
 import me.zoemartin.piratesBot.core.util.MessageUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
@@ -23,5 +25,14 @@ public interface GuildCommand extends Command {
         return args.size() == expectedIndex + 1
                    ? args.get(expectedIndex) : MessageUtils.getArgsFrom(
             original.getContentRaw(), args.get(expectedIndex));
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    default void addCheckmark(Message message) {
+        message.addReaction(Bot.getJDA().getEmoteById("762424762412040192")).queue();
+    }
+
+    default void help(User user, MessageChannel channel, List<String> args, Message original) {
+        if (Help.getHelper() != null) Help.getHelper().send(user, channel, args, original, args.get(0));
     }
 }

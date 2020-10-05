@@ -10,6 +10,7 @@ import me.zoemartin.piratesBot.modules.pagedEmbeds.PageListener;
 import me.zoemartin.piratesBot.modules.pagedEmbeds.PagedEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -155,6 +156,11 @@ public class Help implements GuildCommand {
         public String description() {
             return "Shows a command help page";
         }
+    }
+
+    public static void helper() {
+        me.zoemartin.piratesBot.core.util.Help.setHelper(
+            (user, channel, args, original, invoked) -> new Cmd().run(user, channel, args, original, invoked));
     }
 
     public static void commandHelp(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
