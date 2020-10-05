@@ -63,6 +63,7 @@ class Config implements GuildCommand {
             c.setEnabled(true);
             DatabaseUtil.updateObject(c);
             addCheckmark(original);
+            embedReply(original, channel, "Levels", "Enabled Leveling System").queue();
         }
 
         @Override
