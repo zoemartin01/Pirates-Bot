@@ -10,6 +10,7 @@ import me.zoemartin.piratesBot.modules.pagedEmbeds.PagedEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -59,7 +60,6 @@ public class Level implements GuildCommand {
                              .sorted(Comparator.comparingInt(UserLevel::getExp).reversed())
                              .collect(Collectors.toList());
             } else {
-                Guild g  = original.getGuild();
                 levels = Levels.getLevels(original.getGuild()).stream()
                              .filter(userLevel -> Bot.getJDA().getUserById(userLevel.getUser_id()) != null)
                              .sorted(Comparator.comparingInt(UserLevel::getExp).reversed())
@@ -103,9 +103,10 @@ public class Level implements GuildCommand {
         @Override
         public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
             User u = null;
+            String arg;
             if (args.isEmpty()) u = user;
-            else if (Parser.User.isParsable(args.get(0))) u = CacheUtils.getUser(args.get(0));
-            else if (Parser.User.tagIsParsable(args.get(0))) Bot.getJDA().getUserByTag(args.get(0));
+            else if (Parser.User.isParsable(arg = lastArg(0, args, original))) u = CacheUtils.getUser(arg);
+            else if (Parser.User.tagIsParsable(arg)) u = Bot.getJDA().getUserByTag(arg);
             if (u == null) u = user;
 
             Member member = CacheUtils.getMember(original.getGuild(), u.getId());
@@ -114,10 +115,17 @@ public class Level implements GuildCommand {
             int lvl = Levels.calcLevel(exp);
             double expToNext = Levels.calcExp(lvl + 1);
 
+            List<UserLevel> levels = Levels.getLevels(original.getGuild()).stream()
+                                         .filter(userLevel -> Bot.getJDA().getUserById(userLevel.getUser_id()) != null)
+                                         .sorted(Comparator.comparingInt(UserLevel::getExp).reversed())
+                                         .collect(Collectors.toList());
+
             EmbedBuilder eb = new EmbedBuilder()
                                   .setThumbnail(u.getEffectiveAvatarUrl())
                                   .setAuthor(u.getAsTag(), null, u.getEffectiveAvatarUrl())
-                                  .setTitle("Level " + lvl);
+                                  .setFooter(Bot.getJDA().getSelfUser().getName(), Bot.getJDA().getSelfUser().getEffectiveAvatarUrl())
+                                  .setTimestamp(Instant.now())
+                                  .setTitle("Level " + lvl + " - Rank #" + (levels.indexOf(level) + 1));
 
             if (member != null) eb.setColor(member.getColor());
 

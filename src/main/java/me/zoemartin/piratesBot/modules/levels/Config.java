@@ -31,6 +31,11 @@ class Config implements GuildCommand {
     }
 
     @Override
+    public String regex() {
+        return "config|conf";
+    }
+
+    @Override
     public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
         help(user, channel, List.of("level", name()), original);
     }
@@ -84,6 +89,7 @@ class Config implements GuildCommand {
             c.setEnabled(false);
             DatabaseUtil.updateObject(c);
             addCheckmark(original);
+            embedReply(original, channel, "Levels", "Enabled Leveling System").queue();
         }
 
         @Override
@@ -127,6 +133,8 @@ class Config implements GuildCommand {
 
             DatabaseUtil.updateObject(config);
             addCheckmark(original);
+            embedReply(original, channel, "Levels", "Level up announcements set to `%s`",
+                config.getAnnouncements().toString()).queue();
         }
 
         @Override
@@ -160,6 +168,7 @@ class Config implements GuildCommand {
             level.setExp(xp);
             DatabaseUtil.updateObject(level);
             addCheckmark(original);
+            embedReply(original, channel, "Levels", "Set %s's xp to `%s`", u.getAsMention(), xp).queue();
         }
 
         @Override
@@ -307,6 +316,8 @@ class Config implements GuildCommand {
 
                 DatabaseUtil.updateObject(config);
                 addCheckmark(original);
+                embedReply(original, channel, "Level Rewards", "Added %s to Level %s",
+                    r.getAsMention(), level).queue();
             }
 
             @Override
@@ -346,6 +357,8 @@ class Config implements GuildCommand {
 
                 DatabaseUtil.updateObject(config);
                 addCheckmark(original);
+                embedReply(original, channel, "Level Rewards", "Removed %s from Level %s",
+                    r.getAsMention(), level).queue();
             }
 
             @Override
@@ -381,12 +394,12 @@ class Config implements GuildCommand {
                     new EmbedBuilder().setTitle("Role Rewards").build(),
                     config.getRewardRoles().entrySet().stream()
                         .map(e ->
-                                String.format("Level: `%d` - Role(s): %s\n", e.getKey(),
-                                    e.getValue().stream().map(s -> {
-                                        Role r = original.getGuild().getRoleById(s);
-                                        return r == null ? s : r.getAsMention();
-                                    }).collect(Collectors.joining(", "))
-                                )
+                                 String.format("Level: `%d` - Role(s): %s\n", e.getKey(),
+                                     e.getValue().stream().map(s -> {
+                                         Role r = original.getGuild().getRoleById(s);
+                                         return r == null ? s : r.getAsMention();
+                                     }).collect(Collectors.joining(", "))
+                                 )
                         ).collect(Collectors.toList())),
                     (TextChannel) channel, user);
 

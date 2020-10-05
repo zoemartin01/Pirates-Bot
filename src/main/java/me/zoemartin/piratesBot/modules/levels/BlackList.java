@@ -71,12 +71,12 @@ class BlackList implements GuildCommand {
             PagedEmbed p = new PagedEmbed(EmbedUtil.pagedDescription(
                 new EmbedBuilder().setTitle("Blacklistings").build(),
                 Stream.concat(roles.stream().filter(s -> !s.isEmpty()).map(s -> g.getRoleById(s) == null ? s :
-                                                          g.getRoleById(s).getAsMention()),
+                                                                                    g.getRoleById(s).getAsMention()),
                     channels.stream().filter(s -> !s.isEmpty()).map(s -> g.getTextChannelById(s) == null ? s :
-                                                g.getTextChannelById(s).getAsMention()))
+                                                                             g.getTextChannelById(s).getAsMention()))
                     .map(s -> String.format("%s\n",s)).collect(Collectors.toList())),
                 (TextChannel) channel, user
-                );
+            );
 
             PageListener.add(p);
         }
@@ -119,6 +119,8 @@ class BlackList implements GuildCommand {
             config.addBlacklistedChannel(c.getId());
             DatabaseUtil.updateObject(config);
             addCheckmark(original);
+            embedReply(original, channel, "Level Blacklist", "Blacklisted %s",
+                c.getAsMention()).queue();
         }
 
         @Override
@@ -154,6 +156,8 @@ class BlackList implements GuildCommand {
                 if (!config.removeBlacklistedChannel(c.getId())) return;
                 DatabaseUtil.updateObject(config);
                 addCheckmark(original);
+                embedReply(original, channel, "Level Blacklist", "Unblacklisted %s",
+                    c.getAsMention()).queue();
             }
 
             @Override
@@ -195,6 +199,8 @@ class BlackList implements GuildCommand {
             config.addBlacklistedRole(r.getId());
             DatabaseUtil.updateObject(config);
             addCheckmark(original);
+            embedReply(original, channel, "Level Blacklist", "Blacklisted %s",
+                r.getAsMention()).queue();
         }
 
         @Override
@@ -230,6 +236,8 @@ class BlackList implements GuildCommand {
                 if (!config.removeBlacklistedRole(r.getId())) return;
                 DatabaseUtil.updateObject(config);
                 addCheckmark(original);
+                embedReply(original, channel, "Level Blacklist", "Unblacklisted %s",
+                    r.getAsMention()).queue();
             }
 
             @Override
