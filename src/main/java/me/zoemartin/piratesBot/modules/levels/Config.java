@@ -80,7 +80,7 @@ class Config implements GuildCommand {
 
         @Override
         public String name() {
-            return "enable";
+            return "disable";
         }
 
         @Override
@@ -89,7 +89,7 @@ class Config implements GuildCommand {
             c.setEnabled(false);
             DatabaseUtil.updateObject(c);
             addCheckmark(original);
-            embedReply(original, channel, "Levels", "Enabled Leveling System").queue();
+            embedReply(original, channel, "Levels", "Disabled Leveling System").queue();
         }
 
         @Override
@@ -99,7 +99,7 @@ class Config implements GuildCommand {
 
         @Override
         public String description() {
-            return "Enabled the Leveling System";
+            return "Disable the Leveling System";
         }
     }
 
