@@ -1,10 +1,6 @@
 package me.zoemartin.piratesBot.modules.piratesCommands;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import me.zoemartin.piratesBot.core.CommandPerm;
@@ -30,6 +26,11 @@ public class RandomGroupsCommand implements GuildCommand {
     }
 
     @Override
+    public String regex() {
+        return "random-groups|rg";
+    }
+
+    @Override
     public CommandPerm commandPerm() {
         return CommandPerm.BOT_MODERATOR;
     }
@@ -46,50 +47,47 @@ public class RandomGroupsCommand implements GuildCommand {
 
     @Override
     public Collection<Permission> required() {
-        return Arrays.asList(Permission.VOICE_MOVE_OTHERS);
+        return Collections.singleton(Permission.VOICE_MOVE_OTHERS);
     }
 
     @Override
     public void run(User executor, MessageChannel channel, List<String> args, Message original, String invoked) {
-        Guild guild = ((GuildChannel) channel).getGuild();
+        Guild guild = original.getGuild();
 
         // there need to be at least 3 voice channels referenced:
         // 1 from-channel + at least 2 group-channels
         Check.check(args.size() >= 2, CommandArgumentException::new);
-        args.forEach(arg -> {
-            Check.check(isValidVoiceChannelReference(arg), CommandArgumentException::new);
-        });
 
-        VoiceChannel fromChannel = findVoiceChannel(guild, executor, args.get(0));
+        VoiceChannel fromChannel = findVoiceChannel(guild, original.getMember(), args.get(0));
         VoiceChannel[] toChannels = args.subList(1, args.size()).stream()
-            .map(reference -> findVoiceChannel(guild, executor, reference))
-            .distinct()
-            .toArray(VoiceChannel[]::new);
+                                        .map(reference -> findVoiceChannel(guild, original.getMember(), reference))
+                                        .distinct()
+                                        .toArray(VoiceChannel[]::new);
 
-        Check.check(toChannels.length >= 2, () -> new ReplyError("Please specify at least two different group voice-channels!"));
-        
+        Check.check(toChannels.length >= 2,
+            () -> new ReplyError("Please specify at least two different group voice-channels!"));
+
         Map<Member, VoiceChannel> distribution = distributeUsers(fromChannel, toChannels);
 
-        distribution.entrySet()
-            .forEach(entry -> guild.moveVoiceMember(entry.getKey(), entry.getValue()));
-        
-        String reply = String.format("Distributed %s users from the %s channel to these channels:\n • %s",
-            distribution.entrySet().size(), fromChannel.getName(), String.join("\n • ", Arrays.stream(toChannels).map(VoiceChannel::getName).collect(Collectors.toList())));
-        channel.sendMessage(reply).submit();
+        distribution.forEach((key, value) -> guild.moveVoiceMember(key, value).queue());
+
+        embedReply(original, channel, "Random Groups",
+            "Distributed %s users from the %s channel to these channels:\n • %s",
+            distribution.entrySet().size(), fromChannel.getName(),
+            Arrays.stream(toChannels).map(VoiceChannel::getName)
+                .collect(Collectors.joining("\n • "))).queue();
     }
 
-    private boolean isValidVoiceChannelReference(String reference) {
-        return reference.equalsIgnoreCase("here") || Parser.Channel.isParsable(reference);
-    }
-
-    private VoiceChannel findVoiceChannel(Guild guild, User executor, String reference) {
+    private VoiceChannel findVoiceChannel(Guild guild, Member executor, String reference) {
         if (reference.equalsIgnoreCase("here")) {
-            GuildVoiceState voice = guild.getMember(executor).getVoiceState();
-            Check.check(voice.inVoiceChannel(), () -> new ReplyError("You can't use `here` if you're not in a voice channel!"));
+            GuildVoiceState voice = executor.getVoiceState();
+            Check.check(voice != null && voice.inVoiceChannel(),
+                () -> new ReplyError("You can't use `here` if you're not in a voice channel!"));
             return voice.getChannel();
         } else {
-            VoiceChannel channel = guild.getVoiceChannelById(Parser.Channel.parse(reference));
-            Check.check(channel != null, () -> new ReplyError("Can't find a voice channel with the ID `%s`!", reference));
+            VoiceChannel channel = Parser.Channel.getVoiceChannel(guild, reference);
+            Check.check(channel != null,
+                () -> new ReplyError("Can't find a voice channel `%s`!", reference));
             return channel;
         }
     }
@@ -98,15 +96,16 @@ public class RandomGroupsCommand implements GuildCommand {
      * Creates a user-channel map for distributing all users (excluding bots) in
      * one channel to an array of group channels. The resulting distribution
      * aims for similar group sizes (group sizes vary at most by 1).
+     *
      * @param from the channel to distribute users from.
-     * @param to the group channels to distribute users to.
+     * @param to   the group channels to distribute users to.
      * @return a map that shows which user needs to be moved in which channel.
      */
     public static Map<Member, VoiceChannel> distributeUsers(VoiceChannel from, VoiceChannel[] to) {
         Member[] membersToDistribute = from.getMembers().stream()
-            .filter(member -> !member.getUser().isBot())
-            .toArray(Member[]::new);
-        
+                                           .filter(member -> !member.getUser().isBot())
+                                           .toArray(Member[]::new);
+
         Map<Member, VoiceChannel> memberChannels = new HashMap<>();
 
         for (int i = 0; i < membersToDistribute.length; i++) {
