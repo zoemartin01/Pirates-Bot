@@ -21,7 +21,7 @@ public class Usage implements GuildCommand {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+    public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
         Check.check(!args.isEmpty(), CommandArgumentException::new);
 
         LinkedList<Command> commands = new LinkedList<>();

@@ -32,7 +32,7 @@ class BlackList implements GuildCommand {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+    public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
         help(user, channel, List.of("level", "config", name()), original);
     }
 
@@ -64,7 +64,7 @@ class BlackList implements GuildCommand {
 
         @SuppressWarnings("ConstantConditions")
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             Guild g = original.getGuild();
             LevelConfig config = Levels.getConfig(g);
 
@@ -80,7 +80,7 @@ class BlackList implements GuildCommand {
                     channels.stream().filter(s -> !s.isEmpty()).map(s -> g.getTextChannelById(s) == null ? s :
                                                                              g.getTextChannelById(s).getAsMention()))
                     .map(s -> String.format("%s\n",s)).collect(Collectors.toList())),
-                (TextChannel) channel, user
+                channel, user.getUser()
             );
 
             PageListener.add(p);
@@ -114,7 +114,7 @@ class BlackList implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             Check.check(!args.isEmpty(), CommandArgumentException::new);
             TextChannel c = Parser.Channel.getTextChannel(original.getGuild(),
                 lastArg(0, args, original));
@@ -156,7 +156,7 @@ class BlackList implements GuildCommand {
             }
 
             @Override
-            public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+            public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
                 Check.check(!args.isEmpty(), CommandArgumentException::new);
                 TextChannel c = Parser.Channel.getTextChannel(original.getGuild(),
                     lastArg(0, args, original));
@@ -204,7 +204,7 @@ class BlackList implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             Check.check(!args.isEmpty(), CommandArgumentException::new);
             Role r = Parser.Role.getRole(original.getGuild(),
                 lastArg(0, args, original));
@@ -246,7 +246,7 @@ class BlackList implements GuildCommand {
             }
 
             @Override
-            public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+            public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
                 Check.check(!args.isEmpty(), CommandArgumentException::new);
                 Role r = Parser.Role.getRole(original.getGuild(),
                     lastArg(0, args, original));

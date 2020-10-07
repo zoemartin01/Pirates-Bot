@@ -26,7 +26,7 @@ public class Status implements Module, GuildCommand {
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+    public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
         Check.check(args.size() >= 2, CommandArgumentException::new);
 
         int id = Parser.Int.parse(args.get(0));

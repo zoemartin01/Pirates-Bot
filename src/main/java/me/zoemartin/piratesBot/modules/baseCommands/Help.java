@@ -30,7 +30,7 @@ public class Help implements GuildCommand {
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+    public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
         Guild guild = original.getGuild();
         Member member = original.getMember();
 
@@ -47,7 +47,7 @@ public class Help implements GuildCommand {
                 .sorted(Comparator.comparing(Command::name))
                 .map(command -> String.format("`%s` | %s\n\n", command.name(), command.description()))
                 .collect(Collectors.toList())),
-            (TextChannel) channel, user);
+            channel, user.getUser());
 
         PageListener.add(p);
     }
@@ -78,7 +78,7 @@ public class Help implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             AtomicReference<Command> command = new AtomicReference<>(
                 CommandManager.getCommands().stream()
                     .filter(c -> invoked.matches(c.regex().toLowerCase()))

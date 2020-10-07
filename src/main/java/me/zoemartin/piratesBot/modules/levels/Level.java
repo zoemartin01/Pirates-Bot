@@ -31,7 +31,7 @@ public class Level implements GuildCommand {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+    public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
         new Show().run(user, channel, args, original, invoked);
     }
 
@@ -53,7 +53,7 @@ public class Level implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             List<UserLevel> levels;
             if (args.size() > 0 && args.get(0).equalsIgnoreCase("full")) {
                 levels = Levels.getLevels(original.getGuild()).stream()
@@ -77,7 +77,7 @@ public class Level implements GuildCommand {
                                 u.getAsMention(), Levels.calcLevel(ul.getExp()), ul.getExp());
                         }
                     ).collect(Collectors.toList())),
-                (TextChannel) channel, user);
+                channel, user.getUser());
 
             PageListener.add(p);
         }
@@ -101,13 +101,13 @@ public class Level implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             User u = null;
             String arg;
-            if (args.isEmpty()) u = user;
+            if (args.isEmpty()) u = user.getUser();
             else if (Parser.User.isParsable(arg = lastArg(0, args, original))) u = CacheUtils.getUser(arg);
             else if (Parser.User.tagIsParsable(arg)) u = Bot.getJDA().getUserByTag(arg);
-            if (u == null) u = user;
+            if (u == null) u = user.getUser();
 
             Member member = CacheUtils.getMember(original.getGuild(), u.getId());
             UserLevel level = Levels.getUserLevel(original.getGuild(), u);

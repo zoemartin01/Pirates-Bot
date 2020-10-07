@@ -23,7 +23,7 @@ public class Echo implements GuildCommand {
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+    public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
         Check.check(!args.isEmpty(), CommandArgumentException::new);
 
         String echo = lastArg(0, args, original);
@@ -60,7 +60,7 @@ public class Echo implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             Check.check(args.size() > 1 && Parser.Channel.isParsable(args.get(0)),
                 CommandArgumentException::new);
 
@@ -113,7 +113,7 @@ public class Echo implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             Check.check(args.size() > 1 && Parser.Message.isParsable(args.get(0)), CommandArgumentException::new);
 
             String message, channelId;

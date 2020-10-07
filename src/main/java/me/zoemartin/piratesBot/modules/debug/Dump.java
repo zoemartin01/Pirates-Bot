@@ -17,7 +17,7 @@ public class Dump implements GuildCommand {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+    public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
         List<Member> members = original.getGuild().loadMembers().get();
 
         String dump = members.stream().map(member -> String.format("%d. %s / %s / %s / Joined at: %s UTC",

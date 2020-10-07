@@ -26,8 +26,8 @@ public class Prefix implements GuildCommand {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
-        Help.commandHelp(user, channel, args, original, name());
+    public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
+        Help.commandHelp(user.getUser(), channel, args, original, name());
     }
 
     @Override
@@ -47,7 +47,7 @@ public class Prefix implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             Check.check(!args.isEmpty(), CommandArgumentException::new);
 
             String prefix = lastArg(0, args, original);
@@ -78,7 +78,7 @@ public class Prefix implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             Check.check(args.size() == 1, CommandArgumentException::new);
 
             String prefix = args.get(0);
@@ -110,7 +110,7 @@ public class Prefix implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             Check.check(args.isEmpty(), CommandArgumentException::new);
 
             EmbedBuilder eb = new EmbedBuilder();

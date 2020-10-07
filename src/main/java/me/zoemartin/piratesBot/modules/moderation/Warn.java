@@ -33,7 +33,7 @@ public class Warn implements GuildCommand {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+    public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
         Check.check(args.size() > 1 && Parser.User.isParsable(args.get(0)), CommandArgumentException::new);
         String userId = args.get(0);
 
@@ -82,7 +82,7 @@ public class Warn implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             String userId = args.get(0);
             Check.check(args.size() == 1 && Parser.User.isParsable(userId), CommandArgumentException::new);
 
@@ -115,7 +115,7 @@ public class Warn implements GuildCommand {
                 }).collect(Collectors.toList())
             );
 
-            PageListener.add(new PagedEmbed(pages, (TextChannel) channel, user));
+            PageListener.add(new PagedEmbed(pages, channel, user.getUser()));
         }
 
         @Override
@@ -141,7 +141,7 @@ public class Warn implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             Check.check(args.size() == 1, CommandArgumentException::new);
 
             UUID uuid = UUID.fromString(args.get(0));
@@ -196,7 +196,7 @@ public class Warn implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             Check.check(!args.isEmpty(), CommandArgumentException::new);
             String[] split = original.getContentRaw().split("\n");
             List<String> input = List.of(split).subList(1, split.length);
@@ -252,7 +252,7 @@ public class Warn implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             Check.check(args.isEmpty(), CommandArgumentException::new);
             Check.check(original.getAttachments().size() == 1, CommandArgumentException::new);
             Message m = channel.sendMessage("Okay... this might take a while").complete();

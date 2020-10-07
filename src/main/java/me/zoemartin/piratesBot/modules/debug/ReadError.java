@@ -24,7 +24,7 @@ public class ReadError implements GuildCommand {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+    public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
         Check.check(args.size() == 1, CommandArgumentException::new);
 
         UUID uuid = UUID.fromString(args.get(0));

@@ -31,8 +31,8 @@ public class Permission implements GuildCommand {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
-        Help.commandHelp(user, channel, args, original, name());
+    public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
+        Help.commandHelp(user.getUser(), channel, args, original, name());
     }
 
     @Override
@@ -67,8 +67,8 @@ public class Permission implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
-            Help.commandHelp(user, channel, List.of("perm", name()), original, "perm");
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
+            Help.commandHelp(user.getUser(), channel, List.of("perm", name()), original, "perm");
         }
 
         @Override
@@ -88,7 +88,7 @@ public class Permission implements GuildCommand {
             }
 
             @Override
-            public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+            public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
                 Check.check(args.size() == 2 && Parser.User.isParsable(args.get(0))
                                 && Parser.Int.isParsable(args.get(1)), CommandArgumentException::new);
 
@@ -129,7 +129,7 @@ public class Permission implements GuildCommand {
             }
 
             @Override
-            public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+            public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
                 Check.check(args.size() == 1 && Parser.User.isParsable(args.get(0)),
                     CommandArgumentException::new);
 
@@ -164,7 +164,7 @@ public class Permission implements GuildCommand {
             }
 
             @Override
-            public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+            public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
                 Check.check(args.isEmpty(), CommandArgumentException::new);
 
                 EmbedBuilder eb = new EmbedBuilder();
@@ -215,8 +215,8 @@ public class Permission implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
-            Help.commandHelp(user, channel, List.of("perm", name()), original, "perm");
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
+            Help.commandHelp(user.getUser(), channel, List.of("perm", name()), original, "perm");
         }
 
         @Override
@@ -236,7 +236,7 @@ public class Permission implements GuildCommand {
             }
 
             @Override
-            public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+            public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
                 Check.check(args.size() == 2 && Parser.Int.isParsable(args.get(1)),
                     CommandArgumentException::new);
 
@@ -278,7 +278,7 @@ public class Permission implements GuildCommand {
             }
 
             @Override
-            public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+            public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
                 Check.check(!args.isEmpty(), CommandArgumentException::new);
 
                 Role r = Parser.Role.getRole(original.getGuild(), lastArg(0, args, original));
@@ -313,7 +313,7 @@ public class Permission implements GuildCommand {
             }
 
             @Override
-            public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+            public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
                 Check.check(args.isEmpty(), CommandArgumentException::new);
 
                 EmbedBuilder eb = new EmbedBuilder();

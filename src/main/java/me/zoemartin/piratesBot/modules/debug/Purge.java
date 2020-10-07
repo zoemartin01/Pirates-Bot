@@ -28,7 +28,7 @@ public class Purge implements GuildCommand {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+    public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
         Check.check(args.size() == 1 && Parser.Int.isParsable(args.get(0)), CommandArgumentException::new);
         int amount = Parser.Int.parse(args.get(0));
 
@@ -66,7 +66,7 @@ public class Purge implements GuildCommand {
 
         original.delete().queue();
         Instant start = Instant.now();
-        msgs.forEach(messages -> ((TextChannel) channel).deleteMessages(messages).complete());
+        msgs.forEach(messages -> channel.deleteMessages(messages).complete());
         Instant end = Instant.now();
 
 

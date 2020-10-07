@@ -36,7 +36,7 @@ class Config implements GuildCommand {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+    public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
         help(user, channel, List.of("level", name()), original);
     }
 
@@ -58,7 +58,7 @@ class Config implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             LevelConfig c = Levels.getConfig(original.getGuild());
             c.setEnabled(true);
             DatabaseUtil.updateObject(c);
@@ -85,7 +85,7 @@ class Config implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             LevelConfig c = Levels.getConfig(original.getGuild());
             c.setEnabled(false);
             DatabaseUtil.updateObject(c);
@@ -112,7 +112,7 @@ class Config implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             Check.check(args.size() == 1 && args.get(0).toLowerCase().matches("always|reward|never"),
                 CommandArgumentException::new);
 
@@ -157,7 +157,7 @@ class Config implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             Check.check(args.size() == 2 && Parser.Int.isParsable(args.get(0))
                             && Parser.User.isParsable(args.get(1)), CommandArgumentException::new);
 
@@ -203,7 +203,7 @@ class Config implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             Check.check(args.isEmpty(), CommandArgumentException::new);
             Check.check(original.getAttachments().size() == 1, CommandArgumentException::new);
             Message m = channel.sendMessage("Okay... this might take a while").complete();
@@ -250,7 +250,7 @@ class Config implements GuildCommand {
                                 Levels.calcLevel(e.getValue()), e.getValue());
                         }
                     ).collect(Collectors.toList())),
-                (TextChannel) channel, user);
+                channel, user.getUser());
 
             PageListener.add(p);
         }
@@ -279,7 +279,7 @@ class Config implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             help(user, channel, List.of("level", "config", name()), original);
         }
 
@@ -301,7 +301,7 @@ class Config implements GuildCommand {
             }
 
             @Override
-            public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+            public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
                 Check.check(args.size() > 1 && Parser.Int.isParsable(args.get(0)),
                     CommandArgumentException::new);
 
@@ -344,7 +344,7 @@ class Config implements GuildCommand {
             }
 
             @Override
-            public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+            public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
                 Check.check(args.size() > 1, CommandArgumentException::new);
 
                 Role r = Parser.Role.getRole(original.getGuild(), lastArg(1, args, original));
@@ -385,7 +385,7 @@ class Config implements GuildCommand {
             }
 
             @Override
-            public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+            public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
                 Check.check(args.isEmpty(), CommandArgumentException::new);
 
                 LevelConfig config = Levels.getConfig(original.getGuild());
@@ -401,7 +401,7 @@ class Config implements GuildCommand {
                                      }).collect(Collectors.joining(", "))
                                  )
                         ).collect(Collectors.toList())),
-                    (TextChannel) channel, user);
+                    channel, user.getUser());
 
                 PageListener.add(p);
                 addCheckmark(original);

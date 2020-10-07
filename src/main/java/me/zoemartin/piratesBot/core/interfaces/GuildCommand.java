@@ -27,12 +27,18 @@ public interface GuildCommand extends Command {
             original.getContentRaw(), args.get(expectedIndex));
     }
 
+    void run(Member user, TextChannel channel, List<String> args, Message original, String invoked);
+
+    default void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        run(original.getMember(), original.getTextChannel(), args, original, invoked);
+    }
+
     @SuppressWarnings("ConstantConditions")
     default void addCheckmark(Message message) {
         message.addReaction(Bot.getJDA().getEmoteById("762424762412040192")).queue();
     }
 
-    default void help(User user, MessageChannel channel, List<String> args, Message original) {
-        if (Help.getHelper() != null) Help.getHelper().send(user, channel, args, original, args.get(0));
+    default void help(Member user, MessageChannel channel, List<String> args, Message original) {
+        if (Help.getHelper() != null) Help.getHelper().send(user.getUser(), channel, args, original, args.get(0));
     }
 }

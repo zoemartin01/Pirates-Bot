@@ -23,7 +23,7 @@ public class Scatter implements GuildCommand {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+    public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
         Check.check(args.size() == 1, CommandArgumentException::new);
 
         Integer id = Parser.Int.parse(args.get(0));

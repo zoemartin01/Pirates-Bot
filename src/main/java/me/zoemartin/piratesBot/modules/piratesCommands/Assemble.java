@@ -24,8 +24,8 @@ public class Assemble implements GuildCommand {
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
-        Guild g = ((GuildChannel) channel).getGuild();
+    public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
+        Guild g = channel.getGuild();
 
         Check.check(args.size() >= 2, CommandArgumentException::new);
 

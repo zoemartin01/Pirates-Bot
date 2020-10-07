@@ -42,12 +42,12 @@ public class Debug implements Module, GuildCommand {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+    public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
         List<Object> list = help(args);
         Command command = (Command) list.get(0);
 
         try {
-            command.run(user, channel, (List<String>) list.get(1), original, (String) list.get(2));
+            command.run(user.getUser(), channel, (List<String>) list.get(1), original, (String) list.get(2));
         } catch (Exception e) {
             channel.sendMessageFormat("Error while running command `%s`: `%s`", command.name(), e.getMessage()).queue();
         }
@@ -108,12 +108,12 @@ public class Debug implements Module, GuildCommand {
 
         @SuppressWarnings("unchecked")
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             List<Object> list = Debug.help(args);
             Command command = (Command) list.get(0);
 
             try {
-                command.run(user, channel, (List<String>) list.get(1), original, (String) list.get(2));
+                command.run(user.getUser(), channel, (List<String>) list.get(1), original, (String) list.get(2));
             } catch (Exception e) {
                 StringBuilder error = new StringBuilder("Exception in thread \"" + Thread.currentThread().getName()
                                                             + "\" " + e.getClass().getCanonicalName()

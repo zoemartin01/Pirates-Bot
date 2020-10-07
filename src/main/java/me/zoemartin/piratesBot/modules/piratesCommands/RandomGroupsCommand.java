@@ -10,14 +10,7 @@ import me.zoemartin.piratesBot.core.interfaces.GuildCommand;
 import me.zoemartin.piratesBot.core.util.Check;
 import me.zoemartin.piratesBot.core.util.Parser;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.GuildChannel;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.entities.*;
 
 public class RandomGroupsCommand implements GuildCommand {
     @Override
@@ -51,7 +44,7 @@ public class RandomGroupsCommand implements GuildCommand {
     }
 
     @Override
-    public void run(User executor, MessageChannel channel, List<String> args, Message original, String invoked) {
+    public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
         Guild guild = original.getGuild();
 
         // there need to be at least 3 voice channels referenced:

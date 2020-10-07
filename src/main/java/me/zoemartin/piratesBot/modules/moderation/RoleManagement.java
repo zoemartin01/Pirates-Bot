@@ -25,8 +25,8 @@ public class RoleManagement implements GuildCommand {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
-
+    public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
+        help(user, channel, Collections.singletonList(name()), original);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class RoleManagement implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             Check.check(args.size() >= 2, CommandArgumentException::new);
 
             Guild g = original.getGuild();
@@ -97,7 +97,7 @@ public class RoleManagement implements GuildCommand {
         }
 
         @Override
-        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             Check.check(args.size() >= 2, CommandArgumentException::new);
 
             Guild g = original.getGuild();

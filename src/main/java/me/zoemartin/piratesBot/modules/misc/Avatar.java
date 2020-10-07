@@ -22,14 +22,14 @@ public class Avatar implements GuildCommand {
     }
 
     @Override
-    public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+    public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
         Check.check(args.isEmpty() || args.size() == 1, CommandArgumentException::new);
 
         User u;
-        if (args.isEmpty()) u = user;
+        if (args.isEmpty()) u = user.getUser();
         else u = Parser.User.isParsable(args.get(0)) ? CacheUtils.getUser(args.get(0))
                      : Bot.getJDA().getUserByTag(args.get(0));
-        if (u == null) u = user;
+        if (u == null) u = user.getUser();
 
         String avatarId = u.getAvatarId();
         String id = u.getId();
