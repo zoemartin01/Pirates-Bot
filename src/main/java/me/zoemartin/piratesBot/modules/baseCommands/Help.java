@@ -106,6 +106,7 @@ public class Help implements GuildCommand {
             eb.setTitle("`" + name.toUpperCase() + "`")
                 .setColor(0xdf136c);
             eb.addField("Description:", cmd.description(), false);
+            if (!cmd.detailedHelp().isEmpty()) eb.addField("Detailed Help:", cmd.detailedHelp(), false);
             eb.addField("Usage: ", cmd.name().equals(cmd.usage()) ?
                                        String.format("`%s`", name) : String.format("`%s %s`", name, cmd.usage()),
                 false);
