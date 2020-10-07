@@ -5,22 +5,27 @@ import me.zoemartin.piratesBot.core.util.DatabaseUtil;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.events.ShutdownEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.Compression;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 
+import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
 import java.util.Properties;
 
-public class Bot {
+public class Bot extends ListenerAdapter {
     private static JDABuilder builder;
     private static JDA jda = null;
     private static final String OWNER = "212591138945630213";
 
-    public static final String VERSION = "0.3.0";
+    public static final String VERSION = "0.4.0";
     public static final String JDA_VERSION = "4.2.0_203";
+
+    private static int exitCode = 0;
 
     public static void main(String[] args) throws LoginException {
         builder = JDABuilder.createDefault(args[0]);
@@ -50,6 +55,8 @@ public class Bot {
         builder.setCompression(Compression.NONE);
         builder.setActivity(Activity.watching("y'all"));
 
+        builder.addEventListeners(new Bot());
+
         jda = builder.build();
     }
 
@@ -63,5 +70,17 @@ public class Bot {
 
     public static String getOWNER() {
         return OWNER;
+    }
+
+    public static void shutdownWithCode(int code, boolean force) {
+        exitCode = code;
+        System.out.println(exitCode);
+        if (force) jda.shutdownNow();
+        else jda.shutdown();
+    }
+
+    @Override
+    public void onShutdown(@Nonnull ShutdownEvent event) {
+        System.exit(exitCode);
     }
 }

@@ -10,9 +10,13 @@ import net.dv8tion.jda.api.entities.*;
 import java.util.*;
 
 public class Shutdown implements Command {
+    private static final int EXIT_CODE_PROPER_SHUTDOWN = 0;
+    private static final int EXIT_CODE_RESTART = 10;
+    private static final int EXIT_CODE_UPGRADE = 20;
+
     @Override
     public Set<Command> subCommands() {
-        return Collections.emptySet();
+        return Set.of(new Force(), new Upgrade(), new Restart());
     }
 
     @Override
@@ -22,16 +26,8 @@ public class Shutdown implements Command {
 
     @Override
     public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
-        Check.check(args.isEmpty() || args.size() == 1 && args.get(0).matches("force|now"),
-            CommandArgumentException::new);
-
-        if (args.isEmpty()) {
-            channel.sendMessageFormat("Shutting down soon! :)").queue();
-            Bot.getJDA().shutdown();
-        } else {
-            channel.sendMessageFormat("Shutting down now!").complete();
-            Bot.getJDA().shutdownNow();
-        }
+        channel.sendMessageFormat("Shutting down soon! :)").complete();
+        Bot.shutdownWithCode(EXIT_CODE_PROPER_SHUTDOWN, false);
     }
 
     @Override
@@ -40,12 +36,94 @@ public class Shutdown implements Command {
     }
 
     @Override
-    public String usage() {
-        return "[force|now]";
+    public String description() {
+        return "Shuts down the bot after all RestActions have finished";
     }
 
-    @Override
-    public String description() {
-        return "Shuts down the bot";
+    private static class Force implements Command {
+
+        @Override
+        public String name() {
+            return "force";
+        }
+
+        @Override
+        public String regex() {
+            return "--force|-f|now";
+        }
+
+        @Override
+        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+            channel.sendMessageFormat("Shutting down now!").complete();
+            Bot.shutdownWithCode(EXIT_CODE_PROPER_SHUTDOWN, true);
+        }
+
+        @Override
+        public CommandPerm commandPerm() {
+            return CommandPerm.OWNER;
+        }
+
+        @Override
+        public String description() {
+            return "Forces the bot to shut down and cancels RestActions";
+        }
+    }
+
+    private static class Upgrade implements Command {
+
+        @Override
+        public String name() {
+            return "upgrade";
+        }
+
+        @Override
+        public String regex() {
+            return "--upgrade|-u";
+        }
+
+        @Override
+        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+            channel.sendMessageFormat("Upgrading the bot and rebooting!").complete();
+            Bot.shutdownWithCode(EXIT_CODE_UPGRADE, true);
+        }
+
+        @Override
+        public CommandPerm commandPerm() {
+            return CommandPerm.OWNER;
+        }
+
+        @Override
+        public String description() {
+            return "Upgrades the bot to the current version and restarts";
+        }
+    }
+
+    private static class Restart implements Command {
+
+        @Override
+        public String name() {
+            return "restart";
+        }
+
+        @Override
+        public String regex() {
+            return "--restart|-r|--reboot";
+        }
+
+        @Override
+        public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
+            channel.sendMessageFormat("Restarting the bot!").complete();
+            Bot.shutdownWithCode(EXIT_CODE_RESTART, true);
+        }
+
+        @Override
+        public CommandPerm commandPerm() {
+            return CommandPerm.OWNER;
+        }
+
+        @Override
+        public String description() {
+            return "Upgrades the bot to the current version and restarts";
+        }
     }
 }
