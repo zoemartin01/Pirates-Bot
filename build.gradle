@@ -9,6 +9,8 @@ compileJava.options.encoding = 'UTF-8'
 sourceCompatibility = 11
 targetCompatibility = 11
 
+String JDA_VERSION = "4.2.0_203"
+
 group('me.zoemartin')
 version('0.4.1')
 
@@ -25,13 +27,14 @@ shadowJar {
     manifest {
         attributes 'Main-Class':             mainClassName
         attributes 'Implementation-Version': version
+        attributes 'jda-version': JDA_VERSION
     }
 }
 
 dependencies {
     testImplementation(group: 'junit', name: 'junit', version: '4.12')
     testCompile("org.mockito:mockito-core:2.+")
-    implementation('net.dv8tion:JDA:4.2.0_203')
+    implementation(group:  'net.dv8tion', name:  'JDA', version:  JDA_VERSION)
     implementation('net.oneandone.reflections8:reflections8:0.11.7')
     implementation('club.minnced:discord-webhooks:0.4.1')
     implementation(group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30')
