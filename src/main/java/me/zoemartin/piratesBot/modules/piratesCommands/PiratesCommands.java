@@ -10,5 +10,6 @@ public class PiratesCommands implements Module {
     public void init() {
         CommandManager.register(new Assemble());
         CommandManager.register(new Scatter());
+        CommandManager.register(new RandomGroupsCommand());
     }
 }
