@@ -21,6 +21,7 @@ public class DatabaseUtil {
     public static void setConfig(Configuration configuration) {
         config = configuration;
         mapped.forEach(configuration::addAnnotatedClass);
+        System.out.println(mapped.toString());
     }
 
     public static SessionFactory getSessionFactory() {

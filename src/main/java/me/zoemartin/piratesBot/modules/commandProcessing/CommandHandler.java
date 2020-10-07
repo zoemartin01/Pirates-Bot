@@ -14,6 +14,8 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -23,9 +25,13 @@ public class CommandHandler implements CommandProcessor {
         User user = event.getAuthor();
         MessageChannel channel = event.getChannel();
 
-        String[] inputSplit = input.split("\\s+");
+        List<String> inputs = new ArrayList<>();
+        Matcher m = Pattern.compile("([^\"]\\S*|\".+?\")\\s*").matcher(input);
+        while (m.find())
+            inputs.add(m.group(1).replace("\"", ""));
+
         LinkedList<Command> commands = new LinkedList<>();
-        Stream.of(inputSplit).forEach(s -> {
+        inputs.forEach(s -> {
             if (commands.isEmpty()) commands.add(CommandManager.getCommands().stream()
                                                      .filter(c -> s.matches(c.regex().toLowerCase()))
                                                      .findFirst().orElse(null));
@@ -59,12 +65,11 @@ public class CommandHandler implements CommandProcessor {
 
         List<String> arguments;
 
-        if (inputSplit.length <= commandLevel) arguments = Collections.emptyList();
-        else arguments = Arrays.asList(Arrays.copyOfRange(inputSplit, commandLevel, inputSplit.length));
+        arguments = inputs.subList(commandLevel, inputs.size());
 
 
         try {
-            command.run(user, channel, Collections.unmodifiableList(arguments), event.getMessage(), inputSplit[commands.size() - 1]);
+            command.run(user, channel, Collections.unmodifiableList(arguments), event.getMessage(), inputs.get(commands.size() - 1));
         } catch (CommandArgumentException e) {
             sendUsage(channel, commands);
         } catch (ReplyError e) {

@@ -11,5 +11,6 @@ public class Moderation implements Module {
     public void init() {
         DatabaseUtil.setMapped(WarnEntity.class);
         CommandManager.register(new Warn());
+        CommandManager.register(new RoleManagement());
     }
 }

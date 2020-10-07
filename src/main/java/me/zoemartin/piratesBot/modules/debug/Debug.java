@@ -109,7 +109,7 @@ public class Debug implements Module, GuildCommand {
         @SuppressWarnings("unchecked")
         @Override
         public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
-            List<Object> list = help(args);
+            List<Object> list = Debug.help(args);
             Command command = (Command) list.get(0);
 
             try {

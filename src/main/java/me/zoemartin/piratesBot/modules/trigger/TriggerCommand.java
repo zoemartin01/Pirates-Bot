@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
-public class TriggerCommand implements Command {
+public class TriggerCommand implements GuildCommand {
     @Override
     public Set<Command> subCommands() {
         return Set.of(new TList(), new Remove());
@@ -43,8 +43,7 @@ public class TriggerCommand implements Command {
             throw new ReplyError("That regex is not valid!");
         }
 
-        String message = original.getContentRaw()
-                             .substring(original.getContentRaw().indexOf(regex) + regex.length() + 1);
+        String message = lastArg(1, args, original);
 
         Triggers.addTrigger(original.getGuild(), regex, message);
         channel.sendMessageFormat("Successfully added trigger `%s`", regex).queue();

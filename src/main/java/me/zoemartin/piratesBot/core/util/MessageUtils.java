@@ -56,4 +56,8 @@ public class MessageUtils {
         if (days > 0) return String.format("%s days and %s hours", days, hours);
         else return String.format("%s hours", hours);
     }
+
+    public static String getArgsFrom(String original, String substring) {
+        return original.substring(original.indexOf(substring));
+    }
 }

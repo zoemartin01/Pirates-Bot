@@ -252,10 +252,10 @@ public class Permission implements GuildCommand {
 
             @Override
             public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
-                Check.check(args.size() == 2 && Parser.Role.isParsable(args.get(0))
-                                && Parser.Int.isParsable(args.get(1)), CommandArgumentException::new);
+                Check.check(args.size() == 2 && Parser.Int.isParsable(args.get(1)),
+                    CommandArgumentException::new);
 
-                Role r = original.getGuild().getRoleById(Parser.Role.parse(args.get(0)));
+                Role r = Parser.Role.getRole(original.getGuild(), args.get(0));
                 CommandPerm cp = CommandPerm.fromNum(Parser.Int.parse(args.get(1)));
                 Check.notNull(cp, CommandArgumentException::new);
                 Check.entityNotNull(r, Role.class);
@@ -294,10 +294,9 @@ public class Permission implements GuildCommand {
 
             @Override
             public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
-                Check.check(args.size() == 1 && Parser.Role.isParsable(args.get(0)),
-                    CommandArgumentException::new);
+                Check.check(!args.isEmpty(), CommandArgumentException::new);
 
-                Role r = original.getGuild().getRoleById(Parser.Role.parse(args.get(0)));
+                Role r = Parser.Role.getRole(original.getGuild(), lastArg(0, args, original));
                 Check.entityNotNull(r, Role.class);
 
                 Check.check(PermissionHandler.removeRolePerm(original.getGuild().getId(), r.getId()),

@@ -4,8 +4,7 @@ import me.zoemartin.piratesBot.core.CommandPerm;
 import me.zoemartin.piratesBot.core.exceptions.CommandArgumentException;
 import me.zoemartin.piratesBot.core.exceptions.ReplyError;
 import me.zoemartin.piratesBot.core.interfaces.*;
-import me.zoemartin.piratesBot.core.util.Check;
-import me.zoemartin.piratesBot.core.util.Parser;
+import me.zoemartin.piratesBot.core.util.*;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 
@@ -23,20 +22,26 @@ public class Assemble implements GuildCommand {
         return "assemble";
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void run(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
         Guild g = ((GuildChannel) channel).getGuild();
 
-        Check.check(args.size() == 2, CommandArgumentException::new);
-        Check.check(Parser.Channel.isParsable(args.get(0)), CommandArgumentException::new);
-        Check.check(Parser.Role.isParsable(args.get(1)), CommandArgumentException::new);
+        Check.check(args.size() >= 2, CommandArgumentException::new);
 
-        VoiceChannel vc = g.getVoiceChannelById(Parser.Channel.parse(args.get(0)));
+        VoiceChannel vc;
+        if (args.get(0).equalsIgnoreCase("here")) {
+            Member m = original.getMember();
+            Check.check(m.getVoiceState() != null && m.getVoiceState().inVoiceChannel(),
+                () -> new ReplyError("Error, option `here` cannot be invoked without being connected to a voice chat"));
+            vc = m.getVoiceState().getChannel();
+        } else {
+            vc = Parser.Channel.getVoiceChannel(original.getGuild(), args.get(0));
+        }
+        Check.entityNotNull(vc, VoiceChannel.class);
 
-        Check.check(vc != null, () -> new ReplyError("Channel '%s' does not exist", args.get(0)));
-
-        Role r = g.getRoleById(Parser.Role.parse(args.get(1)));
-        Check.check(r != null, () -> new ReplyError("Role '%s' does not exist", args.get(1)));
+        Role r = Parser.Role.getRole(original.getGuild(), lastArg(1, args, original));
+        Check.entityNotNull(r, Role.class);
 
         Set<Member> toMove = new HashSet<>();
 
@@ -53,9 +58,9 @@ public class Assemble implements GuildCommand {
             g.moveVoiceMember(member, vc).queue();
         }).start());
 
-        channel.sendMessageFormat("Moved everyone with the role %s to the voice channel `%s`. Assembly id: `%s`",
-            r.getAsMention(), vc.getName(), Assembly.addAssembly(a))
-            .queue();
+        embedReply(original, channel, "Assembly",
+            "Moved everyone with the role %s to the voice channel `%s`. \nAssembly id: `%s`",
+            r.getAsMention(), vc.getName(), Assembly.addAssembly(a)).queue();
     }
 
     @Override

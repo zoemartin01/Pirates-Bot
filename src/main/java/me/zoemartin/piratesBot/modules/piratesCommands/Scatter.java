@@ -36,8 +36,8 @@ public class Scatter implements GuildCommand {
             (member, voiceChannel) ->
                 new Thread(() -> voiceChannel.getGuild().moveVoiceMember(member, voiceChannel).queue()).start());
 
-        channel.sendMessageFormat("Moved everyone in assembly `%s` back to their original voice channels",
-            id).queue();
+        embedReply(original, channel, "Scatter",
+            "Moved everyone in assembly `%s` back to their original voice channels", id).queue();
     }
 
     @Override

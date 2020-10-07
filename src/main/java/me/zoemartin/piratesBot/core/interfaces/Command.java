@@ -25,7 +25,9 @@ public interface Command {
         return Set.of(Permission.UNKNOWN);
     }
 
-    String usage();
+    default String usage() {
+        return name();
+    }
 
     String description();
 }
