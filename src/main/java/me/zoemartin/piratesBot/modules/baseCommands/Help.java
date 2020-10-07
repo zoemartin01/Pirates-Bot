@@ -156,8 +156,4 @@ public class Help implements GuildCommand {
         me.zoemartin.piratesBot.core.util.Help.setHelper(
             (user, channel, args, original, invoked) -> new Cmd().run(user, channel, args, original, invoked));
     }
-
-    public static void commandHelp(User user, MessageChannel channel, List<String> args, Message original, String invoked) {
-        new Cmd().run(user, channel, args, original, invoked);
-    }
 }

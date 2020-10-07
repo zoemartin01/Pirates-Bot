@@ -32,7 +32,7 @@ public class Permission implements GuildCommand {
 
     @Override
     public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
-        Help.commandHelp(user.getUser(), channel, args, original, name());
+        help(user, channel, args, original);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class Permission implements GuildCommand {
 
         @Override
         public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
-            Help.commandHelp(user.getUser(), channel, List.of("perm", name()), original, "perm");
+            help(user, channel, List.of("perm", name()), original);
         }
 
         @Override
@@ -216,7 +216,7 @@ public class Permission implements GuildCommand {
 
         @Override
         public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
-            Help.commandHelp(user.getUser(), channel, List.of("perm", name()), original, "perm");
+            help(user, channel, List.of("perm", name()), original);
         }
 
         @Override

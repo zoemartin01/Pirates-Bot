@@ -10,8 +10,7 @@ import me.zoemartin.piratesBot.modules.commandProcessing.Prefixes;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Prefix implements GuildCommand {
@@ -27,7 +26,7 @@ public class Prefix implements GuildCommand {
 
     @Override
     public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
-        Help.commandHelp(user.getUser(), channel, args, original, name());
+        help(user, channel, Collections.singletonList(name()), original);
     }
 
     @Override
