@@ -22,9 +22,13 @@ public interface Command {
     CommandPerm commandPerm();
 
     default Collection<Permission> required() {
-        return Set.of(Permission.UNKNOWN);
+        return Collections.singleton(Permission.UNKNOWN);
     }
 
+    /**
+     * The command's parameters. If this command does not take any parameters do not overwrite this.
+     * @return the command's parameters
+     */
     default String usage() {
         return name();
     }

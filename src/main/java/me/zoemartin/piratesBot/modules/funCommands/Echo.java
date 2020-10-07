@@ -39,7 +39,7 @@ public class Echo implements GuildCommand {
 
     @Override
     public String usage() {
-        return "echo <message...>";
+        return "<message...>";
     }
 
     @Override
@@ -92,7 +92,7 @@ public class Echo implements GuildCommand {
 
         @Override
         public String usage() {
-            return "echo >> #channel <message...>";
+            return "<#channel> <message...>";
         }
 
         @Override
@@ -141,7 +141,7 @@ public class Echo implements GuildCommand {
 
         @Override
         public String usage() {
-            return "echo -e <message_link> <message...>";
+            return "<message_link> <message...>";
         }
 
         @Override

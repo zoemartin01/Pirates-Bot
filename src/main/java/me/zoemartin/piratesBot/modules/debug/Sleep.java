@@ -35,11 +35,6 @@ public class Sleep implements Command {
     }
 
     @Override
-    public String usage() {
-        return "sleep";
-    }
-
-    @Override
     public String description() {
         return "Sends the current thread to sleep";
     }

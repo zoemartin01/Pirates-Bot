@@ -80,7 +80,7 @@ public class RoleManagement implements GuildCommand {
 
         @Override
         public String usage() {
-            return "role add <@user> <role>";
+            return "<@user> <role>";
         }
 
         @Override

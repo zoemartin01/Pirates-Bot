@@ -42,11 +42,6 @@ public class About implements Command {
     }
 
     @Override
-    public String usage() {
-        return "about";
-    }
-
-    @Override
     public String description() {
         return "Shows info about the bot";
     }

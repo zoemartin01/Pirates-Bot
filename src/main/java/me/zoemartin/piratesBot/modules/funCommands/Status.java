@@ -46,7 +46,7 @@ public class Status implements Module, GuildCommand {
 
     @Override
     public String usage() {
-        return "status <type id> <status...>";
+        return "<type id> <status...>";
     }
 
     @Override

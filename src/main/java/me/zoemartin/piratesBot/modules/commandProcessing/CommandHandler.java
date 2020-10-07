@@ -93,12 +93,19 @@ public class CommandHandler implements CommandProcessor {
     }
 
     private static void sendUsage(MessageChannel channel, LinkedList<Command> commands) {
+        String name = commands.stream().map(Command::name).collect(Collectors.joining(" "));
         EmbedBuilder eb = new EmbedBuilder()
-                              .setTitle("`" + commands.stream().map(Command::name)
-                                                  .collect(Collectors.joining(" ")).toUpperCase() + "` usage")
+                              .setTitle("`" + name.toUpperCase() + "` usage")
                               .setDescription(Stream.concat(
                                   Stream.of(commands.getLast()), commands.getLast().subCommands().stream())
-                                                  .map(c -> String.format("`%s`", c.usage()))
+                                                  .map(c -> {
+                                                      if (commands.getLast().equals(c))
+                                                          return c.name().equals(c.usage()) ?
+                                                                     String.format("`%s`", name) : String.format("`%s %s`", name, c.usage());
+                                                      if (c.usage().equals(c.name()))
+                                                          return String.format("`%s %s`", name, c.usage());
+                                                      return String.format("`%s %s %s`", name, c.name(), c.usage());
+                                                  })
                                                   .collect(Collectors.joining(" or\n")))
                               .setColor(0xdf136c);
 

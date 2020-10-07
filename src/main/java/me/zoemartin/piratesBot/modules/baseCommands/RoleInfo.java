@@ -52,7 +52,7 @@ public class RoleInfo implements GuildCommand {
 
     @Override
     public String usage() {
-        return "roleinfo <@role>";
+        return "<@role>";
     }
 
     @Override

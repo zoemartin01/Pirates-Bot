@@ -87,7 +87,7 @@ public class Debug implements Module, GuildCommand {
 
     @Override
     public String usage() {
-        return "debug <command...>";
+        return "<command>";
     }
 
     @Override
@@ -135,7 +135,7 @@ public class Debug implements Module, GuildCommand {
 
         @Override
         public String usage() {
-            return "debug -f <command...>";
+            return "-f <command>";
         }
 
         @Override

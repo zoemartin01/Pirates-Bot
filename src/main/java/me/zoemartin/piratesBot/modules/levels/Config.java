@@ -187,15 +187,13 @@ class Config implements GuildCommand {
      * Input file format:
      * *.json
      *
-     * {
-     *  "levels": [
+     * [
      *      {
      *          "Userid": id,
      *          "Exp": exp
      *      },
      *      ...
-     *  ]
-     * }
+     * ]
      */
     private static class Import implements GuildCommand {
 
@@ -221,16 +219,17 @@ class Config implements GuildCommand {
 
             Map<String, Integer> levels = new ConcurrentHashMap<>();
 
-            String jsonString = br.lines().collect(Collectors.joining());
+            String jsonString = String.format("{\"l\":%s}", br.lines().collect(Collectors.joining()));
             try {
                 JSONObject obj = new JSONObject(jsonString);
-                JSONArray arr = obj.getJSONArray("levels");
+                JSONArray arr = obj.getJSONArray("l");
                 for (int i = 0; i < arr.length(); i++) {
                     String userId = arr.getJSONObject(i).getString("Userid");
                     int exp = arr.getJSONObject(i).getInt("Exp");
                     levels.put(userId, exp);
                 }
             } catch (JSONException e) {
+                m.delete().queue();
                 throw new ReplyError("Import file in wrong format.");
             }
 

@@ -57,7 +57,7 @@ public class TriggerCommand implements GuildCommand {
 
     @Override
     public String usage() {
-        return "trigger <regex> <output...>";
+        return "<regex> <output...>";
     }
 
     @Override
@@ -89,11 +89,6 @@ public class TriggerCommand implements GuildCommand {
         @Override
         public CommandPerm commandPerm() {
             return CommandPerm.BOT_MODERATOR;
-        }
-
-        @Override
-        public String usage() {
-            return "trigger list";
         }
 
         @Override
@@ -130,7 +125,7 @@ public class TriggerCommand implements GuildCommand {
 
         @Override
         public String usage() {
-            return "trigger remove <regex>";
+            return "<regex>";
         }
 
         @Override

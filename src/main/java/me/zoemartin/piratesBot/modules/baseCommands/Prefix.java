@@ -36,11 +36,6 @@ public class Prefix implements GuildCommand {
     }
 
     @Override
-    public String usage() {
-        return "prefix";
-    }
-
-    @Override
     public String description() {
         return "Bot Prefix Management";
     }
@@ -67,7 +62,7 @@ public class Prefix implements GuildCommand {
 
         @Override
         public String usage() {
-            return "prefix add <prefix>";
+            return "<prefix>";
         }
 
         @Override
@@ -99,7 +94,7 @@ public class Prefix implements GuildCommand {
 
         @Override
         public String usage() {
-            return "prefix remove prefix";
+            return "<prefix>";
         }
 
         @Override
@@ -133,11 +128,6 @@ public class Prefix implements GuildCommand {
         @Override
         public CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
-        }
-
-        @Override
-        public String usage() {
-            return "prefix list";
         }
 
         @Override

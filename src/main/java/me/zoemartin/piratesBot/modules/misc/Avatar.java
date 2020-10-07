@@ -63,7 +63,7 @@ public class Avatar implements GuildCommand {
 
     @Override
     public String usage() {
-        return "avatar [user]";
+        return "[user]";
     }
 
     @Override

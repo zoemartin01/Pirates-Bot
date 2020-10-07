@@ -58,7 +58,7 @@ public class ReadError implements GuildCommand {
 
     @Override
     public String usage() {
-        return "readerror <uuid>";
+        return "<uuid>";
     }
 
     @Override

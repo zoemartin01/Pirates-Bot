@@ -113,7 +113,7 @@ public class UserInfo implements GuildCommand {
 
     @Override
     public String usage() {
-        return "userinfo [user]";
+        return "[user]";
     }
 
     @Override

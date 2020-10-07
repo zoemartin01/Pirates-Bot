@@ -42,7 +42,7 @@ public class Permission implements GuildCommand {
 
     @Override
     public String usage() {
-        return "perm help";
+        return "help";
     }
 
     @Override
@@ -74,11 +74,6 @@ public class Permission implements GuildCommand {
         @Override
         public CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
-        }
-
-        @Override
-        public String usage() {
-            return "permission m";
         }
 
         @Override
@@ -118,7 +113,7 @@ public class Permission implements GuildCommand {
 
             @Override
             public String usage() {
-                return "permission m set <user> <level>";
+                return "<user> <level>";
             }
 
             @Override
@@ -153,7 +148,7 @@ public class Permission implements GuildCommand {
 
             @Override
             public String usage() {
-                return "permission m remove <user>";
+                return "<user>";
             }
 
             @Override
@@ -197,11 +192,6 @@ public class Permission implements GuildCommand {
             }
 
             @Override
-            public String usage() {
-                return "permission m list";
-            }
-
-            @Override
             public String description() {
                 return "Lists all members with special bot member permissions";
             }
@@ -232,11 +222,6 @@ public class Permission implements GuildCommand {
         @Override
         public CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
-        }
-
-        @Override
-        public String usage() {
-            return "permission r";
         }
 
         @Override
@@ -277,7 +262,7 @@ public class Permission implements GuildCommand {
 
             @Override
             public String usage() {
-                return "permission r set <role> <level>";
+                return "<role> <level>";
             }
 
             @Override
@@ -312,7 +297,7 @@ public class Permission implements GuildCommand {
 
             @Override
             public String usage() {
-                return "permission r remove <role>";
+                return "<role>";
             }
 
             @Override
@@ -355,11 +340,6 @@ public class Permission implements GuildCommand {
             @Override
             public CommandPerm commandPerm() {
                 return CommandPerm.BOT_ADMIN;
-            }
-
-            @Override
-            public String usage() {
-                return "permission r list";
             }
 
             @Override

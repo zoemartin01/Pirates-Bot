@@ -27,20 +27,28 @@ public class Usage implements GuildCommand {
         LinkedList<Command> commands = new LinkedList<>();
         args.forEach(s -> {
             if (commands.isEmpty()) commands.add(CommandManager.getCommands().stream()
-                                                       .filter(c -> s.matches(c.regex().toLowerCase()))
-                                                       .findFirst().orElseThrow(
+                                                     .filter(c -> s.matches(c.regex().toLowerCase()))
+                                                     .findFirst().orElseThrow(
                     () -> new ConsoleError("Command '%s' not found", invoked)));
             else commands.getLast().subCommands().stream()
                      .filter(sc -> s.matches(sc.regex().toLowerCase()))
                      .findFirst().ifPresent(commands::add);
 
         });
+
+        String name = commands.stream().map(Command::name).collect(Collectors.joining(" "));
         EmbedBuilder eb = new EmbedBuilder()
-                              .setTitle("`" + commands.stream().map(Command::name)
-                                                  .collect(Collectors.joining(" ")).toUpperCase() + "` usage")
+                              .setTitle("`" + name.toUpperCase() + "` usage")
                               .setDescription(Stream.concat(
                                   Stream.of(commands.getLast()), commands.getLast().subCommands().stream())
-                                                  .map(c -> String.format("`%s`", c.usage()))
+                                                  .map(c -> {
+                                                      if (commands.getLast().equals(c))
+                                                          return c.name().equals(c.usage()) ?
+                                                              String.format("`%s`", name) : String.format("`%s %s`", name, c.usage());
+                                                      if (c.usage().equals(c.name()))
+                                                          return String.format("`%s %s`", name, c.usage());
+                                                      return String.format("`%s %s %s`", name, c.name(), c.usage());
+                                                  })
                                                   .collect(Collectors.joining(" or\n")))
                               .setColor(0xdf136c);
 
@@ -54,7 +62,7 @@ public class Usage implements GuildCommand {
 
     @Override
     public String usage() {
-        return "usage <command>";
+        return "<command>";
     }
 
     @Override

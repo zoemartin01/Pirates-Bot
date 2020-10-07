@@ -42,6 +42,11 @@ class BlackList implements GuildCommand {
     }
 
     @Override
+    public String usage() {
+        return "help";
+    }
+
+    @Override
     public String description() {
         return "Blacklist config";
     }
@@ -129,6 +134,11 @@ class BlackList implements GuildCommand {
         }
 
         @Override
+        public String usage() {
+            return "<channel>";
+        }
+
+        @Override
         public String description() {
             return "Blacklist a channel";
         }
@@ -163,6 +173,11 @@ class BlackList implements GuildCommand {
             @Override
             public CommandPerm commandPerm() {
                 return CommandPerm.BOT_ADMIN;
+            }
+
+            @Override
+            public String usage() {
+                return "<channel>";
             }
 
             @Override
@@ -209,6 +224,11 @@ class BlackList implements GuildCommand {
         }
 
         @Override
+        public String usage() {
+            return "<role>";
+        }
+
+        @Override
         public String description() {
             return "Blacklist a channel";
         }
@@ -243,6 +263,11 @@ class BlackList implements GuildCommand {
             @Override
             public CommandPerm commandPerm() {
                 return CommandPerm.BOT_ADMIN;
+            }
+
+            @Override
+            public String usage() {
+                return "<role>";
             }
 
             @Override

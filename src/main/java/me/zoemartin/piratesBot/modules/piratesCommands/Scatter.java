@@ -52,7 +52,7 @@ public class Scatter implements GuildCommand {
 
     @Override
     public String usage() {
-        return "scatter <id>";
+        return "<id>";
     }
 
     @Override

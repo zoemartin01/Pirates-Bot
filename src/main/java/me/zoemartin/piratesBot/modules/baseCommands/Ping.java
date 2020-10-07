@@ -28,11 +28,6 @@ public class Ping implements Command {
     }
 
     @Override
-    public String usage() {
-        return "ping";
-    }
-
-    @Override
     public String description() {
         return "table tennis?";
     }

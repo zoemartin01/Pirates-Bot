@@ -66,7 +66,7 @@ public class Warn implements GuildCommand {
 
     @Override
     public String usage() {
-        return "warn <user> <reason>";
+        return "<user> <reason>";
     }
 
     @Override
@@ -125,7 +125,7 @@ public class Warn implements GuildCommand {
 
         @Override
         public String usage() {
-            return "warn list <user>";
+            return "<user>";
         }
 
         @Override
@@ -179,7 +179,7 @@ public class Warn implements GuildCommand {
 
         @Override
         public String usage() {
-            return "warn remove <uuid>";
+            return "<uuid>";
         }
 
         @Override
@@ -235,7 +235,7 @@ public class Warn implements GuildCommand {
 
         @Override
         public String usage() {
-            return "warn import \n<user> <moderator> <reason>";
+            return "\n<user> <moderator> <reason>";
         }
 
         @Override
@@ -296,11 +296,6 @@ public class Warn implements GuildCommand {
         @Override
         public CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
-        }
-
-        @Override
-        public String usage() {
-            return "warn importfile";
         }
 
         @Override

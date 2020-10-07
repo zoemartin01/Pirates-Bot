@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Help implements GuildCommand {
     @Override
@@ -57,11 +58,6 @@ public class Help implements GuildCommand {
     }
 
     @Override
-    public String usage() {
-        return "help";
-    }
-
-    @Override
     public String description() {
         return "Sending help :3";
     }
@@ -70,7 +66,7 @@ public class Help implements GuildCommand {
 
         @Override
         public String name() {
-            return "command";
+            return "<command>";
         }
 
         @Override
@@ -103,13 +99,16 @@ public class Help implements GuildCommand {
                 }
             });
 
-
+            String name = hierarchy.stream().map(Command::name)
+                              .collect(Collectors.joining(" "));
+            Command cmd = command.get();
             EmbedBuilder eb = new EmbedBuilder();
-            eb.setTitle("`" + hierarchy.stream().map(Command::name)
-                                  .collect(Collectors.joining(" ")).toUpperCase() + "`")
+            eb.setTitle("`" + name.toUpperCase() + "`")
                 .setColor(0xdf136c);
-            eb.addField("Description:", command.get().description(), false);
-            eb.addField("Usage: ", "`" + command.get().usage() + "`", false);
+            eb.addField("Description:", cmd.description(), false);
+            eb.addField("Usage: ", cmd.name().equals(cmd.usage()) ?
+                                       String.format("`%s`", name) : String.format("`%s %s`", name, cmd.usage()),
+                false);
 
 
             CommandPerm perm = command.get().commandPerm();
@@ -145,11 +144,6 @@ public class Help implements GuildCommand {
         @Override
         public CommandPerm commandPerm() {
             return CommandPerm.EVERYONE;
-        }
-
-        @Override
-        public String usage() {
-            return "help <command>";
         }
 
         @Override

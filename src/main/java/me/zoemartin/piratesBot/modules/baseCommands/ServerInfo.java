@@ -85,11 +85,6 @@ public class ServerInfo implements GuildCommand {
     }
 
     @Override
-    public String usage() {
-        return "serverinfo";
-    }
-
-    @Override
     public String description() {
         return "Shows info about the server";
     }

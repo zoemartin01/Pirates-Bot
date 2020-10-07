@@ -38,11 +38,6 @@ public class Dump implements GuildCommand {
     }
 
     @Override
-    public String usage() {
-        return "dump";
-    }
-
-    @Override
     public String description() {
         return "Refreshes the cache and dumps all users";
     }

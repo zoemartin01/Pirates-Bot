@@ -68,7 +68,7 @@ public class Enlarge implements Command {
 
     @Override
     public String usage() {
-        return "enlarge <emote>";
+        return "<emote>";
     }
 
     @Override

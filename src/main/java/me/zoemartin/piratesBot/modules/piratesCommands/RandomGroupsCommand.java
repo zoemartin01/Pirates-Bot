@@ -36,7 +36,7 @@ public class RandomGroupsCommand implements GuildCommand {
 
     @Override
     public String usage() {
-        return "random-groups <from-voice-channel> <group-voice-channels-1> <group-voice-channel-2> [<group-voice-channels...>]";
+        return "<from-voice-channel> <group-voice-channels-1> <group-voice-channel-2> [<group-voice-channels...>]";
     }
 
     @Override

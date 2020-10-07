@@ -37,7 +37,7 @@ public class Count implements Command {
 
     @Override
     public String usage() {
-        return "count <to>";
+        return "<to>";
     }
 
     @Override
