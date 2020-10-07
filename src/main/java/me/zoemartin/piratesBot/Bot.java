@@ -22,9 +22,6 @@ public class Bot extends ListenerAdapter {
     private static JDA jda = null;
     private static final String OWNER = "212591138945630213";
 
-    public static final String VERSION = "0.4.0";
-    public static final String JDA_VERSION = "4.2.0_203";
-
     private static int exitCode = 0;
 
     public static void main(String[] args) throws LoginException {

@@ -24,9 +24,11 @@ public class About implements Command {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("About").setColor(0xdf136c);
 
-        eb.addField("Bot Version", Bot.VERSION, true);
+        String version = getClass().getPackage().getImplementationVersion();
+
+        eb.addField("Bot Version", version == null ? "DEV BUILD" : version, true);
         eb.addField("Java Version", System.getProperty("java.version"), true);
-        eb.addField("JDA Version", Bot.JDA_VERSION, true);
+        eb.addField("JDA Version", JDA.class.getPackage().getImplementationVersion(), true);
         eb.addField("Author", "<@!212591138945630213> / zowee#0001", true);
         eb.addField("Source Code", "https://github.com/zoemartin01/Pirates-Bot", false);
         eb.setThumbnail(Bot.getJDA().getSelfUser().getAvatarUrl());
