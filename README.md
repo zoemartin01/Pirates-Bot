@@ -11,6 +11,7 @@
 * **assemblies:** collect users from various channels in one channel and move them back when needed
 * **custom prefix:** set a custom prefix for running commands in your server
 * **moderation:** keep track of user warnings
+* **levels:** users can level up based on their activity on your server
 
 ## Talking to the bot
 You can talk to the bot using commands. Get started by sending `@mention help` to a text channel with the bot. 
