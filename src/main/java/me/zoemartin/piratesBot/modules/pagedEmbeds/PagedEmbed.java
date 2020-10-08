@@ -27,6 +27,19 @@ public class PagedEmbed {
         }
     }
 
+    public PagedEmbed(List<MessageEmbed> pages, TextChannel channel, User user, int start) {
+        this.pages = pages;
+        this.guildId = channel.getGuild().getId();
+        this.userId = user.getId();
+        this.current = start > pages.size() || start < 1 ? 0 : start - 1;
+        this.message = channel.sendMessage(this.pages.get(this.current)).complete();
+        if (pages.size() > 1) {
+            message.addReaction(BACK).queue();
+            message.addReaction(FORWARD).queue();
+            message.addReaction(STOP).queue();
+        }
+    }
+
     public String getGuildId() {
         return guildId;
     }

@@ -55,15 +55,18 @@ public class Level implements GuildCommand {
         @Override
         public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             List<UserLevel> levels;
-            if (args.size() > 0 && args.get(0).equalsIgnoreCase("full")) {
+            int start;
+            if (!args.isEmpty() && args.get(0).equalsIgnoreCase("full")) {
                 levels = Levels.getLevels(original.getGuild()).stream()
                              .sorted(Comparator.comparingInt(UserLevel::getExp).reversed())
                              .collect(Collectors.toList());
+                start = args.size() > 1 && Parser.Int.isParsable(args.get(1)) ? Parser.Int.parse(args.get(1)) : 1;
             } else {
                 levels = Levels.getLevels(original.getGuild()).stream()
                              .filter(userLevel -> Bot.getJDA().getUserById(userLevel.getUser_id()) != null)
                              .sorted(Comparator.comparingInt(UserLevel::getExp).reversed())
                              .collect(Collectors.toList());
+                start = !args.isEmpty() && Parser.Int.isParsable(args.get(0)) ? Parser.Int.parse(args.get(0)) : 1;
             }
 
             PagedEmbed p = new PagedEmbed(EmbedUtil.pagedDescription(
@@ -77,7 +80,7 @@ public class Level implements GuildCommand {
                                 u.getAsMention(), Levels.calcLevel(ul.getExp()), ul.getExp());
                         }
                     ).collect(Collectors.toList())),
-                channel, user.getUser());
+                channel, user.getUser(), start);
 
             PageListener.add(p);
         }
