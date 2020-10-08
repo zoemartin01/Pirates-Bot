@@ -50,7 +50,7 @@ public class Bot extends ListenerAdapter {
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
         builder.setBulkDeleteSplittingEnabled(false);
         builder.setCompression(Compression.NONE);
-        builder.setActivity(Activity.watching("y'all"));
+        builder.setActivity(Activity.playing(";help"));
 
         builder.addEventListeners(new Bot());
 
