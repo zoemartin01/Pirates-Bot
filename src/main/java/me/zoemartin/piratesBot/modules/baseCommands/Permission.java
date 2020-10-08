@@ -32,7 +32,7 @@ public class Permission implements GuildCommand {
 
     @Override
     public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
-        help(user, channel, args, original);
+        help(user, channel, List.of(name()), original);
     }
 
     @Override
