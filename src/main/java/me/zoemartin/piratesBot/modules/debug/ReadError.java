@@ -12,6 +12,7 @@ import me.zoemartin.piratesBot.modules.moderation.WarnEntity;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import org.hibernate.Session;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.criteria.*;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.UUID;
 
 public class ReadError implements GuildCommand {
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "readerror";
     }
 
@@ -52,17 +53,17 @@ public class ReadError implements GuildCommand {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.OWNER;
     }
 
     @Override
-    public String usage() {
+    public @NotNull String usage() {
         return "<uuid>";
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "read an error";
     }
 }

@@ -7,17 +7,18 @@ import me.zoemartin.piratesBot.core.interfaces.*;
 import me.zoemartin.piratesBot.core.util.*;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class Echo implements GuildCommand {
     @Override
-    public Set<Command> subCommands() {
+    public @NotNull Set<Command> subCommands() {
         return Set.of(new To(), new Edit());
     }
 
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "echo";
     }
 
@@ -33,29 +34,29 @@ public class Echo implements GuildCommand {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.BOT_MANAGER;
     }
 
     @Override
-    public String usage() {
+    public @NotNull String usage() {
         return "<message...>";
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "Makes the bot say stuff";
     }
 
     @SuppressWarnings("ConstantConditions")
     private static class To implements GuildCommand {
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "to";
         }
 
         @Override
-        public String regex() {
+        public @NotNull String regex() {
             return ">>|to";
         }
 
@@ -80,35 +81,35 @@ public class Echo implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_MANAGER;
         }
 
         @Override
-        public Collection<Permission> required() {
+        public @NotNull Collection<Permission> required() {
             return Set.of(Permission.MESSAGE_MANAGE);
         }
 
 
         @Override
-        public String usage() {
+        public @NotNull String usage() {
             return "<#channel> <message...>";
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Makes the bot say stuff in a different channel";
         }
     }
 
     private static class Edit implements GuildCommand {
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "--edit";
         }
 
         @Override
-        public String regex() {
+        public @NotNull String regex() {
             return "-e|--edit";
         }
 
@@ -135,17 +136,17 @@ public class Echo implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
         }
 
         @Override
-        public String usage() {
+        public @NotNull String usage() {
             return "<message_link> <message...>";
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Edits an echoed message";
         }
     }

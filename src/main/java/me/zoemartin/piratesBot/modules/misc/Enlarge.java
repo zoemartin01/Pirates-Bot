@@ -9,6 +9,7 @@ import me.zoemartin.piratesBot.core.util.Check;
 import me.zoemartin.piratesBot.core.util.Parser;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class Enlarge implements Command {
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "enlarge";
     }
 
@@ -62,17 +63,17 @@ public class Enlarge implements Command {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.EVERYONE;
     }
 
     @Override
-    public String usage() {
+    public @NotNull String usage() {
         return "<emote>";
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "Enlarge an Emote";
     }
 

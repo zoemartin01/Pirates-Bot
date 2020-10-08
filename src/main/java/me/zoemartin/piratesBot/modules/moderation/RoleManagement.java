@@ -8,6 +8,7 @@ import me.zoemartin.piratesBot.core.interfaces.GuildCommand;
 import me.zoemartin.piratesBot.core.util.*;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -15,12 +16,12 @@ import java.util.stream.Stream;
 
 public class RoleManagement implements GuildCommand {
     @Override
-    public Set<Command> subCommands() {
+    public @NotNull Set<Command> subCommands() {
         return Set.of(new Add(), new Remove());
     }
 
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "role";
     }
 
@@ -30,24 +31,24 @@ public class RoleManagement implements GuildCommand {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.BOT_MANAGER;
     }
 
     @Override
-    public Collection<Permission> required() {
+    public @NotNull Collection<Permission> required() {
         return Set.of(Permission.MANAGE_ROLES);
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "Role Management";
     }
 
     private static class Add implements GuildCommand {
 
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "add";
         }
 
@@ -69,22 +70,22 @@ public class RoleManagement implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_MANAGER;
         }
 
         @Override
-        public Collection<Permission> required() {
+        public @NotNull Collection<Permission> required() {
             return Set.of(Permission.MANAGE_ROLES);
         }
 
         @Override
-        public String usage() {
+        public @NotNull String usage() {
             return "<@user> <role>";
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Adds a role to a user";
         }
     }
@@ -92,7 +93,7 @@ public class RoleManagement implements GuildCommand {
     private static class Remove implements GuildCommand {
 
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "remove";
         }
 
@@ -115,17 +116,17 @@ public class RoleManagement implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_MANAGER;
         }
 
         @Override
-        public Collection<Permission> required() {
+        public @NotNull Collection<Permission> required() {
             return Set.of(Permission.MANAGE_ROLES);
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Removes a role from a user";
         }
     }

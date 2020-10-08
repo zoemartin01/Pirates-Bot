@@ -9,18 +9,19 @@ import me.zoemartin.piratesBot.core.interfaces.Module;
 import me.zoemartin.piratesBot.core.managers.CommandManager;
 import me.zoemartin.piratesBot.core.util.*;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 @LoadModule
 public class Status implements Module, GuildCommand {
     @Override
-    public Set<Command> subCommands() {
+    public @NotNull Set<Command> subCommands() {
         return Collections.emptySet();
     }
 
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "status";
     }
 
@@ -40,17 +41,17 @@ public class Status implements Module, GuildCommand {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.OWNER;
     }
 
     @Override
-    public String usage() {
+    public @NotNull String usage() {
         return "<type id> <status...>";
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "Sets the bot's status";
     }
 

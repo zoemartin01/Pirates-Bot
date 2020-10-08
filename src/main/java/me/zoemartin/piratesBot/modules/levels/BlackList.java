@@ -9,6 +9,7 @@ import me.zoemartin.piratesBot.modules.pagedEmbeds.PageListener;
 import me.zoemartin.piratesBot.modules.pagedEmbeds.PagedEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,17 +18,17 @@ import java.util.stream.Stream;
 class BlackList implements GuildCommand {
 
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "blacklist";
     }
 
     @Override
-    public Set<Command> subCommands() {
+    public @NotNull Set<Command> subCommands() {
         return Set.of(new list(), new Channel(), new role());
     }
 
     @Override
-    public String regex() {
+    public @NotNull String regex() {
         return "bl|blacklist";
     }
 
@@ -37,28 +38,28 @@ class BlackList implements GuildCommand {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.BOT_ADMIN;
     }
 
     @Override
-    public String usage() {
+    public @NotNull String usage() {
         return "help";
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "Blacklist config";
     }
 
     private static class list implements GuildCommand {
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "list";
         }
 
         @Override
-        public String regex() {
+        public @NotNull String regex() {
             return "l|list";
         }
 
@@ -87,29 +88,29 @@ class BlackList implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Lists all blacklistings";
         }
     }
 
     private static class Channel implements GuildCommand {
         @Override
-        public Set<Command> subCommands() {
+        public @NotNull Set<Command> subCommands() {
             return Set.of(new Channel.Remove());
         }
 
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "channel";
         }
 
         @Override
-        public String regex() {
+        public @NotNull String regex() {
             return "c|channel";
         }
 
@@ -129,29 +130,29 @@ class BlackList implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
         }
 
         @Override
-        public String usage() {
+        public @NotNull String usage() {
             return "<channel>";
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Blacklist a channel";
         }
 
         private static class Remove implements GuildCommand {
 
             @Override
-            public String name() {
+            public @NotNull String name() {
                 return "remove";
             }
 
             @Override
-            public String regex() {
+            public @NotNull String regex() {
                 return "rm|remove";
             }
 
@@ -171,17 +172,17 @@ class BlackList implements GuildCommand {
             }
 
             @Override
-            public CommandPerm commandPerm() {
+            public @NotNull CommandPerm commandPerm() {
                 return CommandPerm.BOT_ADMIN;
             }
 
             @Override
-            public String usage() {
+            public @NotNull String usage() {
                 return "<channel>";
             }
 
             @Override
-            public String description() {
+            public @NotNull String description() {
                 return "Removes a blacklisted channel";
             }
         }
@@ -189,17 +190,17 @@ class BlackList implements GuildCommand {
 
     private static class role implements GuildCommand {
         @Override
-        public Set<Command> subCommands() {
+        public @NotNull Set<Command> subCommands() {
             return Set.of(new role.Remove());
         }
 
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "role";
         }
 
         @Override
-        public String regex() {
+        public @NotNull String regex() {
             return "r|role";
         }
 
@@ -219,29 +220,29 @@ class BlackList implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
         }
 
         @Override
-        public String usage() {
+        public @NotNull String usage() {
             return "<role>";
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Blacklist a channel";
         }
 
         private static class Remove implements GuildCommand {
 
             @Override
-            public String name() {
+            public @NotNull String name() {
                 return "remove";
             }
 
             @Override
-            public String regex() {
+            public @NotNull String regex() {
                 return "rm|remove";
             }
 
@@ -261,17 +262,17 @@ class BlackList implements GuildCommand {
             }
 
             @Override
-            public CommandPerm commandPerm() {
+            public @NotNull CommandPerm commandPerm() {
                 return CommandPerm.BOT_ADMIN;
             }
 
             @Override
-            public String usage() {
+            public @NotNull String usage() {
                 return "<role>";
             }
 
             @Override
-            public String description() {
+            public @NotNull String description() {
                 return "Removes a blacklisted role";
             }
         }

@@ -8,6 +8,7 @@ import me.zoemartin.piratesBot.core.util.*;
 import me.zoemartin.piratesBot.modules.commandProcessing.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
 import java.time.*;
@@ -17,12 +18,12 @@ import java.util.stream.Collectors;
 
 public class UserInfo implements GuildCommand {
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "userinfo";
     }
 
     @Override
-    public String regex() {
+    public @NotNull String regex() {
         return "i|userinfo|info|profile";
     }
 
@@ -107,17 +108,17 @@ public class UserInfo implements GuildCommand {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.EVERYONE;
     }
 
     @Override
-    public String usage() {
+    public @NotNull String usage() {
         return "[user]";
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "Gives Information about a user";
     }
 }

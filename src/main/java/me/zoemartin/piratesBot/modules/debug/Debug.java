@@ -9,13 +9,14 @@ import me.zoemartin.piratesBot.core.interfaces.Module;
 import me.zoemartin.piratesBot.core.managers.CommandManager;
 import me.zoemartin.piratesBot.core.util.Check;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 @LoadModule
 public class Debug implements Module, GuildCommand {
     @Override
-    public Set<Command> subCommands() {
+    public @NotNull Set<Command> subCommands() {
         return Set.of(new Full());
     }
 
@@ -31,12 +32,12 @@ public class Debug implements Module, GuildCommand {
     }
 
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "debug";
     }
 
     @Override
-    public String regex() {
+    public @NotNull String regex() {
         return "debug|dc";
     }
 
@@ -81,28 +82,28 @@ public class Debug implements Module, GuildCommand {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.BOT_MANAGER;
     }
 
     @Override
-    public String usage() {
+    public @NotNull String usage() {
         return "<command>";
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "Debugs a command";
     }
 
     private static class Full implements GuildCommand {
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "-f";
         }
 
         @Override
-        public String regex() {
+        public @NotNull String regex() {
             return "-f|--full";
         }
 
@@ -129,17 +130,17 @@ public class Debug implements Module, GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
         }
 
         @Override
-        public String usage() {
+        public @NotNull String usage() {
             return "-f <command>";
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Debugs a command with the full error output";
         }
     }

@@ -11,6 +11,7 @@ import me.zoemartin.piratesBot.modules.pagedEmbeds.PagedEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import org.hibernate.Session;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.criteria.*;
 import java.io.*;
@@ -23,12 +24,12 @@ import java.util.stream.Collectors;
 
 public class Warn implements GuildCommand {
     @Override
-    public Set<Command> subCommands() {
+    public @NotNull Set<Command> subCommands() {
         return Set.of(new list(), new Remove(), new BulkImport(), new BulkImportFile());
     }
 
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "warn";
     }
 
@@ -60,24 +61,24 @@ public class Warn implements GuildCommand {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.BOT_MODERATOR;
     }
 
     @Override
-    public String usage() {
+    public @NotNull String usage() {
         return "<user> <reason>";
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "Warn a user";
     }
 
     private static class list implements GuildCommand {
 
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "list";
         }
 
@@ -119,24 +120,24 @@ public class Warn implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_MODERATOR;
         }
 
         @Override
-        public String usage() {
+        public @NotNull String usage() {
             return "<user>";
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Lists a users warns";
         }
     }
 
     private static class Remove implements GuildCommand {
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "remove";
         }
 
@@ -173,17 +174,17 @@ public class Warn implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_MANAGER;
         }
 
         @Override
-        public String usage() {
+        public @NotNull String usage() {
             return "<uuid>";
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Remove a warning";
         }
     }
@@ -191,7 +192,7 @@ public class Warn implements GuildCommand {
     private static class BulkImport implements GuildCommand {
 
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "import";
         }
 
@@ -229,17 +230,17 @@ public class Warn implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
         }
 
         @Override
-        public String usage() {
+        public @NotNull String usage() {
             return "\n<user> <moderator> <reason>";
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Bulk Import Warns. These warns are added silently. One Line for each Warn.";
         }
     }
@@ -247,7 +248,7 @@ public class Warn implements GuildCommand {
     private static class BulkImportFile implements GuildCommand {
 
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "importfile";
         }
 
@@ -294,12 +295,12 @@ public class Warn implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Bulk Import Warns. These warns are added silently. Attach a text file with one Line for each warn.";
         }
     }

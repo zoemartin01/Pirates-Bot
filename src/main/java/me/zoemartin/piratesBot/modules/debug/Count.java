@@ -6,17 +6,18 @@ import me.zoemartin.piratesBot.core.interfaces.Command;
 import me.zoemartin.piratesBot.core.util.Check;
 import me.zoemartin.piratesBot.core.util.Parser;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class Count implements Command {
     @Override
-    public Set<Command> subCommands() {
+    public @NotNull Set<Command> subCommands() {
         return Collections.emptySet();
     }
 
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "count";
     }
 
@@ -31,17 +32,17 @@ public class Count implements Command {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.BOT_ADMIN;
     }
 
     @Override
-    public String usage() {
+    public @NotNull String usage() {
         return "<to>";
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "Counts from 0 to a n-1";
     }
 }

@@ -8,6 +8,7 @@ import me.zoemartin.piratesBot.core.managers.CommandManager;
 import me.zoemartin.piratesBot.core.util.Check;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -16,7 +17,7 @@ import java.util.stream.Stream;
 
 public class Usage implements GuildCommand {
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "usage";
     }
 
@@ -56,17 +57,17 @@ public class Usage implements GuildCommand {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.EVERYONE;
     }
 
     @Override
-    public String usage() {
+    public @NotNull String usage() {
         return "<command>";
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "Shows a commands usage page";
     }
 }

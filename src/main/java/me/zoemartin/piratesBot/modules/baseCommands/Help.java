@@ -11,6 +11,7 @@ import me.zoemartin.piratesBot.modules.pagedEmbeds.PagedEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -19,12 +20,12 @@ import java.util.stream.Stream;
 
 public class Help implements GuildCommand {
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "help";
     }
 
     @Override
-    public Set<Command> subCommands() {
+    public @NotNull Set<Command> subCommands() {
         return Set.of(new Cmd());
     }
 
@@ -53,24 +54,24 @@ public class Help implements GuildCommand {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.EVERYONE;
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "Sending help :3";
     }
 
     private static class Cmd implements GuildCommand {
 
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "<command>";
         }
 
         @Override
-        public String regex() {
+        public @NotNull String regex() {
             StringBuilder sb = new StringBuilder();
             CommandManager.getCommands().forEach(command -> sb.append(command.regex()).append("|"));
             sb.deleteCharAt(sb.lastIndexOf("|"));
@@ -143,12 +144,12 @@ public class Help implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.EVERYONE;
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Shows a command help page";
         }
     }

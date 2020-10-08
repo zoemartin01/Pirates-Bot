@@ -7,18 +7,19 @@ import me.zoemartin.piratesBot.core.interfaces.*;
 import me.zoemartin.piratesBot.core.util.*;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Assemble implements GuildCommand {
     @Override
-    public Set<Command> subCommands() {
+    public @NotNull Set<Command> subCommands() {
         return Collections.emptySet();
     }
 
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "assemble";
     }
 
@@ -64,22 +65,22 @@ public class Assemble implements GuildCommand {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.BOT_MODERATOR;
     }
 
     @Override
-    public Collection<Permission> required() {
+    public @NotNull Collection<Permission> required() {
         return Set.of(Permission.VOICE_MOVE_OTHERS);
     }
 
     @Override
-    public String usage() {
+    public @NotNull String usage() {
         return "<here|#channel> <@role>";
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "Move all Members with a role currently in a voice chat into one voice chat";
     }
 }

@@ -9,6 +9,7 @@ import me.zoemartin.piratesBot.modules.pagedEmbeds.PageListener;
 import me.zoemartin.piratesBot.modules.pagedEmbeds.PagedEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 import java.util.*;
@@ -16,17 +17,17 @@ import java.util.stream.Collectors;
 
 public class Level implements GuildCommand {
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "level";
     }
 
     @Override
-    public String regex() {
+    public @NotNull String regex() {
         return "level|lvl";
     }
 
     @Override
-    public Set<Command> subCommands() {
+    public @NotNull Set<Command> subCommands() {
         return Set.of(new Show(), new Config(), new Leaderboard());
     }
 
@@ -36,19 +37,19 @@ public class Level implements GuildCommand {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.BOT_USER;
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "Shows Levels";
     }
 
     private static class Leaderboard implements GuildCommand {
 
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "leaderboard";
         }
 
@@ -86,12 +87,12 @@ public class Level implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_MANAGER;
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Shows the current leaderboard";
         }
     }
@@ -99,7 +100,7 @@ public class Level implements GuildCommand {
     private static class Show implements GuildCommand {
 
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "show";
         }
 
@@ -140,12 +141,12 @@ public class Level implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_USER;
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Shows a users level";
         }
     }

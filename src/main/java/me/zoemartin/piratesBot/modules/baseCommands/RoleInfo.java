@@ -7,6 +7,7 @@ import me.zoemartin.piratesBot.core.interfaces.GuildCommand;
 import me.zoemartin.piratesBot.core.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class RoleInfo implements GuildCommand {
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "roleinfo";
     }
 
@@ -46,17 +47,17 @@ public class RoleInfo implements GuildCommand {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.BOT_MODERATOR;
     }
 
     @Override
-    public String usage() {
+    public @NotNull String usage() {
         return "<@role>";
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "Gives information about a role";
     }
 }

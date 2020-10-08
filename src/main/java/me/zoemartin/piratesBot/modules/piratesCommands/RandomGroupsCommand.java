@@ -11,35 +11,36 @@ import me.zoemartin.piratesBot.core.util.Check;
 import me.zoemartin.piratesBot.core.util.Parser;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.NotNull;
 
 public class RandomGroupsCommand implements GuildCommand {
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "random-groups";
     }
 
     @Override
-    public String regex() {
+    public @NotNull String regex() {
         return "random-groups|rg";
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.BOT_MODERATOR;
     }
 
     @Override
-    public String usage() {
+    public @NotNull String usage() {
         return "<from-voice-channel> <group-voice-channels-1> <group-voice-channel-2> [<group-voice-channels...>]";
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "Distribute users to random voice channels with an equal group sizes.";
     }
 
     @Override
-    public Collection<Permission> required() {
+    public @NotNull Collection<Permission> required() {
         return Collections.singleton(Permission.VOICE_MOVE_OTHERS);
     }
 

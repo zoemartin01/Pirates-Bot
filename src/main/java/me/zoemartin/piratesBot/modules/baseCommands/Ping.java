@@ -4,12 +4,13 @@ import me.zoemartin.piratesBot.Bot;
 import me.zoemartin.piratesBot.core.CommandPerm;
 import me.zoemartin.piratesBot.core.interfaces.Command;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class Ping implements Command {
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "ping";
     }
 
@@ -23,12 +24,12 @@ public class Ping implements Command {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.EVERYONE;
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "table tennis?";
     }
 }

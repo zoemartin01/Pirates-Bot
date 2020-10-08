@@ -14,6 +14,7 @@ public interface Command {
      *
      * @return a collection containing all direct sub commands
      */
+    @Nonnull
     default Set<Command> subCommands() {
         return Collections.emptySet();
     }
@@ -22,10 +23,9 @@ public interface Command {
      * Returns the name of the command. This is used in {@link #usage()} and as the invoking string if {@link #regex()}
      * is not set.
      *
-     * This must not be null
-     *
      * @return the name of the command
      */
+    @Nonnull
     String name();
 
     /**
@@ -34,6 +34,7 @@ public interface Command {
      *
      * @return the commands regex
      */
+    @Nonnull
     default String regex() {
         return name();
     }
@@ -53,6 +54,7 @@ public interface Command {
      *
      * @return the CommandPerm needed to execute the command
      */
+    @Nonnull
     CommandPerm commandPerm();
 
     /**
@@ -61,6 +63,7 @@ public interface Command {
      *
      * @return a collection of discord permissions a user needs to execute the command
      */
+    @Nonnull
     default Collection<Permission> required() {
         return Collections.singleton(Permission.UNKNOWN);
     }
@@ -70,6 +73,7 @@ public interface Command {
      *
      * @return the command's parameters
      */
+    @Nonnull
     default String usage() {
         return name();
     }
@@ -79,6 +83,7 @@ public interface Command {
      *
      * @return the commands description
      */
+    @Nonnull
     String description();
 
     /**
@@ -86,6 +91,7 @@ public interface Command {
      *
      * @return the detailed help message
      */
+    @Nonnull
     default String detailedHelp() {
         return "";
     }

@@ -10,6 +10,7 @@ import me.zoemartin.piratesBot.modules.pagedEmbeds.PageListener;
 import me.zoemartin.piratesBot.modules.pagedEmbeds.PagedEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.NotNull;
 import org.json.*;
 
 import java.io.BufferedReader;
@@ -20,18 +21,18 @@ import java.util.stream.Collectors;
 
 class Config implements GuildCommand {
     @Override
-    public Set<Command> subCommands() {
+    public @NotNull Set<Command> subCommands() {
         return Set.of(new Enable(), new RoleRewards(), new Import(), new BlackList(), new Disable(), new Announce(),
             new SetExp());
     }
 
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "config";
     }
 
     @Override
-    public String regex() {
+    public @NotNull String regex() {
         return "config|conf";
     }
 
@@ -41,19 +42,19 @@ class Config implements GuildCommand {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.BOT_ADMIN;
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "Level Configuration";
     }
 
     private static class Enable implements GuildCommand {
 
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "enable";
         }
 
@@ -67,12 +68,12 @@ class Config implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Enabled the Leveling System";
         }
     }
@@ -80,7 +81,7 @@ class Config implements GuildCommand {
     private static class Disable implements GuildCommand {
 
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "disable";
         }
 
@@ -94,12 +95,12 @@ class Config implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Disable the Leveling System";
         }
     }
@@ -107,7 +108,7 @@ class Config implements GuildCommand {
     private static class Announce implements GuildCommand {
 
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "announce";
         }
 
@@ -139,12 +140,12 @@ class Config implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Announce level up ALWAYS/REWARD/NEVER";
         }
     }
@@ -152,7 +153,7 @@ class Config implements GuildCommand {
     private static class SetExp implements GuildCommand {
 
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "setxp";
         }
 
@@ -173,12 +174,12 @@ class Config implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Set's a users exp";
         }
     }
@@ -198,7 +199,7 @@ class Config implements GuildCommand {
     private static class Import implements GuildCommand {
 
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "import";
         }
 
@@ -256,12 +257,12 @@ class Config implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Import Levels";
         }
     }
@@ -269,12 +270,12 @@ class Config implements GuildCommand {
     private static class RoleRewards implements GuildCommand {
 
         @Override
-        public Set<Command> subCommands() {
+        public @NotNull Set<Command> subCommands() {
             return Set.of(new RoleRewards.Add(), new RoleRewards.Remove(), new RoleRewards.list());
         }
 
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "rewards";
         }
 
@@ -284,19 +285,19 @@ class Config implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Manage Role Rewards";
         }
 
         private static class Add implements GuildCommand {
 
             @Override
-            public String name() {
+            public @NotNull String name() {
                 return "add";
             }
 
@@ -321,17 +322,17 @@ class Config implements GuildCommand {
             }
 
             @Override
-            public CommandPerm commandPerm() {
+            public @NotNull CommandPerm commandPerm() {
                 return CommandPerm.BOT_ADMIN;
             }
 
             @Override
-            public String usage() {
+            public @NotNull String usage() {
                 return "<level> <role>";
             }
 
             @Override
-            public String description() {
+            public @NotNull String description() {
                 return "Adds Role Rewards";
             }
         }
@@ -339,7 +340,7 @@ class Config implements GuildCommand {
         private static class Remove implements GuildCommand {
 
             @Override
-            public String name() {
+            public @NotNull String name() {
                 return "remove";
             }
 
@@ -362,17 +363,17 @@ class Config implements GuildCommand {
             }
 
             @Override
-            public String usage() {
+            public @NotNull String usage() {
                 return "<level> <role>";
             }
 
             @Override
-            public CommandPerm commandPerm() {
+            public @NotNull CommandPerm commandPerm() {
                 return CommandPerm.BOT_ADMIN;
             }
 
             @Override
-            public String description() {
+            public @NotNull String description() {
                 return "Removes Role Rewards";
             }
         }
@@ -380,7 +381,7 @@ class Config implements GuildCommand {
         private static class list implements GuildCommand {
 
             @Override
-            public String name() {
+            public @NotNull String name() {
                 return "list";
             }
 
@@ -408,12 +409,12 @@ class Config implements GuildCommand {
             }
 
             @Override
-            public CommandPerm commandPerm() {
+            public @NotNull CommandPerm commandPerm() {
                 return CommandPerm.BOT_ADMIN;
             }
 
             @Override
-            public String description() {
+            public @NotNull String description() {
                 return "Lists Role Rewards";
             }
         }

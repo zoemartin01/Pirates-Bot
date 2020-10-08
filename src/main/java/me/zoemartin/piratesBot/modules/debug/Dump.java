@@ -4,6 +4,7 @@ import me.zoemartin.piratesBot.core.CommandPerm;
 import me.zoemartin.piratesBot.core.interfaces.GuildCommand;
 import me.zoemartin.piratesBot.core.util.MessageUtils;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
 import java.time.ZoneOffset;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class Dump implements GuildCommand {
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "dump";
     }
 
@@ -33,12 +34,12 @@ public class Dump implements GuildCommand {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.BOT_ADMIN;
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "Refreshes the cache and dumps all users";
     }
 }

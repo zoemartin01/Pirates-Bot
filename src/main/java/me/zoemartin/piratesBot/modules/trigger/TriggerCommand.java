@@ -10,6 +10,7 @@ import me.zoemartin.piratesBot.modules.pagedEmbeds.PageListener;
 import me.zoemartin.piratesBot.modules.pagedEmbeds.PagedEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -18,17 +19,17 @@ import java.util.stream.Collectors;
 
 public class TriggerCommand implements GuildCommand {
     @Override
-    public Set<Command> subCommands() {
+    public @NotNull Set<Command> subCommands() {
         return Set.of(new TList(), new Remove());
     }
 
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "trigger";
     }
 
     @Override
-    public String regex() {
+    public @NotNull String regex() {
         return "trigger|autoresponse|ar";
     }
 
@@ -51,23 +52,23 @@ public class TriggerCommand implements GuildCommand {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.BOT_MANAGER;
     }
 
     @Override
-    public String usage() {
+    public @NotNull String usage() {
         return "<regex> <output...>";
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "Create/List/Remove a regex message trigger";
     }
 
     private static class TList implements GuildCommand {
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "list";
         }
 
@@ -87,24 +88,24 @@ public class TriggerCommand implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_MODERATOR;
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Lists all triggers";
         }
     }
 
     private static class Remove implements GuildCommand {
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "remove";
         }
 
         @Override
-        public String regex() {
+        public @NotNull String regex() {
             return "remove|delete|del|rem|rm";
         }
 
@@ -119,17 +120,17 @@ public class TriggerCommand implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_MANAGER;
         }
 
         @Override
-        public String usage() {
+        public @NotNull String usage() {
             return "<regex>";
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Deletes a trigger";
         }
     }

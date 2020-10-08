@@ -10,23 +10,24 @@ import me.zoemartin.piratesBot.core.util.*;
 import me.zoemartin.piratesBot.modules.commandProcessing.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Permission implements GuildCommand {
     @Override
-    public Set<Command> subCommands() {
+    public @NotNull Set<Command> subCommands() {
         return Set.of(new MemberPerm(), new RolePerm());
     }
 
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "permission";
     }
 
     @Override
-    public String regex() {
+    public @NotNull String regex() {
         return "permission|perm";
     }
 
@@ -36,33 +37,33 @@ public class Permission implements GuildCommand {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.BOT_ADMIN;
     }
 
     @Override
-    public String usage() {
+    public @NotNull String usage() {
         return "help";
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "Bot Permission Management";
     }
 
     private static class MemberPerm implements GuildCommand {
         @Override
-        public Set<Command> subCommands() {
+        public @NotNull Set<Command> subCommands() {
             return Set.of(new set(), new Remove(), new list());
         }
 
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "member";
         }
 
         @Override
-        public String regex() {
+        public @NotNull String regex() {
             return "member|m";
         }
 
@@ -72,18 +73,18 @@ public class Permission implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Member Permission Management";
         }
 
         private static class set implements GuildCommand {
             @Override
-            public String name() {
+            public @NotNull String name() {
                 return "set";
             }
 
@@ -107,24 +108,24 @@ public class Permission implements GuildCommand {
             }
 
             @Override
-            public CommandPerm commandPerm() {
+            public @NotNull CommandPerm commandPerm() {
                 return CommandPerm.BOT_ADMIN;
             }
 
             @Override
-            public String usage() {
+            public @NotNull String usage() {
                 return "<user> <level>";
             }
 
             @Override
-            public String description() {
+            public @NotNull String description() {
                 return "Adds Bot Permissions to a Member";
             }
         }
 
         private static class Remove implements GuildCommand {
             @Override
-            public String name() {
+            public @NotNull String name() {
                 return "remove";
             }
 
@@ -142,24 +143,24 @@ public class Permission implements GuildCommand {
             }
 
             @Override
-            public CommandPerm commandPerm() {
+            public @NotNull CommandPerm commandPerm() {
                 return CommandPerm.BOT_ADMIN;
             }
 
             @Override
-            public String usage() {
+            public @NotNull String usage() {
                 return "<user>";
             }
 
             @Override
-            public String description() {
+            public @NotNull String description() {
                 return "Removes Bot Permissions from a Member";
             }
         }
 
         private static class list implements GuildCommand {
             @Override
-            public String name() {
+            public @NotNull String name() {
                 return "list";
             }
 
@@ -187,12 +188,12 @@ public class Permission implements GuildCommand {
             }
 
             @Override
-            public CommandPerm commandPerm() {
+            public @NotNull CommandPerm commandPerm() {
                 return CommandPerm.BOT_ADMIN;
             }
 
             @Override
-            public String description() {
+            public @NotNull String description() {
                 return "Lists all members with special bot member permissions";
             }
         }
@@ -200,17 +201,17 @@ public class Permission implements GuildCommand {
 
     private static class RolePerm implements GuildCommand {
         @Override
-        public Set<Command> subCommands() {
+        public @NotNull Set<Command> subCommands() {
             return Set.of(new set(), new Remove(), new list());
         }
 
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "role";
         }
 
         @Override
-        public String regex() {
+        public @NotNull String regex() {
             return "role|r";
         }
 
@@ -220,18 +221,18 @@ public class Permission implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Role Permission Management";
         }
 
         private static class set implements GuildCommand {
             @Override
-            public String name() {
+            public @NotNull String name() {
                 return "set";
             }
 
@@ -256,24 +257,24 @@ public class Permission implements GuildCommand {
             }
 
             @Override
-            public CommandPerm commandPerm() {
+            public @NotNull CommandPerm commandPerm() {
                 return CommandPerm.BOT_ADMIN;
             }
 
             @Override
-            public String usage() {
+            public @NotNull String usage() {
                 return "<role> <level>";
             }
 
             @Override
-            public String description() {
+            public @NotNull String description() {
                 return "Adds Bot Permissions to a Role";
             }
         }
 
         private static class Remove implements GuildCommand {
             @Override
-            public String name() {
+            public @NotNull String name() {
                 return "remove";
             }
 
@@ -291,24 +292,24 @@ public class Permission implements GuildCommand {
             }
 
             @Override
-            public CommandPerm commandPerm() {
+            public @NotNull CommandPerm commandPerm() {
                 return CommandPerm.BOT_ADMIN;
             }
 
             @Override
-            public String usage() {
+            public @NotNull String usage() {
                 return "<role>";
             }
 
             @Override
-            public String description() {
+            public @NotNull String description() {
                 return "Remove Bot Permissions from a Role";
             }
         }
 
         private static class list implements GuildCommand {
             @Override
-            public String name() {
+            public @NotNull String name() {
                 return "list";
             }
 
@@ -338,12 +339,12 @@ public class Permission implements GuildCommand {
             }
 
             @Override
-            public CommandPerm commandPerm() {
+            public @NotNull CommandPerm commandPerm() {
                 return CommandPerm.BOT_ADMIN;
             }
 
             @Override
-            public String description() {
+            public @NotNull String description() {
                 return "Lists all roles with special bot role permissions";
             }
         }

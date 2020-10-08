@@ -6,6 +6,7 @@ import me.zoemartin.piratesBot.core.exceptions.CommandArgumentException;
 import me.zoemartin.piratesBot.core.interfaces.Command;
 import me.zoemartin.piratesBot.core.util.Check;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -15,12 +16,12 @@ public class Shutdown implements Command {
     private static final int EXIT_CODE_UPGRADE = 20;
 
     @Override
-    public Set<Command> subCommands() {
+    public @NotNull Set<Command> subCommands() {
         return Set.of(new Force(), new Upgrade(), new Restart());
     }
 
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "shutdown";
     }
 
@@ -31,24 +32,24 @@ public class Shutdown implements Command {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.OWNER;
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "Shuts down the bot after all RestActions have finished";
     }
 
     private static class Force implements Command {
 
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "force";
         }
 
         @Override
-        public String regex() {
+        public @NotNull String regex() {
             return "--force|-f|now";
         }
 
@@ -59,12 +60,12 @@ public class Shutdown implements Command {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.OWNER;
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Forces the bot to shut down and cancels RestActions";
         }
     }
@@ -72,12 +73,12 @@ public class Shutdown implements Command {
     private static class Upgrade implements Command {
 
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "upgrade";
         }
 
         @Override
-        public String regex() {
+        public @NotNull String regex() {
             return "--upgrade|-u";
         }
 
@@ -88,12 +89,12 @@ public class Shutdown implements Command {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.OWNER;
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Upgrades the bot to the current version and restarts";
         }
     }
@@ -101,12 +102,12 @@ public class Shutdown implements Command {
     private static class Restart implements Command {
 
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "restart";
         }
 
         @Override
-        public String regex() {
+        public @NotNull String regex() {
             return "--restart|-r|--reboot";
         }
 
@@ -117,12 +118,12 @@ public class Shutdown implements Command {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.OWNER;
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Upgrades the bot to the current version and restarts";
         }
     }

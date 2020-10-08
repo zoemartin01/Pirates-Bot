@@ -9,18 +9,19 @@ import me.zoemartin.piratesBot.core.util.*;
 import me.zoemartin.piratesBot.modules.commandProcessing.Prefixes;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Prefix implements GuildCommand {
     @Override
-    public Set<Command> subCommands() {
+    public @NotNull Set<Command> subCommands() {
         return Set.of(new list(), new Remove(), new Add());
     }
 
     @Override
-    public String name() {
+    public @NotNull String name() {
         return "prefix";
     }
 
@@ -30,18 +31,18 @@ public class Prefix implements GuildCommand {
     }
 
     @Override
-    public CommandPerm commandPerm() {
+    public @NotNull CommandPerm commandPerm() {
         return CommandPerm.BOT_ADMIN;
     }
 
     @Override
-    public String description() {
+    public @NotNull String description() {
         return "Bot Prefix Management";
     }
 
     private static class Add implements GuildCommand {
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "add";
         }
 
@@ -55,24 +56,24 @@ public class Prefix implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
         }
 
         @Override
-        public String usage() {
+        public @NotNull String usage() {
             return "<prefix>";
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Adds a Bot Prefix";
         }
     }
 
     private static class Remove implements GuildCommand {
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "remove";
         }
 
@@ -87,24 +88,24 @@ public class Prefix implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
         }
 
         @Override
-        public String usage() {
+        public @NotNull String usage() {
             return "<prefix>";
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Removes a Bot Prefix";
         }
     }
 
     private static class list implements GuildCommand {
         @Override
-        public String name() {
+        public @NotNull String name() {
             return "list";
         }
 
@@ -125,12 +126,12 @@ public class Prefix implements GuildCommand {
         }
 
         @Override
-        public CommandPerm commandPerm() {
+        public @NotNull CommandPerm commandPerm() {
             return CommandPerm.BOT_ADMIN;
         }
 
         @Override
-        public String description() {
+        public @NotNull String description() {
             return "Lists the bot prefixes";
         }
     }
