@@ -58,10 +58,11 @@ public class RoleManagement implements GuildCommand {
 
             Guild g = original.getGuild();
             Member m = CacheUtils.getMember(g, args.get(0));
-            Role r = Parser.Role.getRole(g, lastArg(1, args, original));
+            String rRef = lastArg(1, args, original);
+            Role r = Parser.Role.getRole(g, rRef);
 
-            Check.entityNotNull(m, Member.class);
-            Check.entityNotNull(r, Role.class);
+            Check.entityReferenceNotNull(m, Member.class, args.get(0));
+            Check.entityReferenceNotNull(r, Role.class, rRef);
             g.addRoleToMember(m, r).queue();
 
             addCheckmark(original);
@@ -103,10 +104,11 @@ public class RoleManagement implements GuildCommand {
 
             Guild g = original.getGuild();
             Member m = CacheUtils.getMember(g, args.get(0));
-            Role r = Parser.Role.getRole(g, lastArg(1, args, original));
+            String rRef = lastArg(1, args, original);
+            Role r = Parser.Role.getRole(g, rRef);
 
-            Check.entityNotNull(m, Member.class);
-            Check.entityNotNull(r, Role.class);
+            Check.entityReferenceNotNull(m, Member.class, args.get(0));
+            Check.entityReferenceNotNull(r, Role.class, rRef);
             Check.check(m.getRoles().contains(r), () -> new ReplyError("Member does not have that role"));
             g.removeRoleFromMember(m, r).queue();
 

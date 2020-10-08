@@ -244,7 +244,7 @@ public class Permission implements GuildCommand {
                 Role r = Parser.Role.getRole(original.getGuild(), args.get(0));
                 CommandPerm cp = CommandPerm.fromNum(Parser.Int.parse(args.get(1)));
                 Check.notNull(cp, CommandArgumentException::new);
-                Check.entityNotNull(r, Role.class);
+                Check.entityReferenceNotNull(r, Role.class, args.get(0));
                 Check.check(!cp.equals(CommandPerm.OWNER) || user.getId().equals(Bot.getOWNER()),
                     CommandArgumentException::new);
 
@@ -282,8 +282,9 @@ public class Permission implements GuildCommand {
             public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
                 Check.check(!args.isEmpty(), CommandArgumentException::new);
 
-                Role r = Parser.Role.getRole(original.getGuild(), lastArg(0, args, original));
-                Check.entityNotNull(r, Role.class);
+                String rRef = lastArg(0, args, original);
+                Role r = Parser.Role.getRole(original.getGuild(), rRef);
+                Check.entityReferenceNotNull(r, Role.class, rRef);
 
                 Check.check(PermissionHandler.removeRolePerm(original.getGuild().getId(), r.getId()),
                     () -> new ReplyError("Error, Role does not have an assigned Role Permission"));

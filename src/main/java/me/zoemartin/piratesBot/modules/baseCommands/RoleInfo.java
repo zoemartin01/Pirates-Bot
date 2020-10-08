@@ -23,8 +23,9 @@ public class RoleInfo implements GuildCommand {
     public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
         Check.check(!args.isEmpty(), CommandArgumentException::new);
 
-        Role role = Parser.Role.getRole(original.getGuild(), lastArg(0, args, original));
-        Check.entityNotNull(role, Role.class);
+        String roleRef = lastArg(0, args, original);
+        Role role = Parser.Role.getRole(original.getGuild(), roleRef);
+        Check.entityReferenceNotNull(role, Role.class, roleRef);
 
         EmbedBuilder eb =
             new EmbedBuilder()

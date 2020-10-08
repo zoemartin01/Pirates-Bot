@@ -80,7 +80,7 @@ class BlackList implements GuildCommand {
                                                                                     g.getRoleById(s).getAsMention()),
                     channels.stream().filter(s -> !s.isEmpty()).map(s -> g.getTextChannelById(s) == null ? s :
                                                                              g.getTextChannelById(s).getAsMention()))
-                    .map(s -> String.format("%s\n",s)).collect(Collectors.toList())),
+                    .map(s -> String.format("%s\n", s)).collect(Collectors.toList())),
                 channel, user.getUser()
             );
 
@@ -117,10 +117,10 @@ class BlackList implements GuildCommand {
         @Override
         public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             Check.check(!args.isEmpty(), CommandArgumentException::new);
-            TextChannel c = Parser.Channel.getTextChannel(original.getGuild(),
-                lastArg(0, args, original));
+            String cRef = lastArg(0, args, original);
+            TextChannel c = Parser.Channel.getTextChannel(original.getGuild(), cRef);
 
-            Check.entityNotNull(c, TextChannel.class);
+            Check.entityReferenceNotNull(c, TextChannel.class, cRef);
             LevelConfig config = Levels.getConfig(original.getGuild());
             config.addBlacklistedChannel(c.getId());
             DatabaseUtil.updateObject(config);
@@ -159,10 +159,10 @@ class BlackList implements GuildCommand {
             @Override
             public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
                 Check.check(!args.isEmpty(), CommandArgumentException::new);
-                TextChannel c = Parser.Channel.getTextChannel(original.getGuild(),
-                    lastArg(0, args, original));
+                String cRef = lastArg(0, args, original);
+                TextChannel c = Parser.Channel.getTextChannel(original.getGuild(), cRef);
 
-                Check.entityNotNull(c, TextChannel.class);
+                Check.entityReferenceNotNull(c, TextChannel.class, cRef);
                 LevelConfig config = Levels.getConfig(original.getGuild());
                 if (!config.removeBlacklistedChannel(c.getId())) return;
                 DatabaseUtil.updateObject(config);
@@ -207,10 +207,10 @@ class BlackList implements GuildCommand {
         @Override
         public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             Check.check(!args.isEmpty(), CommandArgumentException::new);
-            Role r = Parser.Role.getRole(original.getGuild(),
-                lastArg(0, args, original));
+            String rRef = lastArg(0, args, original);
+            Role r = Parser.Role.getRole(original.getGuild(), rRef);
 
-            Check.entityNotNull(r, Role.class);
+            Check.entityReferenceNotNull(r, Role.class, rRef);
             LevelConfig config = Levels.getConfig(original.getGuild());
             config.addBlacklistedRole(r.getId());
             DatabaseUtil.updateObject(config);
@@ -249,10 +249,10 @@ class BlackList implements GuildCommand {
             @Override
             public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
                 Check.check(!args.isEmpty(), CommandArgumentException::new);
-                Role r = Parser.Role.getRole(original.getGuild(),
-                    lastArg(0, args, original));
+                String rRef = lastArg(0, args, original);
+                Role r = Parser.Role.getRole(original.getGuild(), rRef);
 
-                Check.entityNotNull(r, Role.class);
+                Check.entityReferenceNotNull(r, Role.class, rRef);
                 LevelConfig config = Levels.getConfig(original.getGuild());
                 if (!config.removeBlacklistedRole(r.getId())) return;
                 DatabaseUtil.updateObject(config);

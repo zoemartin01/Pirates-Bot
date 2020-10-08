@@ -80,8 +80,7 @@ public class RandomGroupsCommand implements GuildCommand {
             return voice.getChannel();
         } else {
             VoiceChannel channel = Parser.Channel.getVoiceChannel(guild, reference);
-            Check.check(channel != null,
-                () -> new ReplyError("Can't find a voice channel `%s`!", reference));
+            Check.entityReferenceNotNull(channel, VoiceChannel.class, reference);
             return channel;
         }
     }

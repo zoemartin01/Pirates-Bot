@@ -36,4 +36,9 @@ public class Check {
     public static <T extends ISnowflake> void entityNotNull(T t, Class<T> tClass) {
         if (t == null) throw new EntityNotFoundException(tClass);
     }
+
+    public static <T extends ISnowflake> void entityReferenceNotNull(T t, Class<T> tClass, String reference) {
+        if (t == null)
+            throw new EntityNotFoundException("Error, %s `%s` not found!", tClass.getSimpleName(), reference);
+    }
 }

@@ -66,7 +66,7 @@ public class Echo implements GuildCommand {
                 CommandArgumentException::new);
 
             TextChannel c = original.getGuild().getTextChannelById(Parser.Channel.parse(args.get(0)));
-            Check.entityNotNull(c, TextChannel.class);
+            Check.entityReferenceNotNull(c, TextChannel.class, args.get(0));
             Check.check(original.getMember().hasPermission(c, Permission.MESSAGE_WRITE),
                 () -> new ConsoleError("Member '%s' doesn't have write permissions in channel '%s'",
                     original.getMember().getId(), c.getId()));

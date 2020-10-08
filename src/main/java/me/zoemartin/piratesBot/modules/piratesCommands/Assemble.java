@@ -31,18 +31,20 @@ public class Assemble implements GuildCommand {
         Check.check(args.size() >= 2, CommandArgumentException::new);
 
         VoiceChannel vc;
-        if (args.get(0).equalsIgnoreCase("here")) {
+        String vcRef = args.get(0);
+        if (vcRef.equalsIgnoreCase("here")) {
             Member m = original.getMember();
             Check.check(m.getVoiceState() != null && m.getVoiceState().inVoiceChannel(),
                 () -> new ReplyError("Error, option `here` cannot be invoked without being connected to a voice chat"));
             vc = m.getVoiceState().getChannel();
         } else {
-            vc = Parser.Channel.getVoiceChannel(original.getGuild(), args.get(0));
+            vc = Parser.Channel.getVoiceChannel(original.getGuild(), vcRef);
         }
-        Check.entityNotNull(vc, VoiceChannel.class);
+        Check.entityReferenceNotNull(vc, VoiceChannel.class, vcRef);
 
-        Role r = Parser.Role.getRole(original.getGuild(), lastArg(1, args, original));
-        Check.entityNotNull(r, Role.class);
+        String roleRef = lastArg(1, args, original);
+        Role r = Parser.Role.getRole(original.getGuild(), roleRef);
+        Check.entityReferenceNotNull(r, Role.class, roleRef);
 
         Set<Member> toMove = new HashSet<>();
 

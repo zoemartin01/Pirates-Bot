@@ -185,16 +185,9 @@ class Config implements GuildCommand {
     }
 
     /**
-     * Input file format:
-     * *.json
-     *
-     * [
-     *      {
-     *          "Userid": id,
-     *          "Exp": exp
-     *      },
-     *      ...
-     * ]
+     * Input file format: *.json
+     * <p>
+     * [ { "Userid": id, "Exp": exp }, ... ]
      */
     private static class Import implements GuildCommand {
 
@@ -306,10 +299,11 @@ class Config implements GuildCommand {
                 Check.check(args.size() > 1 && Parser.Int.isParsable(args.get(0)),
                     CommandArgumentException::new);
 
-                Role r = Parser.Role.getRole(original.getGuild(), lastArg(1, args, original));
+                String rRef = lastArg(1, args, original);
+                Role r = Parser.Role.getRole(original.getGuild(), rRef);
                 int level = Parser.Int.parse(args.get(0));
 
-                Check.entityNotNull(r, Role.class);
+                Check.entityReferenceNotNull(r, Role.class, rRef);
                 Check.check(level > 0, () -> new ReplyError("Error, Level must be bigger than 0"));
 
                 LevelConfig config = Levels.getConfig(original.getGuild());
@@ -348,9 +342,10 @@ class Config implements GuildCommand {
             public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
                 Check.check(args.size() > 1, CommandArgumentException::new);
 
-                Role r = Parser.Role.getRole(original.getGuild(), lastArg(1, args, original));
+                String rRef = lastArg(1, args, original);
+                Role r = Parser.Role.getRole(original.getGuild(), rRef);
                 int level = Parser.Int.parse(args.get(0));
-                Check.entityNotNull(r, Role.class);
+                Check.entityReferenceNotNull(r, Role.class, rRef);
                 Check.check(level > 0, () -> new ReplyError("Error, Level must be bigger than 0"));
 
                 LevelConfig config = Levels.getConfig(original.getGuild());
