@@ -33,7 +33,7 @@ public class UserInfo implements GuildCommand {
             CommandArgumentException::new);
         User u;
         if (args.isEmpty()) u = user.getUser();
-        else u = Parser.User.isParsable(args.get(0)) ? CacheUtils.getUser(args.get(0))
+        else u = Parser.User.isParsable(args.get(0)) ? CacheUtils.getUser(Parser.User.parse(args.get(0)))
                      : Bot.getJDA().getUserByTag(args.get(0));
         if (u == null) u = user.getUser();
         Member member = CacheUtils.getMember(original.getGuild(), u.getId());
