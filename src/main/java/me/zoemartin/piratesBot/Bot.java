@@ -20,7 +20,7 @@ import java.util.Properties;
 public class Bot extends ListenerAdapter {
     private static JDABuilder builder;
     private static JDA jda = null;
-    private static final String OWNER = "212591138945630213";
+    private static final String OWNER = "164318977131151360";
 
     private static int exitCode = 0;
 
