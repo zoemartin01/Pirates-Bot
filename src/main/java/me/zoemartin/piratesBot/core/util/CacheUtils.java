@@ -19,7 +19,7 @@ public class CacheUtils {
         Check.check(Parser.User.isParsable(id), () -> new IllegalArgumentException("id not in correct format"));
 
         try {
-            User u = Bot.getJDA().getUserById(id);
+            User u = Bot.getJDA().getUserById(Parser.User.parse(id));
             return u == null ? Bot.getJDA().retrieveUserById(id).complete() : u;
         } catch (ErrorResponseException e) {
             throw new ReplyError("Error, user not found!");
@@ -47,7 +47,7 @@ public class CacheUtils {
         if (id == null || !Parser.User.isParsable(id)) return null;
 
         try {
-            User u = Bot.getJDA().getUserById(id);
+            User u = Bot.getJDA().getUserById(Parser.User.parse(id));
             return u == null ? Bot.getJDA().retrieveUserById(id).complete() : u;
         } catch (ErrorResponseException e) {
             return null;

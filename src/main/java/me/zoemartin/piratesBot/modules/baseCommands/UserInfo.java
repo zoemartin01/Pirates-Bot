@@ -29,12 +29,11 @@ public class UserInfo implements GuildCommand {
 
     @Override
     public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
-        Check.check(args.isEmpty() || args.size() == 1,
-            CommandArgumentException::new);
-        User u;
+        User u = null;
+        String arg;
         if (args.isEmpty()) u = user.getUser();
-        else u = Parser.User.isParsable(args.get(0)) ? CacheUtils.getUser(Parser.User.parse(args.get(0)))
-                     : Bot.getJDA().getUserByTag(args.get(0));
+        else if (Parser.User.isParsable(arg = lastArg(0, args, original))) u = CacheUtils.getUser(arg);
+        else if (Parser.User.tagIsParsable(arg)) u = Bot.getJDA().getUserByTag(arg);
         if (u == null) u = user.getUser();
         Member member = CacheUtils.getMember(original.getGuild(), u.getId());
 

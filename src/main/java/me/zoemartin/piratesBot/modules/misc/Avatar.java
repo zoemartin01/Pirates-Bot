@@ -3,9 +3,9 @@ package me.zoemartin.piratesBot.modules.misc;
 import de.androidpit.colorthief.ColorThief;
 import me.zoemartin.piratesBot.Bot;
 import me.zoemartin.piratesBot.core.CommandPerm;
-import me.zoemartin.piratesBot.core.exceptions.CommandArgumentException;
 import me.zoemartin.piratesBot.core.interfaces.GuildCommand;
-import me.zoemartin.piratesBot.core.util.*;
+import me.zoemartin.piratesBot.core.util.CacheUtils;
+import me.zoemartin.piratesBot.core.util.Parser;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import org.jetbrains.annotations.NotNull;
@@ -24,12 +24,11 @@ public class Avatar implements GuildCommand {
 
     @Override
     public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
-        Check.check(args.isEmpty() || args.size() == 1, CommandArgumentException::new);
-
-        User u;
+        User u = null;
+        String arg;
         if (args.isEmpty()) u = user.getUser();
-        else u = Parser.User.isParsable(args.get(0)) ? CacheUtils.getUser(args.get(0))
-                     : Bot.getJDA().getUserByTag(args.get(0));
+        else if (Parser.User.isParsable(arg = lastArg(0, args, original))) u = CacheUtils.getUser(arg);
+        else if (Parser.User.tagIsParsable(arg)) u = Bot.getJDA().getUserByTag(arg);
         if (u == null) u = user.getUser();
 
         String avatarId = u.getAvatarId();
