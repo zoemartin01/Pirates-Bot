@@ -12,7 +12,10 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
+import java.awt.*;
+import java.time.Instant;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,8 +39,8 @@ public class CommandHandler implements CommandProcessor {
                                                      .filter(c -> s.matches(c.regex().toLowerCase()))
                                                      .findFirst().orElse(null));
             else if (commands.getLast() != null) commands.getLast().subCommands().stream()
-                     .filter(sc -> s.matches(sc.regex().toLowerCase()))
-                     .findFirst().ifPresent(commands::add);
+                                                     .filter(sc -> s.matches(sc.regex().toLowerCase()))
+                                                     .findFirst().ifPresent(commands::add);
 
         });
 
@@ -82,8 +85,15 @@ public class CommandHandler implements CommandProcessor {
 
             DatabaseUtil.saveObject(error);
 
-            channel.sendMessageFormat(
-                "> :warning: Ooops an unexpected error has occurred. If this happens again send this to the Developer\n> `%s`", error.getUuid()).queue();
+            channel.sendMessageFormat("> Error Code:  `%s`", error.getUuid())
+                .embed(new EmbedBuilder()
+                           .setColor(Color.RED)
+                           .setTitle("An internal error has occurred")
+                           .setDescription("For support send this code to the Developer " +
+                                               "along with a description of what you were doing.")
+                           .setFooter(error.getUuid().toString())
+                           .setTimestamp(Instant.now())
+                           .build()).queue();
 
             throw e;
         }
