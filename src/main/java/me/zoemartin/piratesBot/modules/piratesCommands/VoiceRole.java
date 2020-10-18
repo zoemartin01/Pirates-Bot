@@ -1,6 +1,7 @@
 package me.zoemartin.piratesBot.modules.piratesCommands;
 
 import me.zoemartin.piratesBot.core.CommandPerm;
+import me.zoemartin.piratesBot.core.exceptions.CommandArgumentException;
 import me.zoemartin.piratesBot.core.interfaces.Command;
 import me.zoemartin.piratesBot.core.interfaces.GuildCommand;
 import me.zoemartin.piratesBot.core.util.*;
@@ -8,6 +9,7 @@ import me.zoemartin.piratesBot.modules.pagedEmbeds.PageListener;
 import me.zoemartin.piratesBot.modules.pagedEmbeds.PagedEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.guild.GuildAvailableEvent;
 import net.dv8tion.jda.api.events.guild.voice.*;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.hibernate.Session;
@@ -121,6 +123,18 @@ public class VoiceRole extends ListenerAdapter implements GuildCommand {
     }
 
     @Override
+    public void onGuildAvailable(@NotNull GuildAvailableEvent event) {
+        Guild g = event.getGuild();
+        if (!voiceRoles.containsKey(g.getId())) return;
+
+        voiceRoles.get(g.getId()).stream().filter(c -> Parser.Channel.getVoiceChannel(g, c.getChannel_id()) == null)
+            .forEach(config -> {
+                DatabaseUtil.deleteObject(config);
+                voiceRoles.get(g.getId()).remove(config);
+            });
+    }
+
+    @Override
     public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
 
     }
@@ -191,12 +205,15 @@ public class VoiceRole extends ListenerAdapter implements GuildCommand {
 
         @Override
         public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
+            Check.check(args.size() >= 2, CommandArgumentException::new);
             Guild g = original.getGuild();
             VoiceChannel c = Parser.Channel.getVoiceChannel(g, args.get(0));
             Check.entityReferenceNotNull(c, VoiceChannel.class, args.get(0));
 
             addVoiceRoles(g, c, args.subList(1, args.size()).stream()
-                                    .map(s -> Parser.Role.getRole(g, s)).collect(Collectors.toList()));
+                                    .map(s -> Parser.Role.getRole(g, s))
+                                    .filter(Objects::nonNull)
+                                    .collect(Collectors.toList()));
             addCheckmark(original);
         }
 
@@ -229,12 +246,14 @@ public class VoiceRole extends ListenerAdapter implements GuildCommand {
 
         @Override
         public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
+            Check.check(args.size() >= 2, CommandArgumentException::new);
             Guild g = original.getGuild();
             VoiceChannel c = Parser.Channel.getVoiceChannel(g, args.get(0));
             Check.entityReferenceNotNull(c, VoiceChannel.class, args.get(0));
 
             removeVoiceRoles(g, c, args.subList(1, args.size()).stream()
-                                       .map(s -> Parser.Role.getRole(g, s)).collect(Collectors.toList()));
+                                       .map(s -> Parser.Role.getRole(g, s))
+                                       .filter(Objects::nonNull).collect(Collectors.toList()));
             addCheckmark(original);
         }
 

@@ -2,6 +2,7 @@ package me.zoemartin.piratesBot.modules.piratesCommands;
 
 import me.zoemartin.piratesBot.core.CommandPerm;
 import me.zoemartin.piratesBot.core.exceptions.CommandArgumentException;
+import me.zoemartin.piratesBot.core.exceptions.ReplyError;
 import me.zoemartin.piratesBot.core.interfaces.Command;
 import me.zoemartin.piratesBot.core.interfaces.GuildCommand;
 import me.zoemartin.piratesBot.core.util.Check;
@@ -72,13 +73,13 @@ public class SpeedDates implements GuildCommand {
 
         @Override
         public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
-            Check.check(!args.isEmpty(), CommandArgumentException::new);
+            Check.check(args.size() == 3, CommandArgumentException::new);
             Guild g = original.getGuild();
 
-            Role admin = args.size() <= 1 ? null : Parser.Role.getRole(g, args.get(1));
+            Role admin = Parser.Role.getRole(g, args.get(1));
             Check.entityReferenceNotNull(admin, Role.class, args.get(1));
-            Integer count = args.size() <= 2 ? null : Parser.Int.parse(args.get(2));
-            Check.notNull(count);
+            int count = Parser.Int.parse(args.get(2));
+            Check.check(count > 0, () -> new ReplyError("Count must be a valid number and bigger than 0!"));
 
             Category cat = g.getCategoriesByName(args.get(0), true).isEmpty() ?
                                null : g.getCategoriesByName(args.get(0), true).get(0);
