@@ -16,6 +16,7 @@ public class PiratesCommands implements Module {
         CommandManager.register(new RandomGroupsCommand());
         CommandManager.register(new VoiceRole());
         CommandManager.register(new SpeedDates());
+        CommandManager.register(new MoveAll());
         Bot.addListener(new VoiceRole());
     }
 
