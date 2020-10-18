@@ -1,5 +1,8 @@
 package me.zoemartin.piratesBot.modules.levels;
 
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 import me.zoemartin.piratesBot.Bot;
 import me.zoemartin.piratesBot.core.CommandPerm;
 import me.zoemartin.piratesBot.core.exceptions.*;
@@ -11,19 +14,22 @@ import me.zoemartin.piratesBot.modules.pagedEmbeds.PagedEmbed;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import org.jetbrains.annotations.NotNull;
-import org.json.*;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.lang.reflect.Type;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 class Config implements GuildCommand {
     @Override
     public @NotNull Set<Command> subCommands() {
         return Set.of(new Enable(), new RoleRewards(), new Import(), new BlackList(), new Disable(), new Announce(),
-            new SetExp());
+            new SetExp(), new Clear());
     }
 
     @Override
@@ -196,38 +202,28 @@ class Config implements GuildCommand {
             return "import";
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
             Check.check(args.isEmpty(), CommandArgumentException::new);
             Check.check(original.getAttachments().size() == 1, CommandArgumentException::new);
             Message m = channel.sendMessage("Okay... this might take a while").complete();
-
-            InputStreamReader ir;
-            BufferedReader br;
-            try {
-                ir = new InputStreamReader(original.getAttachments().get(0).retrieveInputStream().get(1, TimeUnit.MINUTES));
-                br = new BufferedReader(ir);
-            } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                throw new UnexpectedError(e);
-            }
-
-            Map<String, Integer> levels = new ConcurrentHashMap<>();
-
-            String jsonString = String.format("{\"l\":%s}", br.lines().collect(Collectors.joining()));
-            try {
-                JSONObject obj = new JSONObject(jsonString);
-                JSONArray arr = obj.getJSONArray("l");
-                for (int i = 0; i < arr.length(); i++) {
-                    String userId = arr.getJSONObject(i).getString("Userid");
-                    int exp = arr.getJSONObject(i).getInt("Exp");
-                    levels.put(userId, exp);
-                }
-            } catch (JSONException e) {
-                m.delete().queue();
-                throw new ReplyError("Import file in wrong format.");
-            }
+            Instant start = Instant.now();
 
             String guildId = original.getGuild().getId();
+            Type listType = new TypeToken<ArrayList<ImportLevel>>() {
+            }.getType();
+            Map<String, Integer> levels;
+            try (InputStreamReader ir = new InputStreamReader(original.getAttachments()
+                                                                  .get(0)
+                                                                  .retrieveInputStream()
+                                                                  .get(1, TimeUnit.MINUTES))) {
+                BufferedReader br = new BufferedReader(ir);
+                levels = ((List<ImportLevel>) new Gson().fromJson(br, listType)).stream()
+                             .collect(Collectors.toMap(ImportLevel::getUserId, ImportLevel::getExp));
+            } catch (InterruptedException | ExecutionException | TimeoutException | IOException e) {
+                throw new UnexpectedError(e);
+            }
 
             levels.forEach((s, integer) -> Levels.importLevel(new UserLevel(guildId, s, integer)));
             addCheckmark(original);
@@ -235,7 +231,12 @@ class Config implements GuildCommand {
 
             PagedEmbed p = new PagedEmbed(EmbedUtil.pagedDescription(
                 new EmbedBuilder().setTitle("Imported Levels: " + levels.size()).build(),
+                Stream.concat(
+                    Stream.of(String.format("Time taken: %s seconds\n",
+                        Duration.between(start, Instant.now()).toSeconds())),
                 levels.entrySet().stream()
+                    .sorted(Comparator.comparingInt((ToIntFunction<Map.Entry<String, Integer>>) Map.Entry::getValue)
+                                .reversed())
                     .map(e -> {
                             User u = Bot.getJDA().getUserById(e.getKey());
                             if (u == null) return String.format("User: `%s` - Level: `%s` - Exp: `%s`\n", e.getKey(),
@@ -243,7 +244,7 @@ class Config implements GuildCommand {
                             return String.format("User: %s - Level: `%s` - Exp: `%s`\n", u.getAsMention(),
                                 Levels.calcLevel(e.getValue()), e.getValue());
                         }
-                    ).collect(Collectors.toList())),
+                    )).collect(Collectors.toList())),
                 channel, user.getUser());
 
             PageListener.add(p);
@@ -257,6 +258,64 @@ class Config implements GuildCommand {
         @Override
         public @NotNull String description() {
             return "Import Levels";
+        }
+
+        private static class ImportLevel implements Serializable {
+            @SerializedName(value = "Userid")
+            private final String userId;
+
+            @SerializedName(value = "Exp")
+            private final int exp;
+
+            public ImportLevel(String userid, int exp) {
+                this.userId = userid;
+                this.exp = exp;
+            }
+
+            public String getUserId() {
+                return userId;
+            }
+
+            public int getExp() {
+                return exp;
+            }
+        }
+    }
+
+    private static class Clear implements GuildCommand {
+        @Override
+        public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
+            Check.check(args.size() >= 1 && args.get(0).matches("--agree"),
+                () -> new ReplyError("This action will clear the entire level database for this server. " +
+                                         "To confirm this action rerun this command with the argument `--agree`!"));
+            Instant start = Instant.now();
+
+            Message m = channel.sendMessage("Okay... this might take a while").complete();
+            Levels.getLevels(original.getGuild()).forEach(DatabaseUtil::deleteObject);
+            Levels.clearGuildCache(original.getGuild());
+            addCheckmark(original);
+            m.delete().complete();
+            embedReply(original, channel, "Level Config",
+                "Successfully cleared all Levels\nTime taken: %s seconds",
+                Duration.between(start, Instant.now()).toSeconds()).queue();
+        }
+
+        @NotNull
+        @Override
+        public String name() {
+            return "clear";
+        }
+
+        @NotNull
+        @Override
+        public CommandPerm commandPerm() {
+            return CommandPerm.BOT_ADMIN;
+        }
+
+        @NotNull
+        @Override
+        public String description() {
+            return "WARNING: CLEARS ALL LEVELS FROM THE DATABASE";
         }
     }
 
