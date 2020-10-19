@@ -10,5 +10,6 @@ public class Misc implements Module {
     public void init() {
         CommandManager.register(new Enlarge());
         CommandManager.register(new Avatar());
+        CommandManager.register(new Nick());
     }
 }
