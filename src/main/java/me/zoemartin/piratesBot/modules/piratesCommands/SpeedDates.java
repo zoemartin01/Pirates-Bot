@@ -28,7 +28,7 @@ public class SpeedDates implements GuildCommand {
         Check.entityReferenceNotNull(source, VoiceChannel.class, args.get(0));
 
         Map<Member, VoiceChannel> distribution =
-            RandomGroupsCommand.distributeUsers(source, cat.getVoiceChannels().toArray(VoiceChannel[]::new));
+            RandomGroupsCommand.distributeUsers(source, cat.getVoiceChannels());
 
         distribution.forEach((key, value) -> g.moveVoiceMember(key, value).queue());
 

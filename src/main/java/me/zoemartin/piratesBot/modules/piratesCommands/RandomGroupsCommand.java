@@ -53,12 +53,12 @@ public class RandomGroupsCommand implements GuildCommand {
         Check.check(args.size() >= 2, CommandArgumentException::new);
 
         VoiceChannel fromChannel = findVoiceChannel(guild, original.getMember(), args.get(0));
-        VoiceChannel[] toChannels = args.subList(1, args.size()).stream()
+        List<VoiceChannel> toChannels = args.subList(1, args.size()).stream()
                                         .map(reference -> findVoiceChannel(guild, original.getMember(), reference))
                                         .distinct()
-                                        .toArray(VoiceChannel[]::new);
+                                        .collect(Collectors.toList());
 
-        Check.check(toChannels.length >= 2,
+        Check.check(toChannels.size() >= 2,
             () -> new ReplyError("Please specify at least two different group voice-channels!"));
 
         Map<Member, VoiceChannel> distribution = distributeUsers(fromChannel, toChannels);
@@ -68,7 +68,7 @@ public class RandomGroupsCommand implements GuildCommand {
         embedReply(original, channel, "Random Groups",
             "Distributed %s users from the %s channel to these channels:\n • %s",
             distribution.entrySet().size(), fromChannel.getName(),
-            Arrays.stream(toChannels).map(VoiceChannel::getName)
+            toChannels.stream().map(VoiceChannel::getName)
                 .collect(Collectors.joining("\n • "))).queue();
     }
 
@@ -94,16 +94,18 @@ public class RandomGroupsCommand implements GuildCommand {
      * @param to   the group channels to distribute users to.
      * @return a map that shows which user needs to be moved in which channel.
      */
-    public static Map<Member, VoiceChannel> distributeUsers(VoiceChannel from, VoiceChannel[] to) {
-        Member[] membersToDistribute = from.getMembers().stream()
+    public static Map<Member, VoiceChannel> distributeUsers(VoiceChannel from, List<VoiceChannel> to) {
+        List<Member> membersToDistribute = from.getMembers().stream()
                                            .filter(member -> !member.getUser().isBot())
-                                           .toArray(Member[]::new);
+                                           .collect(Collectors.toList());
+
+        Collections.shuffle(membersToDistribute);
 
         Map<Member, VoiceChannel> memberChannels = new HashMap<>();
 
-        for (int i = 0; i < membersToDistribute.length; i++) {
-            Member member = membersToDistribute[i];
-            VoiceChannel target = to[i % to.length];
+        for (int i = 0; i < membersToDistribute.size(); i++) {
+            Member member = membersToDistribute.get(i);
+            VoiceChannel target = to.get(i % to.size());
             memberChannels.put(member, target);
         }
 
