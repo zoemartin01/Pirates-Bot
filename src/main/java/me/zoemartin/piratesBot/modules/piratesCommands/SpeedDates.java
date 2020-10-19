@@ -17,18 +17,19 @@ import java.util.stream.Collectors;
 public class SpeedDates implements GuildCommand {
     @Override
     public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
-        Check.check(args.size() == 2, CommandArgumentException::new);
+        Check.check(args.size() >= 3, CommandArgumentException::new);
         Guild g = original.getGuild();
-        String catRef = lastArg(1, args, original);
+        Role admin = Parser.Role.getRole(g, args.get(1));
+        String catRef = lastArg(2, args, original);
         Category cat = g.getCategoriesByName(catRef, true).isEmpty() ?
                            null : g.getCategoriesByName(catRef, true).get(0);
 
+        Check.entityReferenceNotNull(admin, Role.class, args.get(1));
         Check.entityReferenceNotNull(cat, Category.class, catRef);
         VoiceChannel source = Parser.Channel.getVoiceChannel(g, args.get(0));
         Check.entityReferenceNotNull(source, VoiceChannel.class, args.get(0));
 
-        Map<Member, VoiceChannel> distribution =
-            RandomGroupsCommand.distributeUsers(source, cat.getVoiceChannels());
+        Map<Member, VoiceChannel> distribution = distribute(source, cat.getVoiceChannels(), admin);
 
         distribution.forEach((key, value) -> g.moveVoiceMember(key, value).queue());
 
@@ -37,6 +38,25 @@ public class SpeedDates implements GuildCommand {
             distribution.entrySet().size(), source.getName(),
             cat.getVoiceChannels().stream().map(VoiceChannel::getName)
                 .collect(Collectors.joining("\n • "))).queue();
+    }
+
+    private Map<Member, VoiceChannel> distribute(VoiceChannel from, List<VoiceChannel> to, Role admin) {
+        List<Member> membersToDistribute = from.getMembers().stream()
+                                               .filter(member -> !member.getUser().isBot())
+                                               .filter(member -> !member.getRoles().contains(admin))
+                                               .collect(Collectors.toList());
+
+        Collections.shuffle(membersToDistribute);
+
+        Map<Member, VoiceChannel> memberChannels = new HashMap<>();
+
+        for (int i = 0; i < membersToDistribute.size(); i++) {
+            Member member = membersToDistribute.get(i);
+            VoiceChannel target = to.get(i % to.size());
+            memberChannels.put(member, target);
+        }
+
+        return memberChannels;
     }
 
     @NotNull
@@ -60,7 +80,7 @@ public class SpeedDates implements GuildCommand {
     @NotNull
     @Override
     public String usage() {
-        return "<source channel> <category>";
+        return "<source channel> <admin role> <category>";
     }
 
     @NotNull
