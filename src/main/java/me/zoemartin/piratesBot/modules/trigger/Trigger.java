@@ -1,8 +1,11 @@
 package me.zoemartin.piratesBot.modules.trigger;
 
+import me.zoemartin.rubie.core.annotations.Mapped;
+
 import javax.persistence.*;
 import java.util.UUID;
 
+@Mapped
 @Entity
 @Table(name = "trigger")
 public class Trigger {

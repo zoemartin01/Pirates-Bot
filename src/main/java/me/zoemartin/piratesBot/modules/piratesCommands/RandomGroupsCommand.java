@@ -3,60 +3,44 @@ package me.zoemartin.piratesBot.modules.piratesCommands;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import me.zoemartin.piratesBot.core.CommandPerm;
-import me.zoemartin.piratesBot.core.exceptions.CommandArgumentException;
-import me.zoemartin.piratesBot.core.exceptions.ReplyError;
-import me.zoemartin.piratesBot.core.interfaces.GuildCommand;
-import me.zoemartin.piratesBot.core.util.Check;
-import me.zoemartin.piratesBot.core.util.Parser;
+import me.zoemartin.rubie.core.CommandPerm;
+import me.zoemartin.rubie.core.GuildCommandEvent;
+import me.zoemartin.rubie.core.annotations.Command;
+import me.zoemartin.rubie.core.annotations.CommandOptions;
+import me.zoemartin.rubie.core.exceptions.CommandArgumentException;
+import me.zoemartin.rubie.core.exceptions.ReplyError;
+import me.zoemartin.rubie.core.interfaces.GuildCommand;
+import me.zoemartin.rubie.core.util.Check;
+import me.zoemartin.rubie.core.util.Parser;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import org.jetbrains.annotations.NotNull;
 
-public class RandomGroupsCommand implements GuildCommand {
-    @Override
-    public @NotNull String name() {
-        return "random-groups";
-    }
+@Command
+@CommandOptions(
+    name = "random-groups",
+    alias = "rg",
+    description = "Distribute users to random voice channels with an equal group sizes.",
+    perm = CommandPerm.BOT_MODERATOR,
+    usage = "<from-voice-channel> <group-voice-channels-1> <group-voice-channel-2> [<group-voice-channels...>]",
+    botPerms = Permission.VOICE_MOVE_OTHERS
 
+)
+public class RandomGroupsCommand extends GuildCommand {
     @Override
-    public @NotNull String regex() {
-        return "random-groups|rg";
-    }
-
-    @Override
-    public @NotNull CommandPerm commandPerm() {
-        return CommandPerm.BOT_MODERATOR;
-    }
-
-    @Override
-    public @NotNull String usage() {
-        return "<from-voice-channel> <group-voice-channels-1> <group-voice-channel-2> [<group-voice-channels...>]";
-    }
-
-    @Override
-    public @NotNull String description() {
-        return "Distribute users to random voice channels with an equal group sizes.";
-    }
-
-    @Override
-    public @NotNull Collection<Permission> required() {
-        return Collections.singleton(Permission.VOICE_MOVE_OTHERS);
-    }
-
-    @Override
-    public void run(Member user, TextChannel channel, List<String> args, Message original, String invoked) {
-        Guild guild = original.getGuild();
+    public void run(GuildCommandEvent event) {
+        var guild = event.getGuild();
+        var args = event.getArgs();
 
         // there need to be at least 3 voice channels referenced:
         // 1 from-channel + at least 2 group-channels
         Check.check(args.size() >= 2, CommandArgumentException::new);
 
-        VoiceChannel fromChannel = findVoiceChannel(guild, original.getMember(), args.get(0));
+        VoiceChannel fromChannel = findVoiceChannel(guild, event.getMember(), args.get(0));
         List<VoiceChannel> toChannels = args.subList(1, args.size()).stream()
-                                        .map(reference -> findVoiceChannel(guild, original.getMember(), reference))
-                                        .distinct()
-                                        .collect(Collectors.toList());
+                                            .map(reference -> findVoiceChannel(guild, event.getMember(), reference))
+                                            .distinct()
+                                            .collect(Collectors.toList());
 
         Check.check(toChannels.size() >= 2,
             () -> new ReplyError("Please specify at least two different group voice-channels!"));
@@ -65,7 +49,7 @@ public class RandomGroupsCommand implements GuildCommand {
 
         distribution.forEach((key, value) -> guild.moveVoiceMember(key, value).queue());
 
-        embedReply(original, channel, "Random Groups",
+        event.reply("Random Groups",
             "Distributed %s users from the %s channel to these channels:\n • %s",
             distribution.entrySet().size(), fromChannel.getName(),
             toChannels.stream().map(VoiceChannel::getName)
@@ -86,18 +70,20 @@ public class RandomGroupsCommand implements GuildCommand {
     }
 
     /**
-     * Creates a user-channel map for distributing all users (excluding bots) in
-     * one channel to an array of group channels. The resulting distribution
-     * aims for similar group sizes (group sizes vary at most by 1).
+     * Creates a user-channel map for distributing all users (excluding bots) in one channel to an array of group
+     * channels. The resulting distribution aims for similar group sizes (group sizes vary at most by 1).
      *
-     * @param from the channel to distribute users from.
-     * @param to   the group channels to distribute users to.
+     * @param from
+     *     the channel to distribute users from.
+     * @param to
+     *     the group channels to distribute users to.
+     *
      * @return a map that shows which user needs to be moved in which channel.
      */
     public static Map<Member, VoiceChannel> distributeUsers(VoiceChannel from, List<VoiceChannel> to) {
         List<Member> membersToDistribute = from.getMembers().stream()
-                                           .filter(member -> !member.getUser().isBot())
-                                           .collect(Collectors.toList());
+                                               .filter(member -> !member.getUser().isBot())
+                                               .collect(Collectors.toList());
 
         Collections.shuffle(membersToDistribute);
 

@@ -1,10 +1,10 @@
 package me.zoemartin.piratesBot.modules.trigger;
 
-import me.zoemartin.piratesBot.Bot;
-import me.zoemartin.piratesBot.core.LoadModule;
-import me.zoemartin.piratesBot.core.interfaces.Module;
-import me.zoemartin.piratesBot.core.managers.CommandManager;
-import me.zoemartin.piratesBot.core.util.DatabaseUtil;
+import me.zoemartin.rubie.Bot;
+import me.zoemartin.rubie.core.annotations.LoadModule;
+import me.zoemartin.rubie.core.interfaces.Module;
+import me.zoemartin.rubie.core.util.CollectorsUtil;
+import me.zoemartin.rubie.core.util.DatabaseUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -13,16 +13,15 @@ import org.hibernate.Session;
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 @LoadModule
 public class Triggers extends ListenerAdapter implements Module {
-    private static final Map<String, Set<Trigger>> triggers = new ConcurrentHashMap<>();
+    private static final Map<String, Collection<Trigger>> triggers = new ConcurrentHashMap<>();
 
     @Override
     public void init() {
-        CommandManager.register(new TriggerCommand());
         Bot.addListener(new Triggers());
-        DatabaseUtil.setMapped(Trigger.class);
     }
 
     @Override
@@ -44,13 +43,10 @@ public class Triggers extends ListenerAdapter implements Module {
     }
 
     private static void initTriggers() {
-        try (Session session = DatabaseUtil.getSessionFactory().openSession()) {
-            List<Trigger> load = session.createQuery("from Trigger", Trigger.class).list();
-            load.forEach(t -> triggers.computeIfAbsent(t.getGuild_id(),
-                s -> Collections.newSetFromMap(new ConcurrentHashMap<>())).add(t));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        triggers.putAll(DatabaseUtil.loadGroupedCollection("from Trigger", Trigger.class,
+            Trigger::getGuild_id,
+            Function.identity(),
+            CollectorsUtil.toConcurrentSet()));
     }
 
     public static void addTrigger(Guild guild, String regex, String output) {
@@ -74,8 +70,8 @@ public class Triggers extends ListenerAdapter implements Module {
         return triggers.get(guild.getId()).remove(trigger);
     }
 
-    public static Set<Trigger> getTriggers(Guild guild) {
-        return Collections.unmodifiableSet(triggers.getOrDefault(guild.getId(), Collections.emptySet()));
+    public static Collection<Trigger> getTriggers(Guild guild) {
+        return Collections.unmodifiableCollection(triggers.getOrDefault(guild.getId(), Collections.emptySet()));
     }
 
     public static boolean hasTriggers(Guild guild) {

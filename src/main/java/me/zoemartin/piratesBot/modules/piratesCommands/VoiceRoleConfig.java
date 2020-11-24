@@ -1,17 +1,23 @@
 package me.zoemartin.piratesBot.modules.piratesCommands;
 
+import me.zoemartin.rubie.core.annotations.Mapped;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.UUID;
 
+@Mapped
 @Entity
 @Table(name = "voiceroles")
 public class VoiceRoleConfig {
     @Id
-    @Column
-    @GeneratedValue
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+        name = "UUID",
+        strategy = "org.hibernate.id.UUIDGenerator"
+    )
     private UUID uuid;
 
     @Column
@@ -24,7 +30,6 @@ public class VoiceRoleConfig {
     private String channel_id;
 
     public VoiceRoleConfig(String guild_id, String role_id, String channel_id) {
-        this.uuid = UUID.randomUUID();
         this.guild_id = guild_id;
         this.role_id = role_id;
         this.channel_id = channel_id;
