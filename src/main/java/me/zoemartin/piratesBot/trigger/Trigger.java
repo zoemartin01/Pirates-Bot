@@ -1,14 +1,15 @@
-package me.zoemartin.piratesBot.modules.trigger;
+package me.zoemartin.piratesBot.trigger;
 
-import me.zoemartin.rubie.core.annotations.Mapped;
+import me.zoemartin.rubie.core.annotations.DatabaseEntity;
+import me.zoemartin.rubie.core.interfaces.DatabaseEntry;
 
 import javax.persistence.*;
 import java.util.UUID;
 
-@Mapped
+@DatabaseEntity
 @Entity
 @Table(name = "trigger")
-public class Trigger {
+public class Trigger implements DatabaseEntry {
     @Id
     @Column(name = "id", updatable = false, nullable = false)
     private UUID uuid;
@@ -36,7 +37,7 @@ public class Trigger {
         this.output = output;
     }
 
-    protected Trigger() {
+    public Trigger() {
     }
 
     public UUID getUuid() {

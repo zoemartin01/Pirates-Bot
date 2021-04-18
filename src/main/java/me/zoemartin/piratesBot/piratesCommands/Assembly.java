@@ -1,9 +1,11 @@
-package me.zoemartin.piratesBot.modules.piratesCommands;
+package me.zoemartin.piratesBot.piratesCommands;
 
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.VoiceChannel;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Assembly {

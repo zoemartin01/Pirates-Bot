@@ -1,6 +1,7 @@
-package me.zoemartin.piratesBot.modules.piratesCommands;
+package me.zoemartin.piratesBot.piratesCommands;
 
-import me.zoemartin.rubie.core.annotations.Mapped;
+import me.zoemartin.rubie.core.annotations.DatabaseEntity;
+import me.zoemartin.rubie.core.interfaces.DatabaseEntry;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
@@ -8,10 +9,10 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.UUID;
 
-@Mapped
+@DatabaseEntity
 @Entity
 @Table(name = "voiceroles")
-public class VoiceRoleConfig {
+public class VoiceRoleConfig implements DatabaseEntry {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -35,7 +36,7 @@ public class VoiceRoleConfig {
         this.channel_id = channel_id;
     }
 
-    protected VoiceRoleConfig() {
+    public VoiceRoleConfig() {
     }
 
     public String getGuild_id() {

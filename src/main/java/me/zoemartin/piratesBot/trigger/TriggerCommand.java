@@ -1,4 +1,4 @@
-package me.zoemartin.piratesBot.modules.trigger;
+package me.zoemartin.piratesBot.trigger;
 
 import me.zoemartin.rubie.core.CommandPerm;
 import me.zoemartin.rubie.core.GuildCommandEvent;

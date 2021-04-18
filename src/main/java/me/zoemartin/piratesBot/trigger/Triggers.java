@@ -1,22 +1,21 @@
-package me.zoemartin.piratesBot.modules.trigger;
+package me.zoemartin.piratesBot.trigger;
 
 import me.zoemartin.rubie.Bot;
-import me.zoemartin.rubie.core.annotations.LoadModule;
-import me.zoemartin.rubie.core.interfaces.Module;
+import me.zoemartin.rubie.core.annotations.Module;
+import me.zoemartin.rubie.core.interfaces.ModuleInterface;
 import me.zoemartin.rubie.core.util.CollectorsUtil;
 import me.zoemartin.rubie.core.util.DatabaseUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.hibernate.Session;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-@LoadModule
-public class Triggers extends ListenerAdapter implements Module {
+@Module
+public class Triggers extends ListenerAdapter implements ModuleInterface {
     private static final Map<String, Collection<Trigger>> triggers = new ConcurrentHashMap<>();
 
     @Override

@@ -1,4 +1,4 @@
-package me.zoemartin.piratesBot.modules.piratesCommands;
+package me.zoemartin.piratesBot.piratesCommands;
 
 import me.zoemartin.rubie.core.CommandPerm;
 import me.zoemartin.rubie.core.GuildCommandEvent;
@@ -63,7 +63,7 @@ public class Assemble extends GuildCommand {
             guild.moveVoiceMember(member, vc).queue();
         }).start());
 
-        event.reply( "Assembly",
+        event.reply("Assembly",
             "Moved everyone with the role %s to the voice channel `%s`. \nAssembly id: `%s`",
             r.getAsMention(), vc.getName(), Assembly.addAssembly(a)).queue();
     }
